@@ -1,0 +1,124 @@
+.tableCard {
+  display: "inline-block";
+  flex-direction: "column";
+  width: 100vw;
+}
+
+.bot-grid-container {
+  background-color: "yellow";
+
+  @media screen and (min-width: 200px) {
+    display: grid;
+    border: "1px solid blue";
+    grid-template-columns: 30vw 70vw;
+  }
+
+  @media screen and (min-width: 600px) {
+    background-color: blue;
+    grid-template-columns: 10% 10% 10% 20% 25% 10% 2.5fr;
+    grid-template-rows: 70px 250px;
+    grid-template-rows: 1;
+  }
+}
+
+.bot-card {
+  @media screen and (min-width: 200px) {
+    border: "1px solid red";
+    height: 100px;
+  }
+
+  @media screen and (min-width: 600px) {
+    border: "1px solid blue";
+  }
+}
+
+.bot-list-header-menu {
+  @media screen and (min-width: 200px) {
+    display: flex;
+    flex-direction: column;
+    border: "1px solid red";
+    height: "100px";
+    width: "10vh";
+    background-color: blue;
+  }
+
+  @media screen and (min-width: 600px) {
+    grid-column-start: 1;
+    grid-column-end: 7;
+    display: grid;
+    grid-template-columns: 10% 10% 10% 20% 25% 10% 2.5fr;
+    border: "1px solid red";
+    height: "100px";
+    background-color: blue;
+  }
+}
+
+.bot-grid-header-container {
+  @media screen and (min-width: 200px) {
+    grid-column-start: 1;
+    grid-column-end: 1;
+    grid-template-columns: 30% ;
+    grid-template-rows: 10vh 10vh 10vh 10vh 10vh;
+  }
+
+  @media screen and (min-width: 600px) {
+    display: grid;
+    grid-column-start: 1;
+    grid-column-end: 7;
+    grid-template-columns: 10% 10% 10% 20% 25% 10% 2.5fr;
+  }
+}
+
+.bot-list-header-card {
+  @media screen and (min-width: 200px) {
+    border: "1px solid red";
+    background-color: green;
+    min-height: 100px;
+  }
+
+  @media screen and (min-width: 600px) {
+    border: "1px solid blue";
+    height: "100px";
+  }
+}
+
+.bot-grid-body-container {
+  @media screen and (min-width: 200px) {
+    border: "1px solid red";
+    overflow: hidden;
+    grid-column-start: 2;
+    grid-column-end: 2;
+  }
+
+  @media screen and (min-width: 600px) {
+    display: grid;
+    grid-column-start: 1;
+    grid-column-end: 7;
+    grid-template-columns: 10% 10% 10% 20% 25% 10% 2.5fr;
+  }
+}
+
+.tableCss {
+  display: block;
+
+  table {
+    thead {
+      text-align: center;
+
+      tbody {
+        display: block;
+
+        tr {
+          border-spacing: 0;
+          text-align: center;
+          display: block;
+
+          td {
+            padding: 0px !important;
+            text-align: "center" !important;
+          }
+        }
+      }
+    }
+  }
+}

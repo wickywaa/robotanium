@@ -1,0 +1,22 @@
+version: "3.4"
+
+services:
+  backend:
+    volumes:
+      - /app/node_modules
+      - /app/dist
+      - ./backend:/app
+  robotaniumFrontend:
+    volumes:
+      - /app/node_modules
+      - ./frontend:/app 
+  adminer:
+    image: dockette/adminer
+    restart: unless-stopped
+    ports:
+      - 46001:80
+    depends_on:
+      - mongo
+    deploy:
+      mode: replicated
+      replicas: 1

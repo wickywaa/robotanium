@@ -1,0 +1,57 @@
+services:
+  robotaniumFrontend:
+    image: newfrontendrobotanium:latest
+    restart: unless-stopped
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    environment:
+       - CHOKIDAR_USEPOLLING=true
+  backend:
+    image: users:latest
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - POSTGRES_USER=${USERS_DB_USER:-postgres}
+      - POSTGRES_PASSWORD=${USERS_DB_PASSWORD:-db}
+      - POSTGRES_DB=${USERS_DB_NAME:-robotanium_users_db}
+    depends_on:
+      - mongo
+  web-proxy:
+    image: web-proxy:latest
+    restart: unless-stopped
+    build:
+      context: ./web-proxy
+      dockerfile: ./Dockerfile
+    ports:
+      - 46000:80
+    healthcheck:
+      test: ["CMD", "curl", "-I", "127.0.0.1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      mode: replicated
+      replicas: 1
+    depends_on:
+      - backend
+      - mongo
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: Robotanium1!
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      mode: replicated
+      replicas: 1
+    volumes:
+      - mongo:/data/db
+volumes:
+  mongo:

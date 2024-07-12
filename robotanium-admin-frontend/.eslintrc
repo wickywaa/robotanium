@@ -1,0 +1,10 @@
+{
+  "plugins": [
+    "react-hooks"
+  ],
+  "rules": {
+      "react-hooks/rules-of-hooks": "off", // For checking rules of hooks
+      "react-hooks/exhaustive-deps" : "off"
+  }
+}
+

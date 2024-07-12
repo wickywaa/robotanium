@@ -1,0 +1,60 @@
+@layer tailwind-base, primereact, tailwind-utilities;
+
+@layer tailwind-base {
+  @tailwind base;
+}
+
+@layer tailwind-utilities {
+  @tailwind components;
+  @tailwind utilities;
+}
+:root {
+  --darkgreen: #4ddfc0;
+}
+
+body {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
+.maincontainer {
+  height: calc(100vh - 98px);
+  box-sizing: border-box;
+  position: relative;
+  opacity: 0.3;
+  border: 1px solid #4ddfc0;
+  overflow: hidden;
+}
+.maincontainer:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  box-sizing: border-box;
+  padding: auto;
+  width: 100%;
+  height: calc(100vh - 100px);
+  z-index: -10;
+  opacity: 0.04;
+  border: 10px solid blue;
+  background-image: url("../src/assets/images/icononly_transparent_nobuffer.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: calc(100vh - 100px);
+  overflow: scroll;
+}
+
+.p-menuitem-text {
+  color: #4ddfc0;
+}
+
+.p-menuitem-icon {
+  color: #4ddfc0;
+}
+
+.p-menuitem-end {
+  color: #4ddfc0;
+}
+#root {
+  height: 100%;
+}
