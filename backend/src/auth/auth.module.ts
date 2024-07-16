@@ -23,8 +23,9 @@ export class AuthModule implements NestModule {
     .apply(AdminAuthMiddleware)
     .exclude(
       {path: 'api/admin/login', method: RequestMethod.ALL},
-      {path: 'api/admin/user', method: RequestMethod.POST}
-    ).forRoutes('api/admin')
+      {path: 'api/admin/user', method: RequestMethod.POST},
+      {path: 'api/admin/user', method: RequestMethod.GET}
+    ).forRoutes('api/admin', 'api/errors')
     .apply(UserAuthMiddleware)
     .exclude(
       {path:'api/users/user', method: RequestMethod.ALL},

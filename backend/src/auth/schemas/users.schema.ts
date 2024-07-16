@@ -101,6 +101,16 @@ UserSchema.pre('save', async function (next) {
   next()
 })
 
+UserSchema.post('save', function(error, doc, next) {
+  if ( error.code === 11000 ) {
+    if(error?.keyValue?.email) {
+      next(new Error(`The email ${error.keyValue.email } must be unique`));
+    }
+  } else {
+    next(error);
+  }
+});
+
 UserSchema.method('generateAuthToken',async function generateAuthToken():Promise<string> {
   const user = this;
   const token: string = jwt.sign({_id:user._id.toString()},'supersecretpassword');

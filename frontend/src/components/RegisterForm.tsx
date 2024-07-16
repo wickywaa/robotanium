@@ -20,42 +20,43 @@ export const RegisterForm:React.FC<{emailSent:boolean, isLoading:boolean, user:I
   const [ showPassword2, setShowPassword2 ] = useState<boolean>(false);
   const [ confirmationCode, setConfirmationCode] = useState<string>("");
   const errors = useAppSelector(selectErrors);
+  const [canSave,setCanSave] =useState<boolean>(false);
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const getBorderClass = (field: ErrorType) => errors.find((error)=>error.type === field) ? 'inputError' :'border-secondary';
 
-  const checkforErrors = (field:ErrorType):boolean => {
+  const isfieldValid = (field:ErrorType) =>{
+    if(field==='email') return validator.isEmail(email);
+    if(field === 'password') return validator.isStrongPassword(password);
+    if(field === 'password2') return password === password2;
+    if(field === 'userName') return userName.length >=5;
+  }
 
-    if(field === 'email') {
-      if(!validator.isEmail(email))  {
-        dispatch(addError({type:'email',message:'Invaild Email Address'}))
-        return true;
-      }
-      dispatch(removeErrorByType('email'));
+  const checkforErrors = (field?:ErrorType):boolean => {
+    const fields:ErrorType[] = ['email','password','password2','userName']
+    let error:boolean = false;
+    if(!field) {
+      fields.forEach((field)=>{
+        if(!isfieldValid(field)) {
+          dispatch(addError({type:field,message:''}))
+          error = true;
+        }
+      })
+      return error
     }
-    
-    if(field === 'password') {
 
-      if(!validator.isStrongPassword(password)) {
-        dispatch(addError({type:'password',message:'Password must have atleast 1 upper and 1 lower case, 1 special character and a minimum length of 8 characters'}))
-        return true;
-      }
-      dispatch(removeErrorByType('password'));
+    if(!isfieldValid(field)){
+      dispatch(addError({type:field,message:''}))
+      return true;
     }
-
-    if(field === 'password2') {
-      if(password !== password2) {
-        dispatch(addError({type:'password2',message:'passwords do not match'}))
-        return true;
-      }
-      dispatch(removeErrorByType('password2'));
-    }
-    
-
     return false;
   }
 
-  const isUserNameTaken = () => {
+  const clearErrorOnChange = (field:ErrorType) => {
+    if(isfieldValid(field)){
+      dispatch(removeErrorByType(field))
+    }
   }
 
   const handleKeyPress = (event:React.KeyboardEvent<HTMLInputElement>) => {
@@ -67,37 +68,24 @@ export const RegisterForm:React.FC<{emailSent:boolean, isLoading:boolean, user:I
         username:userName
     }))
   }
+
   const handleregister = ()=> {
-
-    if( checkforErrors('email') || checkforErrors('password')) {
-      return
-    }
-
+  if(checkforErrors()) return;
     return dispatch(registerUserAttempt({email, password, userName}))
-   }
+  }
 
-  useEffect(()=>{
-
+   useEffect(()=>{
     if(user) {
-      setConfirmationCode("")
-      setEmail(""),
-      setPassword("")
-      setPassword2("")
-      setUserName("")
-        navigate("/")
+      navigate('/')
     }
+   },[user])
 
-  },[user])
-
-  useEffect(()=>{
-    return () => {
-      setPassword('');
-      setPassword2('');
-      setUserName('');
-      setShowPassword(false);
-      setShowPassword2(false);
-    }
-  },[])
+   useEffect(()=>{
+    clearErrorOnChange('email');
+    clearErrorOnChange('userName')
+    clearErrorOnChange('password')
+    clearErrorOnChange('password2')
+   },[email, userName,password,password2])
 
   const renderEmailSentMessage = (
     <div >
@@ -111,7 +99,7 @@ export const RegisterForm:React.FC<{emailSent:boolean, isLoading:boolean, user:I
     <>
       <div className="w-full flex flex-column cursor-pointer justify-center items-center">
         <Button 
-          disabled={errors.find((error)=>error.type === 'email' || error.type === 'password' || error.type === 'userName' )? true: false }
+          disabled={errors.length >0}
           onClick={()=> handleregister() } 
           className="bg-secondary  text-white w-32 h-8" 
           label="Register" title="Register" 
@@ -131,18 +119,19 @@ export const RegisterForm:React.FC<{emailSent:boolean, isLoading:boolean, user:I
       <InputText
         placeholder="email"
         style={{color:'#4ddfc0'}}
-        className="w-full color-red-500  h-8 border border-secondary mb-5"
+        className={`w-full color-red-500  h-8 border ${getBorderClass('email')} mb-5`}
         value={email}
-        onBlur={()=>checkforErrors('email')}
-        onChange={(e) => setEmail(e.target.value)}
+        onBlur={()=> checkforErrors('email')}
+        onChange={(e)=>setEmail(e.target.value)}
       />
       <InputText
         color="red"
         style={{color:'#4ddfc0'}}
         placeholder="username (optional)"
-        className="w-full text-red-100 h-8 border border-secondary mb-5"
+        className={`w-full text-red-100 h-8 border ${getBorderClass('userName')} mb-5`}
         value={userName}
-        onChange={(e) => setUserName(e.target.value)}
+        onBlur={()=> checkforErrors('userName')}
+        onChange={(e)=>setUserName(e.target.value)}
       />
 
     <div className="w-full relative h-8  mb-5" >
@@ -150,10 +139,10 @@ export const RegisterForm:React.FC<{emailSent:boolean, isLoading:boolean, user:I
         style={{color:'#4ddfc0'}}
         type={showPassword ? 'text' : 'password'}
         placeholder="password"
-        className="w-full h-8 border color-red-500 border-secondary mb-5"
+        className={`w-full h-8 border color-red-500 ${getBorderClass('password')} mb-5`}
         value={password}
         onBlur={()=>checkforErrors('password')}
-        onChange={(e) => setPassword(e.target.value)}
+        onChange={(e)=>setPassword(e.target.value)}
       />
       <i style={{color: '#4ddfc0'}} onClick={()=>setShowPassword(!showPassword)} className={`absolute  right-2 top-2 ${!showPassword ? 'pi pi-eye' : 'pi pi-eye-slash'}`}></i>
     </div>
@@ -163,10 +152,10 @@ export const RegisterForm:React.FC<{emailSent:boolean, isLoading:boolean, user:I
         style={{color:'#4ddfc0'}}  
         type={showPassword2 ? 'text' : 'password'}
         placeholder="repeat password"
-        className="w-full h-8 border placeholder text-red-100 color-secondary border-secondary mb-5"
+        className={`w-full h-8 border placeholder text-red-100 color-secondary ${getBorderClass('password2')} mb-5`}
         value={password2}
         onBlur={()=>checkforErrors('password2')}
-        onChange={(e) => setPassword2(e.target.value)}
+        onChange={(e)=>setPassword2(e.target.value)}
       />
       <i style={{color: '#4ddfc0'}} onClick={()=>setShowPassword2(!showPassword2)} className={`absolute right-2 top-2 ${!showPassword2 ? 'pi pi-eye' : 'pi pi-eye-slash'}`}></i>
     </div>

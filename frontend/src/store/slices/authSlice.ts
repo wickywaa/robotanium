@@ -3,7 +3,6 @@ import { createSlice } from "@reduxjs/toolkit";
 import { ILoggedInUser } from "../../models";
 import { IConfirmEmailCredentials, ILoginCredentials, IRegisterCredentials } from "../../models/auth";
 
-
 interface IUserReducer {
   user: ILoggedInUser | null;
   loading: boolean;
@@ -34,9 +33,14 @@ export const authSlice = createSlice({
     confirmEmailFailed: (state) => (initialState),
     logoutAttempt: (state,) => ({ ...state, loading: true}),
     logout: (state,) => ({ ...state, loading: false, user: null }),
-    addError: (state, action: PayloadAction<IAuthError>) => ({...state, errors: [...state.errors,action.payload]}),
+    addError: (state, action: PayloadAction<IAuthError>) => {
+      if(state.errors.find((e)=>e.message ===action.payload.message && e.type === action.payload.type)) {
+        return {...state,}
+      }
+      return {...state,errors:[...state.errors,action.payload]}
+    },
     removeErrorByType: (state, action: PayloadAction<ErrorType>) => ({...state, errors:state.errors.filter((error)=> error.type !== action.payload)}),
-    resetErrors: (state, action: PayloadAction<IAuthError>) => ({...state, errors: []}),
+    resetErrors: (state) => ({...state, errors: []}),
     checkuserNameAttempt: (state, action:PayloadAction<string>) =>({...state, isLoading:true}),
     checkUserNameFailed: (state, ) => ({...state, isLoading:false, errors: [...state.errors,{type:'userName',message:'Username already Taken'}]}),
     checkUserNameSuccess: (state, ) => ({...state, isLoading: false, errors: state.errors.filter((error)=>error.type !== 'userName')}),

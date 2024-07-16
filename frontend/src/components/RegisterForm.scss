@@ -9,6 +9,11 @@
   text-shadow: 0 1px 0 #000;
   ::placeholder {
     color: #4ddfc0,
+
+  }
+
+  .inputError {
+    border:1px solid red !important;
   }
   
   
@@ -33,8 +38,6 @@
     var(--main-bg) border-box; */
   
   background-position: center center;
-
-
 }
 
 .login-loading {
