@@ -15,3 +15,8 @@ export interface IConfirmEmailCredentials {
   registrationToken: string;
   username?: string
 }
+
+export interface IAuthErrors {
+  id: number;
+  message: string;
+}

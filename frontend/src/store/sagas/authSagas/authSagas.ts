@@ -34,9 +34,9 @@ function* registerUserAttempt(action: PayloadAction<IRegisterCredentials>) {
     yield put(registerUserSuccess())
   }
   catch (e: any) {
-    if(e.message) {
-      yield put(toastSlice.actions.addMessage({message:e.message, severity:'error'}));
-    }
+  
+    yield put(toastSlice.actions.addMessage({message:e.message ?? 'could not register with these credentials', severity:'error'}));
+    
     yield put(registerUserFailed())
   }
 }
