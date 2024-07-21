@@ -4,9 +4,10 @@ import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { InputText } from "primereact/inputtext";
 import { useNavigate } from 'react-router-dom';
+import validator from "validator";
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { selectUser } from "../store/selectors";
-import { confirmEmailAttempt, requestLogin } from "../store/slices";
+import { selectErrors, selectUser } from "../store/selectors";
+import { addError, confirmEmailAttempt, removeErrorByType, requestLogin, } from "../store/slices";
 import { ConfirmEmailModal } from "./Auth";
 
 export const LoginForm = () => {
@@ -18,17 +19,54 @@ export const LoginForm = () => {
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const errors = useAppSelector(selectErrors);
+  const getBorderClass = (field: ErrorType) => errors.find((error)=>error.type === field) ? 'inputError' :'border-secondary';
+
 
   const footer = (
     <>
       <div className="w-full flex flex-column justify-center items-center">
-        <Button className="bg-secondary text-white w-32 h-8 " label="login" title="login" />
+        <Button onClick={()=> handleLogin()} className="bg-secondary text-white w-32 h-8 " label="login" title="login" />
       </div>
       <div className="mt-2 w-full  flex flex-row justify-center items-center">
         <a style={{color:'#4ddfc0'}} href="/register">Register account</a>
       </div>
     </>
   );
+
+  const isfieldValid = (field:ErrorType) =>{
+    if(field==='email') return validator.isEmail(email);
+    if(field === 'password') return password.length > 1;
+  }
+  const clearErrorOnChange = (field:ErrorType) => {
+    if(isfieldValid(field)){
+      dispatch(removeErrorByType(field))
+    }
+  }
+
+  const checkforErrors = (field?:ErrorType):boolean => {
+    const fields:ErrorType[] = ['email','password']
+    let error:boolean = false;
+    if(!field) {
+      fields.forEach((field)=>{
+        if(!isfieldValid(field)) {
+          dispatch(addError({type:field,message:''}))
+          error = true;
+        }
+      })
+      return error
+    }
+
+    if(!isfieldValid(field)){
+      dispatch(addError({type:field,message:''}))
+      return true;
+    }
+    return false;
+  }
+  useEffect(()=>{
+    clearErrorOnChange('email');
+    clearErrorOnChange('password');
+   },[email,password])
 
   const handleConfirmEmail = (code:string) => {
     return dispatch(confirmEmailAttempt({
@@ -38,21 +76,18 @@ export const LoginForm = () => {
   } 
 
   const handleLogin = () => {
-    dispatch(requestLogin({email, password}))
+    if(checkforErrors()) return;
+      dispatch(requestLogin({email, password}))
   }
 
   const onFormEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log(event)
     if(event.code === 'Enter' && email.length >1 && password.length > 1){
-      console.log('should sign ing ')
       return handleLogin()
     }
   }
 
   useEffect(()=>{
     if(user?.isEmailVerified) {
-      setEmail(""),
-      setPassword("")
       navigate("/")
     }
   },[user])
@@ -64,18 +99,20 @@ export const LoginForm = () => {
       className="loginform  m-auto m-2 p-2 min-h-72 relative flex-column justify-center items-center border border-secondary md:w-4/5 lg:w-2/4 p-8 xl:w-1/5"
     >
       <InputText
-        placeholder="user name / email"
-        className="w-full  border border-secondary mb-5"
+        placeholder="email"
+        className={`w-full  border border-secondary ${getBorderClass('email')} mb-5`}
         value={email}
         onChange={(e) => setEmail(e.target.value)}
+        onBlur={()=> checkforErrors('email')}
         onKeyUp={onFormEnter}
       />
 
       <InputText
         placeholder="password"
-        className="w-full  border border-secondary mb-5"
+        className={`w-full  border border-secondary ${getBorderClass('password')} mb-5`}
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        onBlur={()=> checkforErrors('password')}
         onKeyUp={onFormEnter}
       />
     </Card>

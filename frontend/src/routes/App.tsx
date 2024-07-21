@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { NavigationBar } from '../components/global';
 import { ConfirmEmailContainer, HomeContainer, LoginContainer, RegisterContainer } from '../containers';
 import { PrivateRoute } from './index';
+import { ForgotPasswordContainer } from '../containers/ForgotPassword';
 
 export const AppRouter: React.FC = () => {
   return (
@@ -15,6 +16,7 @@ export const AppRouter: React.FC = () => {
           <Route path="/register" element={<RegisterContainer/>}/>
           <Route path="/login" element={<LoginContainer/>}/>
           <Route path="/confirmemail" element={<ConfirmEmailContainer/>}/>
+          <Route path="/forgotpassword" element={<ForgotPasswordContainer/>}/>
       </Routes>
     </BrowserRouter>
     </>

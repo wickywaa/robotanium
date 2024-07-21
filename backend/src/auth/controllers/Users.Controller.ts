@@ -23,6 +23,7 @@ export class UsersController {
     const newUser: User = {
       ...createUserDto,
       password: createUserDto.password,
+      userName: "Anonymous User",
       isRobotaniumAdmin: false,
       isPlayerAdmin: false,
       authTokens: [],
@@ -63,7 +64,7 @@ export class UsersController {
       }
       const isMatch = await bcrypt.compare(credentials.password, user.password);
       if (!isMatch) {
-        throw new Error('Unable to login');
+        return response.status(401).send();
       }
       const token = await user.generateAuthToken();
       const userProfile = await user.getPublicProfile();
@@ -118,7 +119,7 @@ export class UsersController {
   @Post('confirm')
   async confirmEmail(@Body() body: IEmailConfirmationDto, @Res() response: Response) {
 
-    const { email = '', userName = '', registrationToken = '' } = body;
+    const { email = '', registrationToken = '' } = body;
 
     try {
       const user = await this.userModel.findOne({ email });
@@ -148,11 +149,16 @@ export class UsersController {
       try{
         const user = await this.userModel.findOne({email});
         if (!user) return response.status(200).send();
-        const forgotPasswordDto:IForgotPasswordDto = await user.generateForgotPasswordDto();
-        const resetMailSent = await this.mailService.sendResetMailPasswordLink(forgotPasswordDto);
-        if(!resetMailSent) return response.status(500).send();
-        return response.status(200).send();
-
+        const code:string =  Math.floor(100000 + Math.random() * 900000).toString();
+        const forgotPasswordTokenSet:IForgotPasswordDto = await user.generateForgotPasswordDto(code);
+        if(!forgotPasswordTokenSet){
+          return response.status(500).send();
+        }
+        const mailsent = this.mailService.sendResetMailPasswordLink({email,code});
+      if (!mailsent) {
+        throw new Error('Unable to send email');
+      }
+      return response.status(200).send();
       }
       catch(e) {
         return response.status(500).send();
@@ -167,7 +173,8 @@ export class UsersController {
       const user = await this.userModel.findOne({ email });
       if(!user) return response.status(401);
    
-      const forgotPasswordMatch = await user.passwordResetToken === body.token;
+    
+      const forgotPasswordMatch = await bcrypt.compare(user.passwordResetToken, body.code)
       if (!forgotPasswordMatch) return response.status(401);
 
       user.registrationToken = null;

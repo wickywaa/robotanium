@@ -22,16 +22,14 @@ export class MailService {
           To: [
             {
               Email: confirmationDto.email,
-              Name: confirmationDto.userName,
             },
           ],
-          TextPart: "here is the email link {{var:day:\"monday\"}}",
-					HTMLPart: "<h3>click here to confirm your account {{var:emailLink:\"link\"}} </h3>",
+          TextPart: "Confirmation Code {{var:confirmationCode:\"confirm code\"}}",
+					HTMLPart: "<h3>Confirmation Code {{var:confirmationCode:\"code\"}} </h3>",
           TemplateLanguage: true,
           Subject: 'Confirm Email address',
           Variables: {
-            emailLink: `<p><a href="http://robotanium.com/confirmemail?username=${confirmationDto.userName}&email=${confirmationDto.email}&token=${confirmationDto.registrationToken}">Confirmation Link</a></p>`,
-            userName: confirmationDto.userName,
+            confirmationCode: confirmationDto.registrationToken,
           },
         },
       ], 
@@ -61,17 +59,15 @@ export class MailService {
           To: [
             {
               Email: forgotPasswordDto.email,
-              Name: forgotPasswordDto.userName,
-              token: forgotPasswordDto.token,
+              token: forgotPasswordDto.code,
             },
           ],
           TextPart: "here is the email link {{var:day:\"monday\"}}",
-					HTMLPart: "<h3>click here to confirm your account {{var:emailLink:\"link\"}} </h3>",
+					HTMLPart: "<h3>reset password code{{var:emailLink:\"link\"}} </h3>",
           TemplateLanguage: true,
           Subject: 'Reset Password ',
           Variables: {
-            emailLink: `<p><a href="http://robotanium.com/resetPassword?username=${forgotPasswordDto.userName}&email=${forgotPasswordDto.email}&token=${forgotPasswordDto.token}">Reset Password Link</a></p>`,
-            userName: forgotPasswordDto.userName,
+            emailLink: `<p>forgot password code ${forgotPasswordDto.code}"></p>`,
           },
         }
       ]
@@ -101,7 +97,6 @@ export class MailService {
          To: [
            {
              Email: confirmationDto.email,
-             Name: confirmationDto.userName,
              token: confirmationDto.registrationToken
            },
          ],
@@ -110,8 +105,7 @@ export class MailService {
          TemplateLanguage: true,
          Subject: 'Robotanium Admin Account',
          Variables: {
-           emailLink: `<p><a href="http://robotanium.com/login?username=${confirmationDto.userName}&email=${confirmationDto.email}&password=${password}&token=${confirmationDto.registrationToken}">Login and Change Password</a></p>`,
-           userName: confirmationDto.userName,
+           emailLink: `<p><a href="http://robotanium.com/login?&email=${confirmationDto.email}&password=${password}&token=${confirmationDto.registrationToken}">Login and Change Password</a></p>`,
            password: password
          },
        }

@@ -64,7 +64,6 @@ export class AdminUsersController {
     } catch(e) {
       return response.status(500).send({ message: e.message });
     }
-    
   }
 
   @Post('login')

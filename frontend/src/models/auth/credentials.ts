@@ -13,7 +13,6 @@ export interface IRegisterCredentials {
 export interface IConfirmEmailCredentials {
   email: string;
   registrationToken: string;
-  username?: string
 }
 
 export interface IAuthErrors {

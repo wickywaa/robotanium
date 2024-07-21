@@ -60,7 +60,23 @@ export class AuthService  {
       throw new Error("Invalid");
     }
   };
+
+  setResetPasswordToken = async (email:string): Promise<boolean> => {
+    try {
+         return baseAxios.post<boolean>('users/resetpassword',
+          {
+            email
+          },
+        ).then((response)=>{ 
+          if(response.status !== 200) return false;
+          return true
+        })
+    } catch (e) {
+      throw new Error("Invalid");
+    }
+  };
 }
+
 
 export const attachIdTokenToUser = async (): Promise<string | Error> => {
   try {

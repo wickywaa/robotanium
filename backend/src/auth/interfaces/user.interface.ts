@@ -41,13 +41,11 @@ export interface IChangeUserPassword {
 export interface IEmailConfirmationDto {
   registrationToken: string;
   email: string;
-  userName: string;
 }
 
 export interface IForgotPasswordDto{
   email: string;
-  token: string;
-  userName: string;
+  code: string;
 }
 
 export type PublicProfile = Omit<User, "password" | "authtokens" | "passwordResetTokens" | "registrationtoken" >;
@@ -57,7 +55,7 @@ export interface IUserMethods {
   getPublicProfile(): PublicProfile;
   generateConfirmEmailDto(): Promise<IEmailConfirmationDto>;
   confirmEmail(body: IEmailConfirmationDto): Promise<boolean>;
-  generateForgotPasswordDto():Promise<IForgotPasswordDto>;
+  generateForgotPasswordDto(code:string):Promise<IForgotPasswordDto>;
 }
 
 export type UserModel = Model<User, {}, IUserMethods>;

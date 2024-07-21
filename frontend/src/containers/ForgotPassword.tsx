@@ -1,17 +1,21 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { selectUser } from '../store/selectors';
+import { registerEmailSent, selectUser, isUserLoading } from '../store/selectors';
 import { confirmEmailAttempt } from '../store/slices';
+import { ForgotPasswordForm } from '../components/';
 
-export const ConfirmEmailContainer:React.FC = () => {
+
+export const ForgotPasswordContainer:React.FC = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const username = searchParams.get('username') ?? '';
   const email = searchParams.get('email')?? '';
   const token = searchParams.get('token')?? '';
   const dispatch = useAppDispatch();
-  const user = useAppSelector(selectUser); 
+  const isLoading = useAppSelector(isUserLoading);
+  const user = useAppSelector(selectUser);
+  const emailSent = useAppSelector(registerEmailSent);
   const navigate = useNavigate();
 
   useEffect(()=>{
@@ -31,7 +35,7 @@ export const ConfirmEmailContainer:React.FC = () => {
 
     <div className="maincontainer margin-5  h-2/5 flex justify-center items-center flex-1 bg-primary border border-secondary">
       <div className="w-screen w-2/4 h-full bg-center bg-no-repeat flex justify-center items-center">
-        confirmEmail
+        <ForgotPasswordForm emailSent={emailSent} isLoading={isLoading} user={user} />
       </div>
     </div>
    )

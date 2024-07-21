@@ -2,7 +2,7 @@ import { PayloadAction } from "@reduxjs/toolkit";
 import { put, takeEvery } from "redux-saga/effects";
 import { IConfirmEmailCredentials, ILoggedInUser, ILoginCredentials, IRegisterCredentials } from "../../../models";
 import { AuthService, validateisLoginCredentials } from '../../../services/';
-import { confirmEmailFailed, confirmEmailSuccess, loginFailed, loginSuccess, logout, registerUserFailed, registerUserSuccess } from '../../slices/';
+import { confirmEmailFailed, confirmEmailSuccess, loginFailed, loginSuccess, logout, registerUserFailed, registerUserSuccess, setResetPasswordTokenFailed, setResetPasswordTokenSuccess } from '../../slices/';
 import { toastSlice } from "../../slices/toastslice";
 const authService = new AuthService();
 
@@ -74,9 +74,23 @@ function* logoutSaga() {
   }
 }
 
+function* setResetPasswordToken(action:PayloadAction<string>) {
+  try {
+  const resetpassword:boolean = yield authService.setResetPasswordToken(action.payload);
+  if(resetpassword) {
+     yield put(setResetPasswordTokenSuccess())
+  }
+
+  }
+  catch(e) {
+    yield put(setResetPasswordTokenFailed())
+  }
+}
+
 export  function* authSagas() {
   yield takeEvery("authSlice/requestLogin", loginUser);
   yield takeEvery("authSlice/logoutAttempt", logoutSaga);
   yield takeEvery("authSlice/registerUserAttempt", registerUserAttempt)
-  yield takeEvery("authSlice/confirmEmailAttempt",confirmEmailSaga)
+  yield takeEvery("authSlice/confirmEmailAttempt", confirmEmailSaga)
+  yield takeEvery("authSlice/setResetPasswordTokenAttempt", setResetPasswordToken)
 }

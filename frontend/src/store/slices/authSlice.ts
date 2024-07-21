@@ -44,6 +44,9 @@ export const authSlice = createSlice({
     checkuserNameAttempt: (state, action:PayloadAction<string>) =>({...state, isLoading:true}),
     checkUserNameFailed: (state, ) => ({...state, isLoading:false, errors: [...state.errors,{type:'userName',message:'Username already Taken'}]}),
     checkUserNameSuccess: (state, ) => ({...state, isLoading: false, errors: state.errors.filter((error)=>error.type !== 'userName')}),
+    setResetPasswordTokenAttempt: (state, action: PayloadAction<string>) => ({...state, isLoading: true}),
+    setResetPasswordTokenFailed: (state) => ({...state, isLoading: false}),
+    setResetPasswordTokenSuccess: (state) => ({...state, isLoading: false, registerEmailSent:true}),
   },
 });
 
@@ -61,5 +64,8 @@ export const {
   confirmEmailSuccess,
   addError,
   removeErrorByType,
-  resetErrors
+  resetErrors,
+  setResetPasswordTokenAttempt,
+  setResetPasswordTokenFailed,
+  setResetPasswordTokenSuccess
 } = authSlice.actions;

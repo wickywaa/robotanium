@@ -4,13 +4,12 @@ import { InputText } from "primereact/inputtext";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import validator from "validator";
-import { ILoggedInUser } from "../models";
-import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { selectErrors } from "../store/selectors";
-import { addError, confirmEmailAttempt, registerUserAttempt, removeErrorByType } from '../store/slices/authSlice';
-import "./RegisterForm.scss";
+import { ILoggedInUser } from "../../models";
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { selectErrors } from "../../store/selectors";
+import { addError, removeErrorByType, setResetPasswordTokenAttempt, } from '../../store/slices/authSlice';
 
-export const RegisterForm:React.FC<{emailSent:boolean, isLoading:boolean, user:ILoggedInUser | null}> = ({isLoading,emailSent, user}) => {
+export const ForgotPasswordForm:React.FC<{emailSent:boolean, isLoading:boolean, user:ILoggedInUser | null}> = ({isLoading,emailSent, user}) => {
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -23,7 +22,7 @@ export const RegisterForm:React.FC<{emailSent:boolean, isLoading:boolean, user:I
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const getBorderClass = (field: ErrorType) => errors.find((error)=>error.type === field) ? 'inputError' :'border-secondary';
+  const getBorderClass = (field: ErrorType) => errors.find((error)=>error.type === field) ? 'inputError' : 'border-secondary';
 
   const isfieldValid = (field:ErrorType) =>{
     if(field==='email') return validator.isEmail(email);
@@ -59,16 +58,14 @@ export const RegisterForm:React.FC<{emailSent:boolean, isLoading:boolean, user:I
 
   const handleKeyPress = (event:React.KeyboardEvent<HTMLInputElement>) => {
 
-    if(event.code === 'Enter')
-      dispatch(confirmEmailAttempt({
-        email,
-        registrationToken:confirmationCode,
-    }))
+    if(event.code === 'Enter') {
+      console.log('hello')
+    }
   }
 
-  const handleregister = ()=> {
-  if(checkforErrors()) return;
-    return dispatch(registerUserAttempt({email, password}))
+  const handleResetPassword = ()=> {
+  if(checkforErrors('email')) return;
+    return dispatch(setResetPasswordTokenAttempt(email))
   }
 
    useEffect(()=>{
@@ -79,8 +76,11 @@ export const RegisterForm:React.FC<{emailSent:boolean, isLoading:boolean, user:I
 
    useEffect(()=>{
     clearErrorOnChange('email');
-    clearErrorOnChange('password')
-    clearErrorOnChange('password2')
+    if(user) {
+      clearErrorOnChange('password')
+      clearErrorOnChange('password2')
+    }
+    
    },[email,password,password2])
 
   const renderEmailSentMessage = (
@@ -96,9 +96,9 @@ export const RegisterForm:React.FC<{emailSent:boolean, isLoading:boolean, user:I
       <div className="w-full flex flex-column cursor-pointer justify-center items-center">
         <Button 
           disabled={errors.length >0}
-          onClick={()=> handleregister() } 
+          onClick={()=> handleResetPassword()} 
           className="bg-secondary  text-white w-32 h-8" 
-          label="Register" title="Register" 
+          label="Send Email" title="Send Email" 
         />
       </div>
       <div className="mt-2 w-full  flex flex-row justify-center items-center">
@@ -107,21 +107,25 @@ export const RegisterForm:React.FC<{emailSent:boolean, isLoading:boolean, user:I
     </>
   );
 
-  {return !emailSent? (
+  {return !emailSent && !user ? (
     <Card
       footer={footer}
       className={`loginform ${ isLoading? "login-loading":''} m-auto m-2 p-2 min-h-72 relative rounded-2xl flex-column justify-center items-center border border-secondary md:w-4/5 lg:w-2/4 p-8 xl:w-1/5`}
     >
-      <InputText
-        placeholder="email"
-        style={{color:'#4ddfc0'}}
-        className={`w-full color-red-500  h-8 border ${getBorderClass('email')} mb-5`}
-        value={email}
-        onBlur={()=> checkforErrors('email')}
-        onChange={(e)=>setEmail(e.target.value)}
-      />
-
-    <div className="w-full relative h-8  mb-5" >
+      { !user && (
+        <InputText
+          placeholder="email"
+          style={{color:'#4ddfc0'}}
+          className={`w-full color-red-500  h-8 border ${getBorderClass('email')} mb-5`}
+          value={email}
+          onBlur={()=> checkforErrors('email')}
+          onChange={(e)=>setEmail(e.target.value)}
+      />)
+      }
+      
+    {
+      user && (<>
+      <div className="w-full relative h-8  mb-5" >
       <InputText
         style={{color:'#4ddfc0'}}
         type={showPassword ? 'text' : 'password'}
@@ -146,6 +150,8 @@ export const RegisterForm:React.FC<{emailSent:boolean, isLoading:boolean, user:I
       />
       <i style={{color: '#4ddfc0'}} onClick={()=>setShowPassword2(!showPassword2)} className={`absolute right-2 top-2 ${!showPassword2 ? 'pi pi-eye' : 'pi pi-eye-slash'}`}></i>
     </div>
+    </>)
+    }
     </Card>
   
   ): renderEmailSentMessage

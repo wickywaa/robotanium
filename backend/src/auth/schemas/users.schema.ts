@@ -4,7 +4,6 @@ import { IUserMethods, User, UserModel, IEmailConfirmationDto, PublicProfile, IF
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 
-
 export const UserSchema = new mongoose.Schema<User, UserModel, IUserMethods>({
   email:{
     type:String,
@@ -43,8 +42,11 @@ export const UserSchema = new mongoose.Schema<User, UserModel, IUserMethods>({
     min:[1, "username can be a maximum of 1 character long"],
     max:[6, "username can be a maximum of 20 characters long"]
   },
+
   registrationToken: {
     type: String,
+    min:[1, "registration must be 6 characters"],
+    max:[6, "registration must be 6 characters"]
   },
   authTokens: {
     type: [],
@@ -89,7 +91,6 @@ export const UserSchema = new mongoose.Schema<User, UserModel, IUserMethods>({
     },
   },
 });
-
 
 UserSchema.pre('save', async function (next) {
   const user = this
@@ -138,14 +139,13 @@ UserSchema.method('getPublicProfile',async function getPublicProfile(): Promise<
 
 UserSchema.method('generateConfirmEmailDto',async  function generateConfirmEmailDto():Promise<IEmailConfirmationDto> {
   const user = this;
-  const token: string = await jwt.sign({_id:user._id.toString()},'supersecretpassword',{ expiresIn: 600 });
-  user.registrationToken = token;
+  const token:string =  Math.floor(100000 + Math.random() * 900000).toString();
+  user.registrationToken = await bcrypt.hash(token, 8);
   await user.save();
 
   return {
     registrationToken: user.registrationToken,
     email: user.email,
-    userName: user.userName,
   }
 });
 
@@ -153,9 +153,6 @@ UserSchema.method('confirmEmail',async function confirmEmail(confirmEmaildto:IEm
   const user = this;
 
   const tokenMatches = await user.registrationToken ===  confirmEmaildto.registrationToken;
-
-  console.log('user token=',user.registrationToken);
-  console.log('user token=',confirmEmaildto);
 
   if (!tokenMatches) return false;
 
@@ -166,18 +163,15 @@ UserSchema.method('confirmEmail',async function confirmEmail(confirmEmaildto:IEm
   return true;
 });
 
-UserSchema.method('generateForgotPasswordDto', async function generateForgotPasswordDto():Promise<IForgotPasswordDto>{
+UserSchema.method('generateForgotPasswordDto', async function generateForgotPasswordDto(code:string):Promise<boolean>{
   const user = this;
-  const token = jwt.sign({_id:user._id.toString()},'supersecretpassword',{ expiresIn: 600 });
+  const token:string =  Math.floor(100000 + Math.random() * 900000).toString();
+  user.passwordResetToken = await bcrypt.hash(code, 8);
 
   user.passwordResetToken = token;
   await user.save();
 
-  return  {
-    email: this.email,
-    token: token,
-    userName : this.userName,
-  }
+  return  true
 });
 
 UserSchema.method('tokenMatchesEmail', async function tokenMatchesEmail(token:string): Promise<boolean>{
