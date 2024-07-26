@@ -46,10 +46,11 @@ export class UsersController {
         throw new Error('Unable to send email');
       }
 
+  
       return response.status(201).send();
     }
     catch (e) {
-      console.log(e)
+      console.log(e.message)
       return response.status(500).send({ message: e.message });
     }
   }

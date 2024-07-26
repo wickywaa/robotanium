@@ -9,7 +9,11 @@ services:
   robotaniumFrontend:
     volumes:
       - /app/node_modules
-      - ./frontend:/app 
+      - ./frontend:/app
+  adminFrontend:
+    volumes:
+      - /app/node_modules
+      - ./admin-frontend:/app 
   adminer:
     image: dockette/adminer
     restart: unless-stopped

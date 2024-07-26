@@ -62,6 +62,7 @@ export class AdminUsersController {
       return response.status(201).send();
 
     } catch(e) {
+      console.log(e)
       return response.status(500).send({ message: e.message });
     }
   }

@@ -28,8 +28,9 @@ export const LoginForm = () => {
       <div className="w-full flex flex-column justify-center items-center">
         <Button onClick={()=> handleLogin()} className="bg-secondary text-white w-32 h-8 " label="login" title="login" />
       </div>
-      <div className="mt-2 w-full  flex flex-row justify-center items-center">
+      <div style={{display:'flex', flexDirection:'column', alignItems:'center'}}>
         <a style={{color:'#4ddfc0'}} href="/register">Register account</a>
+        <a style={{color:'#4ddfc0'}} href="/forgotpassword">Forgot password?</a>
       </div>
     </>
   );
@@ -99,6 +100,7 @@ export const LoginForm = () => {
       className="loginform  m-auto m-2 p-2 min-h-72 relative flex-column justify-center items-center border border-secondary md:w-4/5 lg:w-2/4 p-8 xl:w-1/5"
     >
       <InputText
+        style={{color:'#4ddfc0'}}  
         placeholder="email"
         className={`w-full  border border-secondary ${getBorderClass('email')} mb-5`}
         value={email}
@@ -108,6 +110,7 @@ export const LoginForm = () => {
       />
 
       <InputText
+        style={{color:'#4ddfc0'}}  
         placeholder="password"
         className={`w-full  border border-secondary ${getBorderClass('password')} mb-5`}
         value={password}

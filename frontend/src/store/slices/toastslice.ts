@@ -1,6 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { IFirebaseUser, ILoginCredentials } from "../../models/auth";
+import { createSlice } from "@reduxjs/toolkit";
 import { IToastMessage } from "../../models/toastMessage";
 
 interface IToastReducer {
@@ -10,7 +9,7 @@ interface IToastReducer {
 const initialState: IToastReducer = {
   toastMessage: {
     message: '',
-    severity: null
+    severity: 'success'
   }
 };
 
@@ -18,7 +17,7 @@ export const toastSlice = createSlice({
   name: "toastSlice",
   initialState,
   reducers: {
-    addMessage: (state, action: PayloadAction<IToastMessage>) => ({ ...state, loading: true, user: null }),
+    addMessage: (state, action: PayloadAction<IToastMessage>) => ({ ...state, toastMessage:{message:action.payload.message,severity:action.payload.severity} }),
   },
 });
 

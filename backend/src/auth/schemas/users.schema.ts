@@ -105,7 +105,7 @@ UserSchema.pre('save', async function (next) {
 UserSchema.post('save', function(error, doc, next) {
   if ( error.code === 11000 ) {
     if(error?.keyValue?.email) {
-      next(new Error(`The email ${error.keyValue.email } must be unique`));
+      next(new Error(`The email ${error.keyValue.email } is already taken`));
     }
   } else {
     next(error);

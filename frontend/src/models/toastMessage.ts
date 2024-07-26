@@ -1,4 +1,4 @@
 export interface IToastMessage {
   message: string;
-  severity: 'success' | 'info' | 'warning' | 'error' | null;
+  severity: 'success' | 'info' | 'warn' | 'error' 
 }

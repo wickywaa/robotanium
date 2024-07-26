@@ -3,7 +3,7 @@ import { put, takeEvery } from "redux-saga/effects";
 import { IConfirmEmailCredentials, ILoggedInUser, ILoginCredentials, IRegisterCredentials } from "../../../models";
 import { AuthService, validateisLoginCredentials } from '../../../services/';
 import { confirmEmailFailed, confirmEmailSuccess, loginFailed, loginSuccess, logout, registerUserFailed, registerUserSuccess, setResetPasswordTokenFailed, setResetPasswordTokenSuccess } from '../../slices/';
-import { toastSlice } from "../../slices/toastslice";
+import { toastSlice, addMessage } from "../../slices/toastslice";
 const authService = new AuthService();
 
 function * loginUser(action: PayloadAction<ILoginCredentials>) {
@@ -11,7 +11,7 @@ function * loginUser(action: PayloadAction<ILoginCredentials>) {
   try  {
     const isValid = validateisLoginCredentials(action.payload)
     if(!isValid){
-      yield toastSlice.actions.addMessage({message:isValid, severity:'error'});
+      yield put(addMessage({message:isValid, severity:'error'}));
       return;
     } 
     const response: {user:ILoggedInUser, token:string} = yield authService.login({...action.payload});
@@ -19,7 +19,7 @@ function * loginUser(action: PayloadAction<ILoginCredentials>) {
     yield put(loginSuccess(response.user));
   }
   catch  {
-    yield put(toastSlice.actions.addMessage({message:'Could not login', severity:'error'}));
+    yield put(addMessage({message:'Could not login with  these credentials', severity:'error'}));
     yield put(loginFailed());
   }
 }
@@ -28,14 +28,14 @@ function* registerUserAttempt(action: PayloadAction<IRegisterCredentials>) {
   try{
     const userCreated: boolean = yield authService.registerUser({...action.payload});
     if(!userCreated)  {
-      yield put(toastSlice.actions.addMessage({message:'Could not register with those credentials', severity:'error'}));
+      yield put(addMessage({message:'Could not register with those credentials', severity:'error'}));
       yield put(registerUserFailed());
     } 
     yield put(registerUserSuccess())
   }
-  catch (e: any) {
+  catch (e:any) {
   
-    yield put(toastSlice.actions.addMessage({message:e.message ?? 'could not register with these credentials', severity:'error'}));
+    yield put(toastSlice.actions.addMessage({message:'could not register with these credentials', severity:'error'}));
     
     yield put(registerUserFailed())
   }
