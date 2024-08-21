@@ -59,8 +59,8 @@ export const LoginForm = () => {
   }
 
   useEffect(()=>{
-    if(user?) {
-      navigate("/")
+    if(user?.isRobotaniumAdmin) {
+      navigate("/admin/")
     }
   },[user])
 
