@@ -1,0 +1,28 @@
+import { configureStore } from "@reduxjs/toolkit";
+import { authSlice } from "./slices";
+import createSagaMiddleware from "redux-saga";
+import { authSagas } from "./sagas";
+import { toastSlice } from "./slices";
+import validator from "validator";
+
+const sagaMiddleware = createSagaMiddleware();
+
+export const store = configureStore({
+  reducer: {
+    auth: authSlice.reducer,
+    toastSlice: toastSlice.reducer
+  },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware),
+});
+
+sagaMiddleware.run(authSagas)
+
+/* sagaMiddleware.run(signInUserSaga);
+sagaMiddleware.run(gamesSagas);
+sagaMiddleware.run(botzSagas);
+sagaMiddleware.run(sessionSaga); */
+
+// Infer the `RootState` and `AppDispatch` types from the store itself
+export type RootState = ReturnType<typeof store.getState>;
+// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
+export type AppDispatch = typeof store.dispatch;

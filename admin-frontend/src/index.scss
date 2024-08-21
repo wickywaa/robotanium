@@ -16,6 +16,7 @@ body {
   margin: 0px;
   padding: 0px;
   box-sizing: border-box;
+  height:100vh;
 }
 
 .maincontainer {
@@ -43,9 +44,39 @@ body {
   background-size: calc(100vh - 100px);
   overflow: scroll;
 }
+.p-button {
+  border: 1px solid #00fefc;
+  color: #00fefc;
+  box-shadow: none;
+
+   &:hover {
+    outline: 2px solid #00fefc;
+    outline-offset: -2px;
+    cursor: pointer;
+    border: 1px solid #00fefc;
+  }
+
+  &:active {
+    outline: 2px solid #00fefc;
+    outline-offset: -2px;
+    transform: translate3d(1px, 3px, 1px);
+    box-shadow: none;
+    border: 1px solid #00fefc;
+  }
+}
 
 .p-menuitem-text {
   color: #4ddfc0;
+}
+.p-inputtext {
+  border: 1px solid #00fefc;
+  background: black;
+  color: #00fefc;
+
+}
+
+.input-error {
+  border: 1px solid red;
 }
 
 .p-menuitem-icon {
@@ -58,3 +89,7 @@ body {
 #root {
   height: 100%;
 }
+
+::-webkit-input-placeholder {
+      color: #00fefc;
+  }

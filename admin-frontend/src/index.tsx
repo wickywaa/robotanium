@@ -3,13 +3,20 @@ import ReactDOM from "react-dom/client";
 import { AppRouter } from "./routes";
 
 import { PrimeReactProvider } from "primereact/api";
-import "./index.css";
+import "./index.scss";
 import 'primereact/resources/primereact.css';
 import "primeicons/primeicons.css";
+import { Provider } from "react-redux";
+import { store } from "./store/store";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 console.log(window.location)
 root.render(
-       <AppRouter />
+       <Provider store={store}>
+       <PrimeReactProvider>
+              <AppRouter />
+       </PrimeReactProvider>
+       </Provider>
+       
 );
 

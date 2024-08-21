@@ -16,6 +16,7 @@ export const LoginForm = () => {
   const navigate = useNavigate();
 
   const user = useAppSelector(selectUser);
+  
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -117,6 +118,7 @@ export const LoginForm = () => {
         onChange={(e) => setPassword(e.target.value)}
         onBlur={()=> checkforErrors('password')}
         onKeyUp={onFormEnter}
+        type="password"
       />
     </Card>
   ): !user.isEmailVerified?  <ConfirmEmailModal email={email} onEnter={handleConfirmEmail}/> : null};

@@ -1,6 +1,6 @@
-type ErrorType = 'email' | 'password' |  'password2' | 'userName' | '';
+export type ErrorType = 'email' | 'password' |  'password2' | 'userName' | '';
 
-interface IAuthError {
+export interface IAuthError {
   type:  ErrorType;
   message: string;
 }

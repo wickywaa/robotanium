@@ -25,6 +25,7 @@ export const ConfirmEmailContainer:React.FC = () => {
         navigate("/")
     }
 
+    
   },[user])
 
    return (
