@@ -5,16 +5,12 @@ services:
     build:
       context: ./frontend
       dockerfile: ./Dockerfile
-    environment:
-       - CHOKIDAR_USEPOLLING=true
   adminFrontend:
     image: admin-frontend:latest
     restart: unless-stopped
     build:
       context: ./admin-frontend
       dockerfile: ./Dockerfile
-    environment:
-       - CHOKIDAR_USEPOLLING=true
     ports: 
      -  3000:3000
   backend:

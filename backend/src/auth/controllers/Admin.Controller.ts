@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Injectable, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Delete, Inject, Injectable, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { IUserMethods, User, UserModel, ILoginCredentials, IEmailConfirmationDto, IForgotPasswordDto, IChangePassword, ICreateAdminUser } from '../interfaces';
 import { Model } from 'mongoose';
@@ -120,9 +120,37 @@ export class AdminUsersController {
   }
 
 
-  @Get('admin/user/{id}')
+  @Get('user/{id}')
   async getUserById(@Body() body: { user: User }, @Res() response: Response) {
     response.status(200).send({ message: 'hello' });
   }
+
+  @Get('users/admin')
+  async getAllAdminUsers(@Res()response: Response) {
+      const users = await this.userModel.find({isRobotaniumAdmin:true});
+
+      const filtered =  users.map(async (user)=>{
+        const userprofile = user.getPublicProfile()
+        return  userprofile
+      })
+
+      const userlist = await Promise.all(filtered)
+    
+      return response.status(200).json({ adminUsers: userlist });
+  }
+
+  @Get('users')
+  async getAllUsers(@Res()response:Response) {
+    const users = await this.userModel.find({isRobotaniumAdmin:false});
+    const filteredUsers = users.map((user)=> user.getPublicProfile());
+    const userlist = await Promise.all(filteredUsers)
+    return response.status(200).json({ users: userlist });
+  }
+  
+  @Delete('users/{id}')
+  async deleteUserById() {
+    
+  }
+
 
 }

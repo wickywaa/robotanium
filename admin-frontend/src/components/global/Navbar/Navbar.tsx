@@ -7,6 +7,7 @@ import { MenuItem } from "primereact/menuitem";
 import robotaniumLogo from "../../../assets/images/icononly_transparent_nobuffer.png";
 import { selectUser } from "../../../store/selectors";
 import { logoutAttempt } from "../../../store/slices";
+import { useNavigate } from 'react-router-dom'
 import './Navbar.scss';
 
 interface IMenuItemWithBadge extends MenuItem {
@@ -19,6 +20,7 @@ export const NavBar: React.FC = () => {
 
   const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const start = () => <img className="h-20" src={robotaniumLogo} />;
   const end = () => {
@@ -27,21 +29,29 @@ export const NavBar: React.FC = () => {
   const items: IMenuItemWithBadge[] = [
     {
       label: "Home",
-      icon: "pi pi-home",
+      command:()=>navigate('/admin')
     },
     {
-      label: "Features test",
-      icon: "pi pi-star",
+      label: "Bots",
+      command:()=>navigate('/admin/bots')
     },
     {
-      label: "Projects",
-      icon: "pi pi-search",
+      label: "Games",
+      command:()=>navigate('/admin/games')
+    },
+    {
+      label: "Users",
+      command:()=>navigate('/admin/users')
+    },
+    {
+      label: "Admin users",
+      command:()=>navigate('/admin/adminusers')
     },
   ] as IMenuItemWithBadge[];
 
-  return (
-    <div style={{position:'relative'}} className="nav-bar" >
-      <Menubar className="bg-primary " model={items} start={start} end={user?._id ?end:null} />
+  return user ? (
+    <div  style={{position:'relative'}} className="nav-bar" >
+      <Menubar style={{color:'red'}} className="bg-primary" model={items} start={start} end={user?._id ?end:null} />
     </div>
-  );
+  ) : null;
 };

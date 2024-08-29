@@ -26,6 +26,7 @@ function * loginUser(action: PayloadAction<ILoginCredentials>) {
 
 function* logoutSaga() {
   try {
+    console.log('logging out ')
      yield authService.logout().then((response)=>{
       if(response.status === 200) {
         localStorage.setItem('authToken','')
@@ -37,7 +38,7 @@ function* logoutSaga() {
   }
   catch(e) {
     localStorage.setItem('authToken','')
-    put(logout())
+    yield put(logout())
   }
 }
 
