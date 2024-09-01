@@ -18,13 +18,22 @@ export const userManagementSlice = createSlice({
   name: "userManagementSlice",
   initialState,
   reducers: {
-    addUsersAttempt: (state, _ ) => ({...state, isLoading: true}),
-    addUsersFailed: (state, _ ) => ({...state, users: [], loading: false }),
+    addUsersAttempt: (state ) => ({...state, isLoading: true}),
+    addUsersFailed: (state ) => ({...state, users: [], loading: false }),
     addUsersSuccess: (state, action: PayloadAction<ILoggedInUser[]>) => ({...state, users: action.payload}),
-    addAdminUsersAttempt: (state, _ ) => ({...state, isLoading: true}),
-    addAdminUsersFailed: (state, _ ) => ({...state, adminUsers: [], loading: false }),
-    addADminUsersSuccess: (state, action: PayloadAction<ILoggedInUser[]>) => ({...state, adminUsers: action.payload}),
+    addAdminUsersAttempt: (state ) => ({...state, isLoading: true}),
+    addAdminUsersFailed: (state ) => ({...state, adminUsers: [], loading: false }),
+    addAdminUsersSuccess: (state, action: PayloadAction<ILoggedInUser[]>) => ({...state, adminUsers: action.payload}),
   }
 
 })
+
+export  const { 
+  addAdminUsersAttempt, 
+  addAdminUsersFailed,
+  addAdminUsersSuccess,
+  addUsersAttempt, 
+  addUsersFailed, 
+  addUsersSuccess
+} = userManagementSlice.actions
 

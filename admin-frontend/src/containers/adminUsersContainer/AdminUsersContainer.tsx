@@ -1,6 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
+
+import  { AdminUsersTable } from '../../components/'
 
 export const AdminUsersContainer: React.FC = () => {
 
-  return <div>hello here is the Admin users  container</div>;
+  useEffect(()=>{
+
+  },[])
+
+  return <div> <AdminUsersTable/>  </div>;
 };

@@ -3,18 +3,18 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectUserManagement } from '../../store/selectors';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { addUsersAttempt } from '../../store';
+import { addAdminUsersAttempt } from '../../store';
 
 
-export const UsersTable: React.FC = () => {
+export const AdminUsersTable: React.FC = () => {
 
   const dispatch = useAppDispatch();
-  const users = useAppSelector(selectUserManagement).users
+  const users = useAppSelector(selectUserManagement).adminUsers
 
   useEffect(()=>{
     console.log(" should load users", users);
 
-    dispatch(addUsersAttempt())
+    dispatch(addAdminUsersAttempt())
   },[])
 
   return (
@@ -29,16 +29,3 @@ export const UsersTable: React.FC = () => {
     </div>
   )
 }
-
-/* _id: string,
-  email: string,
-  isRobotaniumAdmin: boolean,
-  isPlayerAdmin: boolean,
-  userName: string,
-  imgsrc: string,
-  isActive: boolean,
-  isEmailVerified: boolean,
-  changePassword: false,
-  rememberme: false,
-  theme: string
- */
