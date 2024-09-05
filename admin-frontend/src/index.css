@@ -44,6 +44,10 @@ body {
   background-size: calc(100vh - 100px);
   overflow: scroll;
 }
+
+.p-card {
+ border: 1px solid #00fefc !important;
+}
 .p-button {
   border: 1px solid #00fefc;
   color: #00fefc;
@@ -76,7 +80,7 @@ body {
 }
 
 .input-error {
-  border: 1px solid red;
+  border: 1px solid green;
 }
 
 .p-menuitem-icon {

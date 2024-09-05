@@ -52,7 +52,7 @@ export type PublicProfile = Omit<User, "password" | "authtokens" | "passwordRese
 
 export interface IUserMethods {
   generateAuthToken(): Promise<string>;
-  getPublicProfile(): PublicProfile;
+  getPublicProfile(): Promise<PublicProfile>;
   generateConfirmEmailDto(): Promise<IEmailConfirmationDto>;
   confirmEmail(body: IEmailConfirmationDto): Promise<boolean>;
   generateForgotPasswordDto(code:string):Promise<IForgotPasswordDto>;

@@ -24,10 +24,11 @@ export class AdminAuthMiddleware implements NestMiddleware {
     const _id = mongoose.Types.ObjectId.createFromTime(parseInt(id));
     const user = await this.userModel.findOne({_id:id});
 
+
     if(!user) return res.status(400).send({error:{message:' user not found'}});
     if(!user.isRobotaniumAdmin) return res.status(401).send({error:{message:'User is not Admin'}});
 
-    req.body.user = user;
+    req.body.user =  user;
 
     next();
   }

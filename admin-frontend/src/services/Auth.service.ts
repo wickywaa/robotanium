@@ -21,6 +21,19 @@ export class AuthService {
 }
 };
 
+loginWithToken = async (): Promise<{user: ILoggedInUser, token: string} | null >  => {
+  try {
+    const response = (await adminBaseAxios.post<{user: ILoggedInUser, token: string} | null>('authenticate'));
+    console.log(response)
+    if( response.status === 201 && response.data ) return response.data;
+    return  null
+      
+} catch (e) {
+  console.log('hello error')
+  return null
+}
+};
+
 logout = async (): Promise<AxiosResponse> => {
 
   try {

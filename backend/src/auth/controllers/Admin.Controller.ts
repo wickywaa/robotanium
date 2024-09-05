@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Delete, Inject, Injectable, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { IUserMethods, User, UserModel, ILoginCredentials, IEmailConfirmationDto, IForgotPasswordDto, IChangePassword, ICreateAdminUser } from '../interfaces';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { MailService } from '../services';
 var generator = require('generate-password');
 var jwt = require('jsonwebtoken');
@@ -69,7 +69,7 @@ export class AdminUsersController {
 
   @Post('login')
   async adminLogin(@Body() body: ILoginCredentials, @Res() response: Response) {
-    const { email, password } = body;
+    const { email, password  } = body;
 
     try {
       const user = await this.userModel.findOne({ email });
@@ -86,6 +86,37 @@ export class AdminUsersController {
 
       return response.status(201).send({
         user: userProfile,
+        token,
+      })
+
+    }
+    catch (e) {
+      return response.status(500).send({
+        error: {
+          message: e.message,
+        }
+      })
+    }
+  }
+
+
+  @Post('authenticate')
+  async authenticate(@Body() body: {user:User},  @Res() response: Response) {
+
+    const user = (await this.userModel.findOne({ email: body.user.email }));
+    const token = await user.generateAuthToken();
+    const publicProfile =  await user.getPublicProfile()
+
+    console.log('here is the public profile ', publicProfile)
+
+    try {
+      
+      if (!body.user) {
+        return response.status(401).send();
+      }
+
+      return response.status(201).send({
+        user: publicProfile,
         token,
       })
 

@@ -1,12 +1,22 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { Button } from 'primereact/button';
 
-import  { AdminUsersTable } from '../../components/'
+import  { AdminUsersTable, CreateUserModal } from '../../components/'
 
 export const AdminUsersContainer: React.FC = () => {
+
+  const [showCreateUser, setShowCreateUser] = useState<boolean>(false);
 
   useEffect(()=>{
 
   },[])
 
-  return <div> <AdminUsersTable/>  </div>;
+
+  return (
+    <div> 
+      <CreateUserModal isVisible={showCreateUser} close={()=>setShowCreateUser(false) }  />
+      <Button onClick={()=>setShowCreateUser(true)} style={{margin:"10px", height:"50px", width:"50px"}} icon="pi pi-plus"  />
+      <AdminUsersTable/>  
+    </div>
+);
 };
