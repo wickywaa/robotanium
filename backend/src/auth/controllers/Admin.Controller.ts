@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Delete, Inject, Injectable, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Delete, Inject, Injectable, Post, Res, Param, Req } from '@nestjs/common';
 import { Response } from 'express';
-import { IUserMethods, User, UserModel, ILoginCredentials, IEmailConfirmationDto, IForgotPasswordDto, IChangePassword, ICreateAdminUser } from '../interfaces';
+import { IUserMethods, User, UserModel, ILoginCredentials, IEmailConfirmationDto, IForgotPasswordDto, IChangePassword, ICreateAdminUser, InviteAdminUser } from '../interfaces';
 import mongoose, { Model } from 'mongoose';
 import { MailService } from '../services';
 var generator = require('generate-password');
@@ -33,7 +33,7 @@ export class AdminUsersController {
       password: password,
       userName: body.userName,
       email: body.email,
-      isRobotaniumAdmin: false,
+      isRobotaniumAdmin: true,
       isPlayerAdmin: false,
       authTokens: [],
       isActive: true,
@@ -59,7 +59,16 @@ export class AdminUsersController {
         throw new Error('Unable to send email');
       }
 
-      return response.status(201).send();
+      const users = await this.userModel.find({isRobotaniumAdmin:true});
+
+      const filtered =  users.map(async (user)=>{
+        const userprofile = user.getPublicProfile()
+        return  userprofile
+      })
+
+      const userlist = await Promise.all(filtered)
+
+      return response.status(201).json({users:userlist});
 
     } catch(e) {
       console.log(e)
@@ -149,6 +158,7 @@ export class AdminUsersController {
       return response.status(500).send({ error: { message: e.message } })
     }
   }
+  
 
 
   @Get('user/{id}')
@@ -178,8 +188,20 @@ export class AdminUsersController {
     return response.status(200).json({ users: userlist });
   }
   
-  @Delete('users/{id}')
-  async deleteUserById() {
+  @Delete('user/:id')
+    async deleteUserById(@Res() response:Response, @Param('id') id: string) {
+    
+      try {
+        const user = await this.userModel.findByIdAndDelete(id);
+        console.log('user', user)
+        if(!user) return response.status(400).json({error:'user not found'})
+        const users = await this.userModel.find({isRobotaniumAdmin:true});
+
+        if(user && users) return response.status(200).json({users})
+      }
+      catch(e) {
+        return response.status(500).json({message:'could not delete user'})
+      }
     
   }
 

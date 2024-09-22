@@ -7,7 +7,7 @@ export interface ILoggedInUser {
   imgsrc: string,
   isActive: boolean,
   isEmailVerified: boolean,
-  changePassword: false,
+  changePassword: boolean,
   rememberme: false,
   theme: string,
 }

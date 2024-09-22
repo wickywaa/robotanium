@@ -2,7 +2,7 @@ import React from 'react';
 
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { HomeContainer,  LoginContainer, BotsContainer, AdminUsersContainer, UsersContainer, GamesContainer } from '../containers';
-import { NavBar } from '../../src/components/global/Navbar/Navbar';
+import { NavBar, ToastMessages } from '../../src/components/global';
 import {PrivateRoute } from './ProtectedRoute';
 
 export const AppRouter: React.FC = () => {
@@ -11,6 +11,7 @@ export const AppRouter: React.FC = () => {
     <>
     <BrowserRouter>
     <NavBar/>
+    <ToastMessages/>
     <Routes>
           <Route path="/admin" element={<PrivateRoute><HomeContainer /></PrivateRoute>}/>
           <Route path="/admin/bots" element={<PrivateRoute><BotsContainer /></PrivateRoute>}/>

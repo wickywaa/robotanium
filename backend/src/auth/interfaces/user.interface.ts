@@ -33,6 +33,13 @@ export interface IChangePassword {
   oldPassword: string;
   newPassword: string;
 }
+
+export interface InviteAdminUser {
+  inviterId: string;
+  email:string;
+  userName: string;
+}
+
 export interface IChangeUserPassword {
   oldPassword: string;
   newPassword: string;

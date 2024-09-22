@@ -36,8 +36,6 @@ if(user) {
 }
 
 else{
-       console.log ('should set user')
-       console.log(authToken?.length);
        if(authToken?.length) {
               new AuthService().loginWithToken().then((response)=>{
                      console.log(response)
