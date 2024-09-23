@@ -8,7 +8,6 @@ import { DatabaseModule } from 'src/database/database.module';
   controllers,
   providers: [
     ...botsProviders,
-    
   ]
 })
 

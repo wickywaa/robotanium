@@ -5,43 +5,40 @@ import { adminBaseAxios } from './Base.service';
 
 export class AuthService {
 
-  login = async (user: ILoginCredentials): Promise<ILoggedInUser | null | {unverified: boolean}>  => {
-  try {
-    return adminBaseAxios.post<ILoggedInUser>('login',
-      {
-        email: user.email,
-        password: user.password
-      },
-    ).then((response)=>{
-      return response.data
-    })
-} catch (e) {
-  
-  throw new Error("user could not be signed in ");
-}
-};
+  login = async (user: ILoginCredentials): Promise<ILoggedInUser | null | { unverified: boolean }> => {
+    try {
+      return adminBaseAxios.post<ILoggedInUser>('login',
+        {
+          email: user.email,
+          password: user.password
+        },
+      ).then((response) => {
+        return response.data
+      })
+    } catch (e) {
 
-loginWithToken = async (): Promise<{user: ILoggedInUser, token: string} | null >  => {
-  try {
-    const response = (await adminBaseAxios.post<{user: ILoggedInUser, token: string} | null>('authenticate'));
-    console.log(response)
-    if( response.status === 201 && response.data ) return response.data;
-    return  null
-      
-} catch (e) {
-  console.log('hello error')
-  return null
-}
-};
+      throw new Error("user could not be signed in ");
+    }
+  };
 
-logout = async (): Promise<AxiosResponse> => {
+  loginWithToken = async (): Promise<{ user: ILoggedInUser, token: string } | null> => {
+    try {
+      const response = (await adminBaseAxios.post<{ user: ILoggedInUser, token: string } | null>('authenticate'));
+      if (response.status === 201 && response.data) return response.data;
+      return null
 
-  try {
+    } catch (e) {
+      return null
+    }
+  };
+
+  logout = async (): Promise<AxiosResponse> => {
+
+    try {
       return adminBaseAxios.post('users/logout')
-  } catch (e) {
-    throw new Error("user could not be signed in ");
-  }
-};
-
+    } catch (e) {
+      throw new Error("user could not be signed in ");
+    }
+  };
 
 }

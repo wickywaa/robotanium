@@ -18,8 +18,7 @@ function * setallAdminUsers() {
 function * createAdminUser(action:PayloadAction<{email: string, userName:string}>) {
   try {
     const userCreated: ILoggedInUser[] | false  = yield  userMangementService.inviteNewUserAdmin({email:action.payload.email,userName:action.payload.userName});
-    console.log('the user had been created',userCreated)
-
+  //todo no need to have possible false or array  just trip the error if there is a problem
     if(userCreated === false ) {
       yield put(createAdminUserFailed());
       yield put(addMessage({message:`${"user could not be created"}`,severity:'error'}));
@@ -29,10 +28,8 @@ function * createAdminUser(action:PayloadAction<{email: string, userName:string}
       yield put(createAdminUserSuccess(userCreated));
       yield put(addMessage({message:`user ${action.payload.userName} created`,severity:'success'}));
     }
-    
   }
   catch (e) {
-    console.log(e)
     yield put(createAdminUserFailed())
     yield put(addMessage({message:`${e}`,severity:'error'}));
   }

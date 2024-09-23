@@ -7,7 +7,6 @@ import { Column } from 'primereact/column';
 import { addAdminUsersAttempt, deleteAdminUserAttempt } from '../../store';
 import { ILoggedInUser } from '../../models';
 
-
 interface IAdmiUsertable {
   onDeleteClick: ()=> void;
 }
@@ -21,9 +20,7 @@ export const AdminUsersTable: React.FC = () => {
     dispatch(addAdminUsersAttempt())
   },[])
 
-
   const actionsComponent = (data: ILoggedInUser): JSX.Element => {
-
     return(<div>
       <Button onClick={()=> dispatch(deleteAdminUserAttempt({id:data._id, userName:data.userName}))} style={{color:'red', borderColor: 'red'}} icon="pi pi-trash"></Button>
     </div>)

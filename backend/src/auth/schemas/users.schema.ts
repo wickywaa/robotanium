@@ -37,10 +37,10 @@ export const UserSchema = new mongoose.Schema<User, UserModel, IUserMethods>({
   },
   userName: {
     type: String,
-    unique:true,
+    unique: false,
     required: true,
     min:[1, "username can be a maximum of 1 character long"],
-    max:[6, "username can be a maximum of 20 characters long"]
+    max:[6, "username can be a maximum of 20 characters long"],
   },
 
   registrationToken: {
@@ -201,7 +201,6 @@ UserSchema.method('tokenMatchesEmail', async function tokenMatchesEmail(token:st
   const firstAdminUserExists = await  user.findOne({email:firstAdminUser.email});
 
   if(!firstAdminUserExists){
-    console.log('inserting first Admin User');
     await new user(firstAdminUser).save();
   } 
 

@@ -1,12 +1,7 @@
 import React from "react";
 import { LoginForm } from '../components';
-import { useAppSelector } from '../store/hooks';
-import { selectUser } from "../store/selectors";
-
 
 export  const LoginContainer: React.FC = () => {
-
-  const user = useAppSelector(selectUser);
  
   return (
     <div className="maincontainer margin-5  h-2/5 flex justify-center items-center flex-1 bg-primary border border-secondary">

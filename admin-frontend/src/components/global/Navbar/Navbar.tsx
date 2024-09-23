@@ -24,34 +24,34 @@ export const NavBar: React.FC = () => {
 
   const start = () => <img className="h-20" src={robotaniumLogo} />;
   const end = () => {
-    return <Button onClick={(()=> dispatch(logoutAttempt()))} style={{color:'#00fefc' }} title="Logout">logout</Button>
+    return <Button onClick={(() => dispatch(logoutAttempt()))} style={{ color: '#00fefc' }} title="Logout">logout</Button>
   };
   const items: IMenuItemWithBadge[] = [
     {
       label: "Home",
-      command:()=>navigate('/admin')
+      command: () => navigate('/admin')
     },
     {
       label: "Bots",
-      command:()=>navigate('/admin/bots')
+      command: () => navigate('/admin/bots')
     },
     {
       label: "Games",
-      command:()=>navigate('/admin/games')
+      command: () => navigate('/admin/games')
     },
     {
       label: "Users",
-      command:()=>navigate('/admin/users')
+      command: () => navigate('/admin/users')
     },
     {
       label: "Admin users",
-      command:()=>navigate('/admin/adminusers')
+      command: () => navigate('/admin/adminusers')
     },
   ] as IMenuItemWithBadge[];
 
   return user ? (
-    <div  style={{position:'relative'}} className="nav-bar" >
-      <Menubar style={{color:'red'}} className="bg-primary" model={items} start={start} end={user?._id ?end:null} />
+    <div style={{ position: 'relative' }} className="nav-bar" >
+      <Menubar style={{ color: 'red' }} className="bg-primary" model={items} start={start} end={user?._id ? end : null} />
     </div>
   ) : null;
 };

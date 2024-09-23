@@ -1,8 +1,0 @@
-{
-  "projects": {
-    "default": "robotanium-admin",
-    "staging": "robotanium-admin"
-  },
-  "targets": {},
-  "etags": {}
-}

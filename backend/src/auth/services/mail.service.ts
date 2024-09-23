@@ -37,11 +37,9 @@ export class MailService {
 
    const response:Promise<boolean | void> = request
     .then(result => {
-      console.log('worked')
       return true
     })
     .catch(err => {
-      console.log(err.statusCode)
       return false;
     })
 
@@ -75,11 +73,9 @@ export class MailService {
 
      const response:Promise<boolean | void> = request
     .then(result => {
-      console.log('forgot password sent')
       return true
     })
     .catch(err => {
-      console.log(err.statusCode)
       return false;
     })
 
@@ -114,11 +110,9 @@ export class MailService {
 
     const response:Promise<boolean | void> = request
    .then(result => {
-     console.log('Admin Created Email sent')
      return true
    })
    .catch(err => {
-     console.log(err.statusCode)
      return false;
    })
 

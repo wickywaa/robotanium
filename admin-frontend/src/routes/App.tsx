@@ -6,7 +6,6 @@ import { NavBar, ToastMessages } from '../../src/components/global';
 import {PrivateRoute } from './ProtectedRoute';
 
 export const AppRouter: React.FC = () => {
-  console.log('hello')
   return (
     <>
     <BrowserRouter>

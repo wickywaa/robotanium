@@ -1,1 +1,0 @@
-{"version":3,"file":"BotAuth.js","sourceRoot":"","sources":["../../src/middleware/BotAuth.ts"],"names":[],"mappings":";;AAIA,MAAM,OAAO,GAAG,CAAC,CAAC,GAAW,EAAE,GAAY,EAAE,IAAiB,EAAC,EAAE;IAE7D,MAAM,iBAAiB,GAAE,GAAE,EAAE;QACzB,OAAO,IAAI,CAAA;IACf,CAAC,CAAA;IAED,IAAG,iBAAiB,EAAE,EAAC;QACnB,IAAI,EAAE,CAAA;KACT;AACH,CAAC,CAAC,CAAA"}

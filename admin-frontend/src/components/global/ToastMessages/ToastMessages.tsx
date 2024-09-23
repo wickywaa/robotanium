@@ -4,29 +4,24 @@ import { useAppSelector, useAppDispatch } from '../../../store/hooks';
 import { selectToastMessage } from '../../../store/selectors';
 import { addMessage } from '../../../store/slices';
 
-export const ToastMessages:React.FC = () => {
+export const ToastMessages: React.FC = () => {
 
-  const toastMessage =  useAppSelector(selectToastMessage);
+  const toastMessage = useAppSelector(selectToastMessage);
   const dispatch = useAppDispatch();
   const toast = useRef<Toast>(null);
-  
 
-  useEffect(()=>{
-    console.log('triggered')
+  useEffect(() => {
 
-    if(toastMessage.message.length >1 && toast !== null){
-      console.log('should show');
-      toast.current?.show({ severity: `${toastMessage.severity}` ?? undefined, summary: 'Info', detail:`${toastMessage.message}` });
+    if (toastMessage.message.length > 1 && toast !== null) {
+      toast.current?.show({ severity: `${toastMessage.severity}` ?? undefined, summary: 'Info', detail: `${toastMessage.message}` });
     }
-    dispatch(addMessage({message:'', severity:'warn'}))
+    dispatch(addMessage({ message: '', severity: 'warn' }))
 
+  }, [toastMessage.message])
 
-  },[toastMessage.message])
-
-
-    return (
-      <div className="card flex justify-content-center">
-          <Toast ref={toast} />
-      </div>
+  return (
+    <div className="card flex justify-content-center">
+      <Toast ref={toast} />
+    </div>
   )
 }

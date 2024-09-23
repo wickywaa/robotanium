@@ -58,8 +58,10 @@ export const ForgotPasswordForm:React.FC<{emailSent:boolean, isLoading:boolean, 
 
   const handleKeyPress = (event:React.KeyboardEvent<HTMLInputElement>) => {
 
+
+    //TODO hook up the on enter
     if(event.code === 'Enter') {
-      console.log('hello')
+      console.log('enter pressed')
     }
   }
 

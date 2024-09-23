@@ -12,8 +12,6 @@ export const UsersTable: React.FC = () => {
   const users = useAppSelector(selectUserManagement).users
 
   useEffect(()=>{
-    console.log(" should load users", users);
-
     dispatch(addUsersAttempt())
   },[])
 
@@ -29,16 +27,3 @@ export const UsersTable: React.FC = () => {
     </div>
   )
 }
-
-/* _id: string,
-  email: string,
-  isRobotaniumAdmin: boolean,
-  isPlayerAdmin: boolean,
-  userName: string,
-  imgsrc: string,
-  isActive: boolean,
-  isEmailVerified: boolean,
-  changePassword: false,
-  rememberme: false,
-  theme: string
- */

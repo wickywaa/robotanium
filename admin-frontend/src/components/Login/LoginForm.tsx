@@ -69,7 +69,7 @@ export const LoginForm = () => {
     clearErrorOnChange('password');
    },[email,password])
 
-  
+
   const footer = (
     <>
       <div className="login-footer">
@@ -77,7 +77,6 @@ export const LoginForm = () => {
       </div>
     </>
   );
-
 
  return  (
     <Card

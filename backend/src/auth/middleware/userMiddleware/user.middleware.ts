@@ -20,7 +20,8 @@ export class UserAuthMiddleware implements NestMiddleware {
     const tokenExpired = new Date().getTime() - (decoded.iat * 1000)  >= 600000;
     const user = await  this.userModel.findOne({_id: decoded._id});
 
-    if(!user || !user.authTokens.includes(token) || tokenExpired) return res.status(401).send('hello');
+
+    if(!user || !user.authTokens.includes(token) || tokenExpired) return res.status(401).send();
     if(new Date().getTime() - (decoded.iat * 1000)  >= 60000000 ) return res.status(401).send({error:{message:'Token Expired'}});
 
     req.body.user = user;

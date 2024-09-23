@@ -12,10 +12,7 @@ export const ToastComponent:React.FC = () => {
   
 
   useEffect(()=>{
-    console.log('triggered')
-
     if(toastMessage.message.length >1 && toast !== null){
-      console.log('should show');
       toast.current?.show({ severity: `${toastMessage.severity}` ?? undefined, summary: 'Info', detail:`${toastMessage.message}` });
     }
     dispatch(addMessage({message:'', severity:'warn'}))

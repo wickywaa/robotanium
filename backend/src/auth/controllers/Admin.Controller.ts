@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Delete, Inject, Injectable, Post, Res, Param, Req } from '@nestjs/common';
+import { Body, Controller, Get, Delete, Inject, Injectable, Post, Res, Param  } from '@nestjs/common';
 import { Response } from 'express';
-import { IUserMethods, User, UserModel, ILoginCredentials, IEmailConfirmationDto, IForgotPasswordDto, IChangePassword, ICreateAdminUser, InviteAdminUser } from '../interfaces';
+import { IUserMethods, User, UserModel, ILoginCredentials, IChangePassword, ICreateAdminUser } from '../interfaces';
 import mongoose, { Model } from 'mongoose';
 import { MailService } from '../services';
 var generator = require('generate-password');
@@ -55,7 +55,6 @@ export class AdminUsersController {
       const mailsent = await this.mailService.sendAdminInviteEmail(emailConfirmationDto, password);
 
       if (!mailsent) {
-        console.log(mailsent)
         throw new Error('Unable to send email');
       }
 
@@ -71,7 +70,6 @@ export class AdminUsersController {
       return response.status(201).json({users:userlist});
 
     } catch(e) {
-      console.log(e)
       return response.status(500).send({ message: e.message });
     }
   }
@@ -115,8 +113,6 @@ export class AdminUsersController {
     const user = (await this.userModel.findOne({ email: body.user.email }));
     const token = await user.generateAuthToken();
     const publicProfile =  await user.getPublicProfile()
-
-    console.log('here is the public profile ', publicProfile)
 
     try {
       
@@ -193,7 +189,6 @@ export class AdminUsersController {
     
       try {
         const user = await this.userModel.findByIdAndDelete(id);
-        console.log('user', user)
         if(!user) return response.status(400).json({error:'user not found'})
         const users = await this.userModel.find({isRobotaniumAdmin:true});
 

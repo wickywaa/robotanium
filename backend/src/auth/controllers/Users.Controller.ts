@@ -46,11 +46,9 @@ export class UsersController {
         throw new Error('Unable to send email');
       }
 
-  
       return response.status(201).send();
     }
     catch (e) {
-      console.log(e.message)
       return response.status(500).send({ message: e.message });
     }
   }
@@ -89,9 +87,7 @@ export class UsersController {
 
     }
     catch (e) {
-      console.log(e)
       return response.status(500).send({ error: e.message })
-
     }
   }
 
@@ -216,6 +212,7 @@ export class UsersController {
     }
   }
 
+  //name needs to change
   @Post('changeimage')
   async changeUser(@Body()body:{email:string, imgsrc:string, token:string},@Res()response: Response){
   

@@ -33,7 +33,6 @@ export const userManagementSlice = createSlice({
     deleteAdminUserAttempt: (state, action: PayloadAction<{id:string, userName:string}>) => ({...state, loading: true}),
     deleteAdminUserFailed: (state ) =>({...state, loading: true}),
     deleteAdminUserSuccess: (state, action:PayloadAction<ILoggedInUser[]>)=>({...state, loading:false, adminUsers:action.payload}),
-
   }
 
 })

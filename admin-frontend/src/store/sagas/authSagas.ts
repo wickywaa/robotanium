@@ -26,7 +26,6 @@ function * loginUser(action: PayloadAction<ILoginCredentials>) {
 
 function* logoutSaga() {
   try {
-    console.log('logging out ')
      yield authService.logout().then((response)=>{
       if(response.status === 200) {
         localStorage.setItem('authToken','')
@@ -41,7 +40,6 @@ function* logoutSaga() {
     yield put(logout())
   }
 }
-
 
 export  function* authSagas() {
   yield takeEvery("authSlice/requestLogin", loginUser);

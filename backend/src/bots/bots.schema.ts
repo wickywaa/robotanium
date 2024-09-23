@@ -23,7 +23,7 @@ export const BotsSChema = new mongoose.Schema<IBot, IBotModel, IBotMethods>({
     unique:true,
     validate(value:string){
       if(value.length < 2 || value.length > 20) {
-        throw new Error(`The Bot Name must be between 2 adn 20 characters`)
+        throw new Error(`The Bot Name must be between 2 and 20 characters`)
       }
     }
   },
