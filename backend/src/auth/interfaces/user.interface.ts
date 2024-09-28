@@ -23,9 +23,12 @@ export interface ILoginCredentials {
   password: string;
 }
 
-export interface ICreateAdminUser {
+export type UserType = "player" | "admin"
+
+export interface ICreateUser {
   email: string;
   userName: string;
+  userType: UserType;
 }
 
 export interface IChangePassword {

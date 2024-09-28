@@ -11,3 +11,5 @@ export interface ILoggedInUser {
   rememberme: false,
   theme: string,
 }
+
+export type UserType = "player" | "admin"

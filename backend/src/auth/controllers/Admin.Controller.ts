@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Delete, Inject, Injectable, Post, Res, Param  } from '@nestjs/common';
 import { Response } from 'express';
-import { IUserMethods, User, UserModel, ILoginCredentials, IChangePassword, ICreateAdminUser } from '../interfaces';
+import { IUserMethods, User, UserModel, ILoginCredentials, IChangePassword, ICreateUser } from '../interfaces';
 import mongoose, { Model } from 'mongoose';
 import { MailService } from '../services';
 var generator = require('generate-password');
@@ -19,7 +19,7 @@ export class AdminUsersController {
   ) { }
 
   @Post('user')
-  async createAdminuser(@Body()body: ICreateAdminUser, @Res()response: Response) {
+  async createAdminuser(@Body()body: ICreateUser, @Res()response: Response) {
 
     const password = generator.generate({
       length: 16,
@@ -33,7 +33,7 @@ export class AdminUsersController {
       password: password,
       userName: body.userName,
       email: body.email,
-      isRobotaniumAdmin: true,
+      isRobotaniumAdmin: body.userType === 'admin'? true : false,
       isPlayerAdmin: false,
       authTokens: [],
       isActive: true,
@@ -52,13 +52,13 @@ export class AdminUsersController {
       await user.save();
 
       const emailConfirmationDto = await user.generateConfirmEmailDto();
-      const mailsent = await this.mailService.sendAdminInviteEmail(emailConfirmationDto, password);
+      const mailsent = await this.mailService.sendAdminInviteEmail(emailConfirmationDto, password, body.userType);
 
       if (!mailsent) {
         throw new Error('Unable to send email');
       }
 
-      const users = await this.userModel.find({isRobotaniumAdmin:true});
+      const users = await this.userModel.find();
 
       const filtered =  users.map(async (user)=>{
         const userprofile = user.getPublicProfile()
@@ -106,7 +106,6 @@ export class AdminUsersController {
     }
   }
 
-
   @Post('authenticate')
   async authenticate(@Body() body: {user:User},  @Res() response: Response) {
 
@@ -115,7 +114,6 @@ export class AdminUsersController {
     const publicProfile =  await user.getPublicProfile()
 
     try {
-      
       if (!body.user) {
         return response.status(401).send();
       }
@@ -133,7 +131,6 @@ export class AdminUsersController {
         }
       })
     }
-
   }
 
   @Post('changepassword')
@@ -155,30 +152,15 @@ export class AdminUsersController {
     }
   }
   
-
-
   @Get('user/{id}')
   async getUserById(@Body() body: { user: User }, @Res() response: Response) {
     response.status(200).send({ message: 'hello' });
   }
 
-  @Get('users/admin')
-  async getAllAdminUsers(@Res()response: Response) {
-      const users = await this.userModel.find({isRobotaniumAdmin:true});
-
-      const filtered =  users.map(async (user)=>{
-        const userprofile = user.getPublicProfile()
-        return  userprofile
-      })
-
-      const userlist = await Promise.all(filtered)
-    
-      return response.status(200).json({ adminUsers: userlist });
-  }
 
   @Get('users')
   async getAllUsers(@Res()response:Response) {
-    const users = await this.userModel.find({isRobotaniumAdmin:false});
+    const users = await this.userModel.find({});
     const filteredUsers = users.map((user)=> user.getPublicProfile());
     const userlist = await Promise.all(filteredUsers)
     return response.status(200).json({ users: userlist });
@@ -190,7 +172,7 @@ export class AdminUsersController {
       try {
         const user = await this.userModel.findByIdAndDelete(id);
         if(!user) return response.status(400).json({error:'user not found'})
-        const users = await this.userModel.find({isRobotaniumAdmin:true});
+        const users = await this.userModel.find();
 
         if(user && users) return response.status(200).json({users})
       }

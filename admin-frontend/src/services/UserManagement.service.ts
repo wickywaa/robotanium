@@ -1,4 +1,4 @@
-import { ILoggedInUser } from "../models/User";
+import { ILoggedInUser, UserType } from "../models/User";
 import { adminBaseAxios } from "./Base.service";
 
 export class UserManagementService {
@@ -15,24 +15,11 @@ export class UserManagementService {
     }
   };
 
-  getAllAdminUsers = async (): Promise<ILoggedInUser[]> => {
+
+  inviteNewUser = async (user: { email: string, userName: string, userType:UserType }): Promise<ILoggedInUser[]> => {
+    const { email, userName, userType } = user;
     try {
-      const users = await adminBaseAxios.get<{ adminUsers: ILoggedInUser[] }>("users/admin").then((response) => {
-        return response.data.adminUsers
-      });
-
-      if (!users) throw new Error("users could not be loaded");
-
-      return users;
-    } catch (e) {
-      throw new Error("users could not be loaded");
-    }
-  };
-
-  inviteNewUserAdmin = async (user: { email: string, userName: string }): Promise<ILoggedInUser[]> => {
-
-    try {
-      return await adminBaseAxios.post<{ users: ILoggedInUser[] }>("/user", { email: user.email, userName: user.userName }).then((response) => {
+      return await adminBaseAxios.post<{ users: ILoggedInUser[] }>("/user", { email, userName, userType }).then((response) => {
         return response.data.users;
       })
     }

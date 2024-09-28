@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {IEmailConfirmationDto, IForgotPasswordDto, User} from '../interfaces/user.interface';
+import {IEmailConfirmationDto, IForgotPasswordDto, User, UserType} from '../interfaces/user.interface';
 const Mailjet = require('node-mailjet');
 
 const mailjet = Mailjet.apiConnect(
@@ -82,7 +82,8 @@ export class MailService {
     return response;
   }
 
-  sendAdminInviteEmail = async(confirmationDto: IEmailConfirmationDto, password:string): Promise<boolean | void> => {
+  sendAdminInviteEmail = async(confirmationDto: IEmailConfirmationDto, password:string, userType:UserType): Promise<boolean | void> => {
+    console.log('sending email')
     const request = mailjet.post('send',{version:'v3.1'}).request({
      Messages: [
        {
@@ -96,13 +97,14 @@ export class MailService {
              token: confirmationDto.registrationToken
            },
          ],
-         TextPart: "Your robotanium admin account has been created; your password is {{var:password:\"link\"}} you will need to change your password on first login and you will need to activate your account within 24 hours",
-         HTMLPart: "<h3>Your robotanium admin account has been created;</br> your password is{{var:password:\"link\"}} </br> click here to login and change your password {{var:emailLink:\"link\"}} </h3>",
+         TextPart: `Your robotanium ${userType} account has been created; your password is {{var:password:\"link\"}} you will need to change your password on first login and you will need to activate your account within 24 hour`,
+         HTMLPart: `<h3>Your robotanium ${userType} account has been created;</br> your password is{{var:password:\"link\"}} </br> click here to login and change your password {{var:emailLink:\"link\"}} </h3>`,
          TemplateLanguage: true,
          Subject: 'Robotanium Admin Account',
          Variables: {
            emailLink: `<p><a href="http://robotanium.com/login?&email=${confirmationDto.email}&password=${password}&token=${confirmationDto.registrationToken}">Login and Change Password</a></p>`,
-           password: password
+           password,
+           userType,
          },
        }
      ]

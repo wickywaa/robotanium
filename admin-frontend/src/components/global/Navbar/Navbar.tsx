@@ -41,10 +41,6 @@ export const NavBar: React.FC = () => {
     },
     {
       label: "Users",
-      command: () => navigate('/admin/users')
-    },
-    {
-      label: "Admin users",
       command: () => navigate('/admin/adminusers')
     },
   ] as IMenuItemWithBadge[];

@@ -212,7 +212,7 @@ export class UsersController {
     }
   }
 
-  //name needs to change
+  //Todo name needs to change
   @Post('changeimage')
   async changeUser(@Body()body:{email:string, imgsrc:string, token:string},@Res()response: Response){
   

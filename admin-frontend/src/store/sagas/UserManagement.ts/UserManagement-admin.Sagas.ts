@@ -1,55 +1,58 @@
 import { put, takeEvery } from "redux-saga/effects";
 import { UserManagementService } from "../../../services";
-import { ILoggedInUser } from "../../../models";
-import { addUsersFailed, addAdminUsersSuccess, addAdminUsersFailed,createAdminUserAttempt,createAdminUserFailed,createAdminUserSuccess, addMessage, deleteAdminUserFailed, deleteAdminUserSuccess } from '../../slices';
+import { ILoggedInUser, UserType } from "../../../models";
+import { addUsersFailed, addUsersSuccess, createUserAttempt, createUserFailed, createUserSuccess, addMessage, deleteUserFailed, deleteUserSuccess } from '../../slices';
 import { PayloadAction } from "@reduxjs/toolkit";
-const userMangementService  = new UserManagementService();
+const userMangementService = new UserManagementService();
 
-function * setallAdminUsers() {
+function* setallUsers() {
 
   try {
-    const users: ILoggedInUser[]  = yield userMangementService.getAllAdminUsers(); 
-    yield put(addAdminUsersSuccess(users) )
+    const users: ILoggedInUser[] = yield userMangementService.getAllUSers();
+    yield put(addUsersSuccess(users))
   } catch (e) {
-    yield put( addAdminUsersFailed())
+    yield put(addUsersFailed())
   }
 }
 
-function * createAdminUser(action:PayloadAction<{email: string, userName:string}>) {
+function* createUser(action: PayloadAction<{ email: string, userName: string, userType: UserType }>) {
+
+  const { email, userName, userType } = action.payload
   try {
-    const userCreated: ILoggedInUser[] | false  = yield  userMangementService.inviteNewUserAdmin({email:action.payload.email,userName:action.payload.userName});
-  //todo no need to have possible false or array  just trip the error if there is a problem
-    if(userCreated === false ) {
-      yield put(createAdminUserFailed());
-      yield put(addMessage({message:`${"user could not be created"}`,severity:'error'}));
+    const userCreated: ILoggedInUser[] | false = yield userMangementService.inviteNewUser({ email, userName, userType });
+    //todo no need to have possible false or array  just trip the error if there is a problem
+    if (userCreated === false) {
+      yield put(createUserFailed());
+      yield put(addMessage({ message: `${"user could not be created"}`, severity: 'error' }));
     }
 
-    if(Array.isArray(userCreated)) {
-      yield put(createAdminUserSuccess(userCreated));
-      yield put(addMessage({message:`user ${action.payload.userName} created`,severity:'success'}));
+    if (Array.isArray(userCreated)) {
+      yield put(createUserSuccess(userCreated));
+      yield put(addMessage({ message: `user ${action.payload.userName} created`, severity: 'success' }));
     }
   }
   catch (e) {
-    yield put(createAdminUserFailed())
-    yield put(addMessage({message:`${e}`,severity:'error'}));
+    yield put(createUserFailed())
+    yield put(addMessage({ message: `${e}`, severity: 'error' }));
   }
 }
 
-function * deleteAdminUser (action:PayloadAction<{id:string, userName:string}>) {
+function* deleteUser(action: PayloadAction<{ id: string, userName: string }>) {
   try {
     const users: ILoggedInUser[] = yield userMangementService.deleteUserById(action.payload.id);
-    yield put(deleteAdminUserSuccess(users));
-    yield put(addMessage({message:`user ${action.payload.userName} deleted successfully`, severity:'success'}));  }
+    yield put(deleteUserSuccess(users));
+    yield put(addMessage({ message: `user ${action.payload.userName} deleted successfully`, severity: 'success' }));
+  }
   catch (e) {
-    yield put(deleteAdminUserFailed());
-    yield put(addMessage({message: `${e}`, severity:'error'}));
+    yield put(deleteUserFailed());
+    yield put(addMessage({ message: `${e}`, severity: 'error' }));
   }
 }
 
-export function * UserManagementAdminSagas (){
+export function* UserManagementAdminSagas() {
 
-  yield takeEvery("userManagementSlice/addAdminUsersAttempt", setallAdminUsers);
-  yield takeEvery("userManagementSlice/createAdminUserAttempt", createAdminUser);
-  yield takeEvery("userManagementSlice/deleteAdminUserAttempt", deleteAdminUser);
+  yield takeEvery("userManagementSlice/addUsersAttempt", setallUsers);
+  yield takeEvery("userManagementSlice/createUserAttempt", createUser);
+  yield takeEvery("userManagementSlice/deleteUserAttempt", deleteUser);
 
 }

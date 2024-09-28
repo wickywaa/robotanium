@@ -4,7 +4,8 @@ import { Button } from 'primereact/button';
 import { AdminUsersTable, CreateUserModal } from '../../components/';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { selectUser, selectUserManagement } from '../../store/selectors';
-import {createAdminUserAttempt, setShowCreateAdminuser } from "../../store";
+import { createUserAttempt, setShowCreateUser } from "../../store";
+import { UserType } from "../../models";
 
 export const AdminUsersContainer: React.FC = () => {
 
@@ -12,18 +13,18 @@ export const AdminUsersContainer: React.FC = () => {
   const userManagement = useAppSelector(selectUserManagement)
   const dispatch = useAppDispatch()
 
-  const createUser = (email: string, userName: string) => dispatch(createAdminUserAttempt({ email, userName }))
-  
+  const createUser = (email: string, userName: string, userType:UserType) => dispatch(createUserAttempt({ email, userName,userType }))
+
   return (
     <div>
-      <CreateUserModal 
-      onCreateUser={createUser} 
-      user={user} userType={'admin'} 
-      isVisible={userManagement.showCreateAdminUser} 
-      close={() => dispatch(setShowCreateAdminuser(!userManagement.showCreateAdminUser))} />
-      <Button 
-      onClick={() => dispatch(setShowCreateAdminuser(!userManagement.showCreateAdminUser))} 
-      style={{ margin: "10px", height: "50px", width: "50px" }} icon="pi pi-plus" />
+      <CreateUserModal
+        onCreateUser={createUser}
+        user={user} userType={'admin'}
+        isVisible={userManagement.showCreateAdminUser}
+        close={() => dispatch(setShowCreateUser(!userManagement.showCreateAdminUser))} />
+      <Button
+        onClick={() => dispatch(setShowCreateUser(!userManagement.showCreateAdminUser))}
+        style={{ margin: "10px", height: "50px", width: "50px" }} icon="pi pi-plus" />
       <AdminUsersTable />
     </div>
   );
