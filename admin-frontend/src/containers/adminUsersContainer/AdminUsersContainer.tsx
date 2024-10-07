@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { Button } from 'primereact/button';
 
-import { AdminUsersTable, CreateUserModal } from '../../components/';
+import { AdminUsersTable, CreateUserModal, Filters } from '../../components/';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { selectUser, selectUserManagement } from '../../store/selectors';
 import { createUserAttempt, setShowCreateUser } from "../../store";
-import { UserType } from "../../models";
+import { ILoggedInUser, UserType } from "../../models";
 
 export const AdminUsersContainer: React.FC = () => {
 
@@ -18,10 +18,12 @@ export const AdminUsersContainer: React.FC = () => {
   return (
     <div>
       <CreateUserModal
-        onCreateUser={createUser}
-        user={user} userType={'admin'}
-        isVisible={userManagement.showCreateAdminUser}
-        close={() => dispatch(setShowCreateUser(!userManagement.showCreateAdminUser))} />
+          onCreateUser={createUser}
+          user={user} userType={'admin'}
+          isVisible={userManagement.showCreateAdminUser}
+          close={() => dispatch(setShowCreateUser(!userManagement.showCreateAdminUser))} 
+        />
+    
       <Button
         onClick={() => dispatch(setShowCreateUser(!userManagement.showCreateAdminUser))}
         style={{ margin: "10px", height: "50px", width: "50px" }} icon="pi pi-plus" />
