@@ -6,12 +6,14 @@ interface userManagementState {
   users: ILoggedInUser[];
   loading: boolean;
   showCreateAdminUser: boolean;
+  editUser: ILoggedInUser | null;
 }
 
 const initialState: userManagementState = {
   users: [],
   loading: true,
   showCreateAdminUser: false,
+  editUser: null,
 }
 
 export const userManagementSlice = createSlice({
@@ -19,6 +21,7 @@ export const userManagementSlice = createSlice({
   initialState,
   reducers: {
     setShowCreateUser:(state,action: PayloadAction<boolean>)=>({...state, showCreateAdminUser:action.payload}),
+    setEditUser:(state,action: PayloadAction<ILoggedInUser | null>)=>({...state, editUser:action.payload}),
     addUsersAttempt: (state ) => ({...state, isLoading: true}),
     addUsersFailed: (state ) => ({...state, users: [], loading: false }),
     addUsersSuccess: (state, action: PayloadAction<ILoggedInUser[]>) => ({...state, users: action.payload}),
@@ -34,6 +37,7 @@ export const userManagementSlice = createSlice({
 
 export  const { 
   setShowCreateUser,
+  setEditUser,
   addUsersAttempt, 
   addUsersFailed,
   addUsersSuccess,
