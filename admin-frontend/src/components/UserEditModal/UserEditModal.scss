@@ -1,12 +1,28 @@
 .user-edit-modal-container {
-
-  background-color: black;
+  position: relative;
+  background-color: transparent;
   display: flex;
   justify-content: center;
   position: absolute;
-  top:0;
-  left:0;
-  height:100vh;
+  height: 70vh;
   width:100%;
   z-index: 100;
+
+
+  .user-edit-modal-card {
+    width:50% !important;
+    height: 100%;
+    border:1px solid blue;
+
+    .p-card-body {
+      height:100%;
+    }
+  }
 }
+
+.user-edit-modal-footer {
+
+  position: absolute;
+  bottom:5px
+}
+

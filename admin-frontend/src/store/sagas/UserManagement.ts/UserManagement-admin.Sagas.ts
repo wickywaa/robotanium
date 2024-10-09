@@ -49,10 +49,23 @@ function* deleteUser(action: PayloadAction<{ id: string, userName: string }>) {
   }
 }
 
+function* updateUser(action: PayloadAction<ILoggedInUser>) {
+  try {
+    const users: ILoggedInUser[] = yield userMangementService.updateUser(action.payload._id, action.payload);
+    yield put(deleteUserSuccess(users));
+    yield put(addMessage({ message: `user ${action.payload.userName} deleted successfully`, severity: 'success' }));
+  }
+  catch (e) {
+    yield put(deleteUserFailed());
+    yield put(addMessage({ message: `${e}`, severity: 'error' }));
+  }
+}
+
 export function* UserManagementAdminSagas() {
 
   yield takeEvery("userManagementSlice/addUsersAttempt", setallUsers);
   yield takeEvery("userManagementSlice/createUserAttempt", createUser);
   yield takeEvery("userManagementSlice/deleteUserAttempt", deleteUser);
+  yield takeEvery("userManagementSlice/updateUserAttempt", updateUser);
 
 }

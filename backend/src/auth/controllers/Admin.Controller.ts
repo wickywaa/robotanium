@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Delete, Inject, Injectable, Post, Res, Param  } from '@nestjs/common';
+import { Body, Controller, Get, Delete, Inject, Injectable, Post, Res, Param, Put  } from '@nestjs/common';
 import { Response } from 'express';
 import { IUserMethods, User, UserModel, ILoginCredentials, IChangePassword, ICreateUser } from '../interfaces';
 import mongoose, { Model } from 'mongoose';
 import { MailService } from '../services';
+import isEmail from 'validator/lib/isEmail';
 var generator = require('generate-password');
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
@@ -182,5 +183,25 @@ export class AdminUsersController {
     
   }
 
+  @Put('user/:id')
+    async updateUser(@Body() body: { editedUser: User }, @Res() response: Response, @Param('id') id: string) {
+      try {
+        const user = await this.userModel.findByIdAndUpdate(id,{
+          isActive: body.editedUser.isActive,
+          isEmailVerified: body.editedUser.isEmailVerified,
+          isPlayerAdmin: body.editedUser.isPlayerAdmin,
+          isRobotaniumAdmin: body.editedUser.isRobotaniumAdmin,
+          imgsrc: body.editedUser.imgsrc
+        });
+
+        if(!user) return response.status(400).json({error:'user not found'})
+        const users = await this.userModel.find();
+
+        if(user && users) return response.status(200).json({users})
+      }
+      catch(e) {
+        return response.status(500).json({message:'could not update user'})
+      }
+    }
 
 }

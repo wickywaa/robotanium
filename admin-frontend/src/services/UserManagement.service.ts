@@ -42,4 +42,18 @@ export class UserManagementService {
       throw new Error('user could not be created');
     }
   }
+
+  updateUser = async (id: string, user: ILoggedInUser): Promise<ILoggedInUser[]> => {
+    try  {
+      return await adminBaseAxios.put<{users: ILoggedInUser[]}>(`/user/${id}`,{editedUser:user}).then((response)=>{
+        return response.data.users
+      })
+    }
+
+    catch (e : any)  {
+      if (e.response.data.message) throw new Error(e.response.data.message);
+      if (e.message) throw new Error(e.message);
+      throw new Error('user could not be updated');
+    }
+  }
 }

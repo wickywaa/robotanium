@@ -27,7 +27,8 @@ export const AdminUsersTable: React.FC = () => {
     isRobotaniumAdmin: { value: null, matchMode: FilterMatchMode.EQUALS },
     userName: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     isEmailVerified: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    isActive: { value: null, matchMode: FilterMatchMode.EQUALS }
+    isActive: { value: null, matchMode: FilterMatchMode.EQUALS },
+    isPlayerAdmin: {value: null, matchMode: FilterMatchMode.EQUALS}
   })
 
   useEffect(()=>{
@@ -47,17 +48,27 @@ export const AdminUsersTable: React.FC = () => {
     return <i className={classNames('pi', { 'true-icon pi-check-circle': rowData.isRobotaniumAdmin, 'false-icon pi-times-circle': !rowData.isRobotaniumAdmin })}></i>;
 };
 
+const isPlayerAdminTemplate = (rowData: ILoggedInUser) => {
+  return <i className={classNames('pi', { 'true-icon pi-check-circle': rowData.isPlayerAdmin, 'false-icon pi-times-circle': !rowData.isPlayerAdmin })}></i>;
+};
+
+const isPlayerFilterAdminTemplate = (options: ColumnFilterElementTemplateOptions) => {
+  console.log(options)
+  return <TriStateCheckbox value={options.value} onChange={(e: TriStateCheckboxChangeEvent) => options.filterApplyCallback(e.value)} />;
+};
+
   return (
     <div>
 
       <DataTable 
-      filters={filters} filterDisplay="row" value={users?? []} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '50rem' }} >
+        filters={filters} filterDisplay="row" value={users?? []} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '50rem' }} >
         <Column field="_id" filter header="Id" ></Column>
         <Column field="email" filter filterPlaceholder="Search by Email" header="Email"></Column>
         <Column field="userName" filter header="UserName" ></Column>
         <Column field="isEmailVerified" filter header="Verified" ></Column>
         <Column field="isActive" header="Active" filter ></Column>
         <Column body={isRobotaniumAdminTemplate} filterElement={isRobotaniumAdminFilterTemplate} field="isRobotaniumAdmin" dataType="boolean" filter header="Robotanium Admin"></Column>
+        <Column body={isPlayerAdminTemplate} filterElement={isPlayerFilterAdminTemplate} field="isPlayerAdmin" dataType="boolean" filter header="Player Admin"></Column>
         <Column body={actionsComponent} header="Actions" ></Column>
       </DataTable>
     </div>

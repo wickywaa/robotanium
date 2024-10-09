@@ -12,4 +12,8 @@ export interface ILoggedInUser {
   theme: string,
 }
 
+export interface IEditUser extends ILoggedInUser {
+  password: string;
+}
+
 export type UserType = "player" | "admin"

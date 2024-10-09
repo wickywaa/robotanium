@@ -30,9 +30,11 @@ export const userManagementSlice = createSlice({
     createUserSuccess: (state, action: PayloadAction<ILoggedInUser[]> )=> ({...state, loading: false, users: action.payload, showCreateAdminUser: false}),
     deleteUserAttempt: (state, action: PayloadAction<{id:string, userName:string}>) => ({...state, loading: true}),
     deleteUserFailed: (state ) =>({...state, loading: true}),
-    deleteUserSuccess: (state, action:PayloadAction<ILoggedInUser[]>)=>({...state, loading:false, users:action.payload}),
+    deleteUserSuccess: (state, action:PayloadAction<ILoggedInUser[]>)=>({...state, loading: false, users:action.payload}),
+    updateUserAttempt: (state, action:PayloadAction<ILoggedInUser>)=>({...state, loading: true }),
+    updateUserFailed: (state, )=>({...state, loading: false }),
+    updateUserSuccess: (state, action:PayloadAction<ILoggedInUser[]>)=> ({...state, loading: false, users:action.payload })
   }
-
 })
 
 export  const { 
@@ -46,6 +48,9 @@ export  const {
   createUserSuccess,
   deleteUserAttempt,
   deleteUserFailed,
-  deleteUserSuccess
+  deleteUserSuccess,
+  updateUserAttempt,
+  updateUserFailed,
+  updateUserSuccess
 } = userManagementSlice.actions
 
