@@ -3,12 +3,12 @@ import { put, takeEvery } from "redux-saga/effects";
 import { IConfirmEmailCredentials, ILoggedInUser, ILoginCredentials, IRegisterCredentials } from "../../../models";
 import { AuthService, validateisLoginCredentials } from '../../../services/';
 import { confirmEmailFailed, confirmEmailSuccess, loginFailed, loginSuccess, logout, registerUserFailed, registerUserSuccess, setResetPasswordTokenFailed, setResetPasswordTokenSuccess } from '../../slices/';
-import { toastSlice, addMessage } from "../../slices/toastslice";
+import { addMessage, toastSlice } from "../../slices/toastslice";
 const authService = new AuthService();
 
 function * loginUser(action: PayloadAction<ILoginCredentials>) {
 
-  try  {
+  try {
     const isValid = validateisLoginCredentials(action.payload)
     if(!isValid){
       yield put(addMessage({message:isValid, severity:'error'}));

@@ -1,7 +1,7 @@
 import { put, takeEvery } from "redux-saga/effects";
 import { UserManagementService } from "../../../services";
 import { ILoggedInUser, UserType } from "../../../models";
-import { addUsersFailed, addUsersSuccess, createUserAttempt, createUserFailed, createUserSuccess, addMessage, deleteUserFailed, deleteUserSuccess } from '../../slices';
+import { addUsersFailed, addUsersSuccess, createUserAttempt, createUserFailed, createUserSuccess, addMessage, deleteUserFailed, deleteUserSuccess, updateUserSuccess } from '../../slices';
 import { PayloadAction } from "@reduxjs/toolkit";
 const userMangementService = new UserManagementService();
 
@@ -51,9 +51,10 @@ function* deleteUser(action: PayloadAction<{ id: string, userName: string }>) {
 
 function* updateUser(action: PayloadAction<ILoggedInUser>) {
   try {
+    if(action.payload.userName.length < 6) throw new Error('Username must not be less than 6 characters');
     const users: ILoggedInUser[] = yield userMangementService.updateUser(action.payload._id, action.payload);
-    yield put(deleteUserSuccess(users));
-    yield put(addMessage({ message: `user ${action.payload.userName} deleted successfully`, severity: 'success' }));
+    yield put(updateUserSuccess(users));
+    yield put(addMessage({ message: `user ${action.payload.userName} updated successfully`, severity: 'success' }));
   }
   catch (e) {
     yield put(deleteUserFailed());

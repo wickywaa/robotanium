@@ -1,5 +1,6 @@
 import React,{ useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 import { selectUserManagement } from '../../store/selectors';
 import { DataTable, DataTableFilterMeta } from 'primereact/datatable';
@@ -10,11 +11,6 @@ import { addUsersAttempt, deleteUserAttempt, setEditUser } from '../../store';
 import { ILoggedInUser } from '../../models';
 import { FilterMatchMode } from 'primereact/api';
 import { TriStateCheckbox, TriStateCheckboxChangeEvent } from 'primereact/tristatecheckbox';
-import { EditUserModal } from '../UserEditModal/UserEditmodal';
-
-interface IAdmiUsertable {
-  onDeleteClick: ()=> void;
-}
 
 export const AdminUsersTable: React.FC = () => {
 
@@ -35,9 +31,22 @@ export const AdminUsersTable: React.FC = () => {
     dispatch(addUsersAttempt())
   },[])
 
+  const accept = (data: ILoggedInUser) => dispatch(deleteUserAttempt({id:data._id, userName:data.userName}))
+
+
+  const confirm1 = (data: ILoggedInUser) => {
+    confirmDialog({
+        message: 'Are you sure you want to delete this user?',
+        header: 'Confirmation',
+        icon: 'pi pi-exclamation-triangle',
+        defaultFocus: 'accept',
+        accept: ()=> accept(data),
+    });
+};
+
   const actionsComponent = (data: ILoggedInUser): JSX.Element => {
     return(<div>
-      <Button onClick={()=> dispatch(deleteUserAttempt({id:data._id, userName:data.userName}))} style={{color:'red', borderColor: 'red', margin:'5px'}} icon="pi pi-trash"></Button>
+      <Button onClick={()=> confirm1(data)} style={{color:'red', borderColor: 'red', margin:'5px'}} icon="pi pi-trash"></Button>
       <Button onClick={()=> dispatch(setEditUser(data))} style={{margin:'5px'}} icon="pi pi-user-edit"></Button>
     </div>)
   }
@@ -59,14 +68,14 @@ const isPlayerFilterAdminTemplate = (options: ColumnFilterElementTemplateOptions
 
   return (
     <div>
-
+      <ConfirmDialog/>
       <DataTable 
         filters={filters} filterDisplay="row" value={users?? []} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '50rem' }} >
-        <Column field="_id" filter header="Id" ></Column>
-        <Column field="email" filter filterPlaceholder="Search by Email" header="Email"></Column>
-        <Column field="userName" filter header="UserName" ></Column>
-        <Column field="isEmailVerified" filter header="Verified" ></Column>
-        <Column field="isActive" header="Active" filter ></Column>
+        <Column field="_id" filter filterPlaceholder="Search by id" header="Id" ></Column>
+        <Column field="email" filter filterPlaceholder="Search by email" header="Email"></Column>
+        <Column field="userName" filter filterPlaceholder="Search by userName" header="UserName" ></Column>
+        <Column field="isEmailVerified" filterPlaceholder="Search by verified" filter header="Verified" ></Column>
+        <Column field="isActive" header="Active" filter filterPlaceholder="Search by is active" ></Column>
         <Column body={isRobotaniumAdminTemplate} filterElement={isRobotaniumAdminFilterTemplate} field="isRobotaniumAdmin" dataType="boolean" filter header="Robotanium Admin"></Column>
         <Column body={isPlayerAdminTemplate} filterElement={isPlayerFilterAdminTemplate} field="isPlayerAdmin" dataType="boolean" filter header="Player Admin"></Column>
         <Column body={actionsComponent} header="Actions" ></Column>

@@ -6,16 +6,16 @@ import { Button } from 'primereact/button';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import './UserEditModal.scss'
 import { setEditUser, updateUserAttempt } from '../../store';
-import { InputText } from 'primereact/inputtext';
 import { UpateUserForm } from '../UpdateUserForm/UpdateUserForm';
+import { InputText } from 'primereact/inputtext';
+import { ChangePassword } from '../ChangePassword/ChangePassword';
         
-
 interface EditUserModal {
   user: ILoggedInUser;
+  resetPassword: boolean;
 }
 
-
-export const EditUserModal:React.FC<EditUserModal> = ({user}) => {
+export const EditUserModal:React.FC<EditUserModal> = ({user, resetPassword}) => {
 
   const [tempUser, setTempUser] =  useState<IEditUser | null>(null)
   const dispatch = useAppDispatch();
@@ -24,25 +24,18 @@ export const EditUserModal:React.FC<EditUserModal> = ({user}) => {
     setTempUser({...user,password:''})
   },[])
 
-  const handleOnSave = (user: ILoggedInUser) => {
+  const handleOnSave = (user: ILoggedInUser) => dispatch(updateUserAttempt(user));
+  const handleResetPassword  =  () => console.log('reset password');
 
-    console.log('should save')
-    dispatch(updateUserAttempt(user));
-  } 
-
-  const footer  = () => {
-    return (
-      <div className='user-edit-modal-footer'>
-         <Button label="Close" icon="pi pi-check" />
-         <Button onClick={()=> dispatch(setEditUser(null))} label="Cancel" severity="secondary" icon="pi pi-times" style={{ marginLeft: '0.5em' }} />
-      </div>
-    )
-  }
 
   return tempUser !== null ? (
     <div className='user-edit-modal-container'>
-      <Card className='user-edit-modal-card'  footer={footer}>
-        <UpateUserForm onSave={(user)=> handleOnSave(user)} user={tempUser} isCurrentUser={false}/>
+      <Card className='user-edit-modal-card' >
+      <Button className='user-edit-modal-close' onClick={()=> dispatch(setEditUser(null))}  severity="secondary" icon="pi pi-times" style={{ marginLeft: '0.5em' }} />
+        <UpateUserForm  onResetPassword={handleResetPassword}
+        onSave={(user)=> handleOnSave(user)} user={tempUser} isCurrentUser={false}/>
+
+        { resetPassword && <ChangePassword/>}
       </Card>
     </div>
   ): null

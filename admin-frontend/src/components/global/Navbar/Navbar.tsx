@@ -6,7 +6,7 @@ import { Menubar } from "primereact/menubar";
 import { MenuItem } from "primereact/menuitem";
 import robotaniumLogo from "../../../assets/images/icononly_transparent_nobuffer.png";
 import { selectUser } from "../../../store/selectors";
-import { logoutAttempt } from "../../../store/slices";
+import { logoutAttempt, setEditUser } from "../../../store/slices";
 import { useNavigate } from 'react-router-dom'
 import './Navbar.scss';
 
@@ -24,7 +24,12 @@ export const NavBar: React.FC = () => {
 
   const start = () => <img className="h-20" src={robotaniumLogo} />;
   const end = () => {
-    return <Button onClick={(() => dispatch(logoutAttempt()))} style={{ color: '#00fefc' }} title="Logout">logout</Button>
+    return (
+      <>
+        <Button icon='pi pi-user' onClick={()=> dispatch(setEditUser(user))}/>
+        <Button onClick={(() => dispatch(logoutAttempt()))} style={{ color: '#00fefc' }} title="Logout">logout</Button>
+      </>
+    )
   };
   const items: IMenuItemWithBadge[] = [
     {

@@ -191,7 +191,8 @@ export class AdminUsersController {
           isEmailVerified: body.editedUser.isEmailVerified,
           isPlayerAdmin: body.editedUser.isPlayerAdmin,
           isRobotaniumAdmin: body.editedUser.isRobotaniumAdmin,
-          imgsrc: body.editedUser.imgsrc
+          imgsrc: body.editedUser.imgsrc,
+          userName: body.editedUser.userName
         });
 
         if(!user) return response.status(400).json({error:'user not found'})

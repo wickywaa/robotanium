@@ -52,6 +52,8 @@ body {
   border: 1px solid #00fefc;
   color: #00fefc;
   box-shadow: none;
+  padding:1px;
+  margin:2px;
 
    &:hover {
     outline: 2px solid #00fefc;
@@ -76,6 +78,8 @@ body {
   border: 1px solid #00fefc;
   background: black;
   color: #00fefc;
+  padding:1px;
+  margin:2px;
 
 }
 
