@@ -47,7 +47,7 @@ export const AdminUsersTable: React.FC = () => {
   const actionsComponent = (data: ILoggedInUser): JSX.Element => {
     return(<div>
       <Button onClick={()=> confirm1(data)} style={{color:'red', borderColor: 'red', margin:'5px'}} icon="pi pi-trash"></Button>
-      <Button onClick={()=> dispatch(setEditUser(data))} style={{margin:'5px'}} icon="pi pi-user-edit"></Button>
+      <Button onClick={()=> dispatch(setEditUser({user: data, showResetPassword:false}))} style={{margin:'5px'}} icon="pi pi-user-edit"></Button>
     </div>)
   }
   const isRobotaniumAdminFilterTemplate = (options: ColumnFilterElementTemplateOptions) => {

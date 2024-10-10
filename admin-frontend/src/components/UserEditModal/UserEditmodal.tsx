@@ -11,17 +11,16 @@ import { InputText } from 'primereact/inputtext';
 import { ChangePassword } from '../ChangePassword/ChangePassword';
         
 interface EditUserModal {
-  user: ILoggedInUser;
-  resetPassword: boolean;
+  editUser: {user:ILoggedInUser, showResetPassword:boolean }
 }
 
-export const EditUserModal:React.FC<EditUserModal> = ({user, resetPassword}) => {
+export const EditUserModal:React.FC<EditUserModal> = ({editUser}) => {
 
   const [tempUser, setTempUser] =  useState<IEditUser | null>(null)
   const dispatch = useAppDispatch();
 
   useEffect(()=>{
-    setTempUser({...user,password:''})
+    setTempUser({...editUser.user,password:''})
   },[])
 
   const handleOnSave = (user: ILoggedInUser) => dispatch(updateUserAttempt(user));
@@ -35,7 +34,7 @@ export const EditUserModal:React.FC<EditUserModal> = ({user, resetPassword}) => 
         <UpateUserForm  onResetPassword={handleResetPassword}
         onSave={(user)=> handleOnSave(user)} user={tempUser} isCurrentUser={false}/>
 
-        { resetPassword && <ChangePassword/>}
+        { editUser.showResetPassword && <ChangePassword/>}
       </Card>
     </div>
   ): null

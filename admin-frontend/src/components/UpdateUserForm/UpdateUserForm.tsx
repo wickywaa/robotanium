@@ -64,15 +64,3 @@ export const UpateUserForm: React.FC<IUpdateUserForm> = ({ user, isCurrentUser, 
     </div>
   ) : null
 }
-
-/* _id: string,
-  email: string,
-  isRobotaniumAdmin: boolean,
-  isPlayerAdmin: boolean,
-  userName: string,
-  imgsrc: string,
-  isActive: boolean,
-  isEmailVerified: boolean,
-  changePassword: boolean,
-  rememberme: false,
-  theme: string, */

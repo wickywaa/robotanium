@@ -24,7 +24,6 @@ export const AdminUsersContainer: React.FC = () => {
           isVisible={userManagement.showCreateAdminUser}
           close={() => dispatch(setShowCreateUser(!userManagement.showCreateAdminUser))} 
         />
-        {userManagement.editUser !== null && <EditUserModal  user={userManagement.editUser}/>}
     
       <Button
         onClick={() => dispatch(setShowCreateUser(!userManagement.showCreateAdminUser))}
