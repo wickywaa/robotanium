@@ -6,7 +6,7 @@ interface userManagementState {
   users: ILoggedInUser[];
   loading: boolean;
   showCreateAdminUser: boolean;
-  editUser: {user:ILoggedInUser, showResetPassword:boolean}| null ; 
+  editUser: {user:ILoggedInUser, showResetPassword:boolean} | null ; 
 }
 
 const initialState: userManagementState = {
@@ -33,7 +33,13 @@ export const userManagementSlice = createSlice({
     deleteUserSuccess: (state, action:PayloadAction<ILoggedInUser[]>)=>({...state, loading: false, users:action.payload}),
     updateUserAttempt: (state, action:PayloadAction<ILoggedInUser>)=>({...state, loading: true }),
     updateUserFailed: (state, )=>({...state, loading: false }),
-    updateUserSuccess: (state, action:PayloadAction<ILoggedInUser[]>)=> ({...state, loading: false, users:action.payload })
+    updateUserSuccess: (state, action:PayloadAction<ILoggedInUser[]>)=> ({...state, loading: false, users:action.payload }),
+    resetPasswordAttempt: (state, action:PayloadAction<{id:string}>)=>({...state, loading: true }),
+    resetPasswordFailed: (state, ) =>({...state, loading: false }),
+    resetPasswordSuccess: (state) => ({...state, loading: false}),
+    changePasswordAttempt: (state, action:PayloadAction<{email:string, password:string, newPassword:string}>) => ({...state, loading: false }),
+    changePasswordSuccess: (state) => ({...state, loading:false, editUser:null}),
+    setLoadingFalse: (state) => ({...state, loading: false, setEditUser:false }),
   }
 })
 
@@ -51,6 +57,12 @@ export  const {
   deleteUserSuccess,
   updateUserAttempt,
   updateUserFailed,
-  updateUserSuccess
+  updateUserSuccess,
+  resetPasswordAttempt,
+  resetPasswordFailed,
+  resetPasswordSuccess,
+  changePasswordAttempt,
+  setLoadingFalse,
+  changePasswordSuccess
 } = userManagementSlice.actions
 

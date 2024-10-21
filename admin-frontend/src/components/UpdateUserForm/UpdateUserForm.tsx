@@ -30,10 +30,10 @@ export const UpateUserForm: React.FC<IUpdateUserForm> = ({ user, isCurrentUser, 
 
   return tempUser !== null ? (
     <div className='flex-column'>
-      <div className='edit-user-button-container'>
+      <div className='edit-user-button-container '>
         <Button onClick={onResetPassword} className='m-2 p-1 '>Reset Password</Button>
       </div>
-      <div>
+      <div className='edit-user-form-container'>
         <div className="flex align-items-center ">
           <label htmlFor="userName" >User Name </label>
           <InputText className='ml-2 p-1' placeholder='userName' onChange={(event) => setTempUser({ ...tempUser, userName: event.target.value })} value={tempUser?.userName} />

@@ -180,7 +180,6 @@ export class AdminUsersController {
       catch(e) {
         return response.status(500).json({message:'could not delete user'})
       }
-    
   }
 
   @Put('user/:id')
@@ -202,6 +201,26 @@ export class AdminUsersController {
       }
       catch(e) {
         return response.status(500).json({message:'could not update user'})
+      }
+    }
+
+    @Post('user/password/reset:id')
+    async resetPassword ( @Res() response:Response, @Param('id') id:string) {
+      const user = await this.userModel.findById(id);
+
+      try {
+        const user = await this.userModel.findOne({ _id:id });
+        const code:string =  Math.floor(100000 + Math.random() * 900000).toString();
+        const forgotPasswordDto = await user.generateForgotPasswordDto(code);
+        console.log('dto generates',forgotPasswordDto);
+        const mailsent = await this.mailService.sendResetMailPasswordLink({email:user.email,code});
+        console.log(mailsent)
+        await user.save();
+  
+        response.status(200).send({ message: 'hello' });
+  
+      } catch (e) {
+        return response.status(500).send({ error: { message: e.message } })
       }
     }
 

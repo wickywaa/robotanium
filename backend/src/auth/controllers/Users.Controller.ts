@@ -146,6 +146,7 @@ export class UsersController {
       try{
         const user = await this.userModel.findOne({email});
         if (!user) return response.status(200).send();
+        if(user.isRobotaniumAdmin) return response.status(401).send();
         const code:string =  Math.floor(100000 + Math.random() * 900000).toString();
         const forgotPasswordTokenSet:IForgotPasswordDto = await user.generateForgotPasswordDto(code);
         if(!forgotPasswordTokenSet){

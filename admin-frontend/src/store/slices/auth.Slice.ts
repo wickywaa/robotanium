@@ -45,5 +45,5 @@ export const {
   logout,
   addError,
   removeErrorByType,
-  resetErrors,
+  resetErrors
 } = authSlice.actions;

@@ -47,6 +47,8 @@ export class MailService {
   }
 
   sendResetMailPasswordLink = async(forgotPasswordDto: IForgotPasswordDto): Promise<boolean | void> => {
+
+    console.log('dto',forgotPasswordDto)
      const request = mailjet.post('send',{version:'v3.1'}).request({
       Messages: [
         {

@@ -5,7 +5,7 @@ import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import './UserEditModal.scss'
-import { setEditUser, updateUserAttempt } from '../../store';
+import { resetPasswordAttempt, setEditUser, updateUserAttempt, changePasswordAttempt } from '../../store';
 import { UpateUserForm } from '../UpdateUserForm/UpdateUserForm';
 import { InputText } from 'primereact/inputtext';
 import { ChangePassword } from '../ChangePassword/ChangePassword';
@@ -24,7 +24,7 @@ export const EditUserModal:React.FC<EditUserModal> = ({editUser}) => {
   },[])
 
   const handleOnSave = (user: ILoggedInUser) => dispatch(updateUserAttempt(user));
-  const handleResetPassword  =  () => console.log('reset password');
+  const handleResetPassword  =  () => dispatch(resetPasswordAttempt({id:editUser.user._id}));
 
 
   return tempUser !== null ? (
@@ -34,7 +34,7 @@ export const EditUserModal:React.FC<EditUserModal> = ({editUser}) => {
         <UpateUserForm  onResetPassword={handleResetPassword}
         onSave={(user)=> handleOnSave(user)} user={tempUser} isCurrentUser={false}/>
 
-        { editUser.showResetPassword && <ChangePassword/>}
+        { editUser.showResetPassword && <ChangePassword onChange={(e:{password:string, newPassword:string})=> dispatch(changePasswordAttempt({email:editUser.user.email,password:e.password, newPassword:e.newPassword}))}/>}
       </Card>
     </div>
   ): null

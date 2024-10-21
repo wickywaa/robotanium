@@ -32,8 +32,6 @@ export const AdminUsersTable: React.FC = () => {
   },[])
 
   const accept = (data: ILoggedInUser) => dispatch(deleteUserAttempt({id:data._id, userName:data.userName}))
-
-
   const confirm1 = (data: ILoggedInUser) => {
     confirmDialog({
         message: 'Are you sure you want to delete this user?',
@@ -62,7 +60,6 @@ const isPlayerAdminTemplate = (rowData: ILoggedInUser) => {
 };
 
 const isPlayerFilterAdminTemplate = (options: ColumnFilterElementTemplateOptions) => {
-  console.log(options)
   return <TriStateCheckbox value={options.value} onChange={(e: TriStateCheckboxChangeEvent) => options.filterApplyCallback(e.value)} />;
 };
 

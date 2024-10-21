@@ -1,3 +1,4 @@
+import { AxiosResponse } from "axios";
 import { ILoggedInUser, UserType } from "../models/User";
 import { adminBaseAxios } from "./Base.service";
 
@@ -54,6 +55,29 @@ export class UserManagementService {
       if (e.response.data.message) throw new Error(e.response.data.message);
       if (e.message) throw new Error(e.message);
       throw new Error('user could not be updated');
+    }
+  }
+
+  resetPassword = async (id: string): Promise<AxiosResponse> => {
+    try  {
+      return await adminBaseAxios.post(`user/password/reset${id}`)
+    }
+
+    catch (e : any)  {
+      if (e.response.data.message) throw new Error(e.response.data.message);
+      if (e.message) throw new Error(e.message);
+      throw new Error('user could not be updated');
+    }
+  }
+
+  changeMyPassword = async(email:string, password: string, newPassword:string):Promise<AxiosResponse> => {  
+    try {
+      return await adminBaseAxios.post('changepassword', {email, oldPassword:password, newPassword})
+    }
+    catch(e: any) {
+      if (e.response.data.message) throw new Error(e.response.data.message);
+      if (e.message) throw new Error(e.message);
+      throw new Error('password could not be updated');
     }
   }
 }
