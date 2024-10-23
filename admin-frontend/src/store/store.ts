@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { authSlice } from "./slices";
+import { authSlice, BotSlice } from "./slices";
 import createSagaMiddleware from "redux-saga";
 import { authSagas, UserManagementAdminSagas, UserManagementUserSagas } from "./sagas";
 import { toastSlice, userManagementSlice } from "./slices";
@@ -11,7 +11,8 @@ export const store = configureStore({
   reducer: {
     auth: authSlice.reducer,
     toastSlice: toastSlice.reducer,
-    userManagementSlice:  userManagementSlice.reducer
+    userManagementSlice:  userManagementSlice.reducer,
+    botSlice: BotSlice.reducer
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware),
 });

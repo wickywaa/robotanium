@@ -46,7 +46,6 @@ export const CreateUserModal: React.FC<props> = ({ isVisible, close, onCreateUse
         <Button onClick={() => close()} style={{ margin: 0 }} icon="pi pi-times" />
       </div>
       <div className="create-user-form">
-
         <InputText onChange={(e) => setEmail(e.target.value)} className="create-user-button" placeholder="email" />
         <InputText onChange={(e) => setUserName(e.target.value)} className="create-user-button" placeholder="userName" />
         <Dropdown value={userType} onChange={(e) => setUserType(e.value)} options={types} optionLabel="name" 

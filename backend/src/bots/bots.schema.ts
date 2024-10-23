@@ -1,21 +1,16 @@
 import * as mongoose from 'mongoose';
-import { IBot, IBotMethods, IBotModel, IBotCameras } from './interfaces';
+import { IBot, IBotMethods, IBotModel, IBotCockpits } from './interfaces';
 
 export interface Bot {
   name: string;
   token: string;
-  cameras: IBotCameras,
+  cockpits: IBotCockpits,
   mainPhotoUrl: string,
   otherPhotosUrls: string[],
   userId: mongoose.Schema.Types.ObjectId;
 }
 
 export const BotsSChema = new mongoose.Schema<IBot, IBotModel, IBotMethods>({
-
-  userId: {
-    required: true,
-    type: mongoose.Schema.Types.ObjectId,
-  },
 
   name: {
     type:String,
@@ -37,7 +32,7 @@ export const BotsSChema = new mongoose.Schema<IBot, IBotModel, IBotMethods>({
       name: String,
       sessionId: String
     }],
-    validate(cameras: IBotCameras[]) {
+    validate(cameras: IBotCockpits[]) {
       const duplicates = cameras.filter((camera, index) => cameras.indexOf(camera) !== index);
       if( duplicates.length) {
         throw new Error(`Each camera name needs to be unique`);

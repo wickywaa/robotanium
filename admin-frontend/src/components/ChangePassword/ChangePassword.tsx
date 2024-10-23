@@ -15,7 +15,6 @@ export const ChangePassword: React.FC<any> = ({onChange}) => {
   const [repeatPassword, setRepeatPassword] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
 
-  
   const handleOnEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if(event.key !== 'Enter') return;
     if(!isvalid())
