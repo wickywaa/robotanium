@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { authSlice, BotSlice } from "./slices";
 import createSagaMiddleware from "redux-saga";
-import { authSagas, UserManagementAdminSagas, UserManagementUserSagas } from "./sagas";
+import { authSagas, BotManagementagas, UserManagementAdminSagas, UserManagementUserSagas } from "./sagas";
 import { toastSlice, userManagementSlice } from "./slices";
 import validator from "validator";
 
@@ -20,6 +20,7 @@ export const store = configureStore({
 sagaMiddleware.run(authSagas)
 sagaMiddleware.run(UserManagementUserSagas)
 sagaMiddleware.run(UserManagementAdminSagas)
+sagaMiddleware.run(BotManagementagas)
 
 /* sagaMiddleware.run(signInUserSaga);
 sagaMiddleware.run(gamesSagas);

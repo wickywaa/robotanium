@@ -9,9 +9,12 @@ export class BotsService {
     formData.append('file', createBotDto.image)
     formData.append('name', createBotDto.name )
     try {
-      return await adminBaseAxios.post("bot/bot",formData)
-    } catch (e) {
-      throw new Error("useers could not be loaded");
+      return await adminBaseAxios.post("bots/bot",formData)
+      .then((response)=>{
+        return response.data
+      })
+    } catch (e:any) {
+      throw new Error("bot could not be created", e);
     }
   };
 

@@ -7,7 +7,7 @@ import { User } from 'src/auth/interfaces';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Injectable()
-@Controller('api/bots')
+@Controller('api/admin/bots')
 
 export class BotsUsersController {
 
@@ -21,13 +21,22 @@ export class BotsUsersController {
   async createBot(@Body() body:ICreateBotDto,@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
 
     try {
-      console.log('here is the name  from the body', body.name);
-      console.log('here is the user from the body', body.cockpits);
-      console.log('here is the image from the body', body.imageUrl);
-      console.log('here is the file', file)
-      return res.status(201).send('test');
+      const newBot:IBot = {
+        name: body.name,
+        token: '',
+        cameras: body.cockpits,
+        imageUrl: '',
+      }
+    
+      const bot = new this.botModel(newBot);
+      await bot.save();
+      const bots = await this.botModel.find({});
+      console.log(bots)
+      if(!bots) throw new Error('bots could not be loaded');
+      return res.status(201).json({bots})
     }
     catch (e) {
+      console.log('could not create bot')
       return res.status(500).send({ message: e.message });
     }
   }

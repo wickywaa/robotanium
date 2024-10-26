@@ -39,7 +39,7 @@ export const CreateBotModule: React.FC<ICreateBotModule> = ({close, createBot})=
     if(imageFile === null) return setErrorMessage('Image file needed');
     if(botName.length < 5) return setErrorMessage('Bot name should be atleast 5 digits');
     if(botPassword.length <5 ) return setErrorMessage('Bot Password mus be stronger');
-    if(validate.isStrongPassword(botPassword)) return setErrorMessage('Bot Password must be stronger');
+    if(!validate.isStrongPassword(botPassword)) return setErrorMessage('Bot Password Be 8 digits long, contain 1 lowercase 1 uppercase and 1 special character');
     if(botPassword  !==  botRepeatPassword) return setErrorMessage('Passwords do not match')
 
     return createBot({
@@ -74,7 +74,7 @@ export const CreateBotModule: React.FC<ICreateBotModule> = ({close, createBot})=
         <div style={{display:'flex', height:'70%', overflow:'auto'}} >
         <div style={{display:'flex', flexDirection:'column'}}>
         {cockpits.map((_,key)=> {
-          return (<div style={{display:'flex', flexDirection:'column'}}><InputText placeholder={`cockpit ${key+1}`}/></div>)
+          return (<div key={key} style={{display:'flex', flexDirection:'column'}}><InputText placeholder={`cockpit ${key+1}`}/></div>)
         })  }
       
         </div>

@@ -1,7 +1,7 @@
 import { put, takeEvery } from "redux-saga/effects";
 import { UserManagementService } from "../../../services";
 import { ILoggedInUser, UserType } from "../../../models";
-import { addUsersFailed, addUsersSuccess, createUserAttempt, createUserFailed, createUserSuccess, addMessage, deleteUserFailed, deleteUserSuccess, updateUserSuccess, resetPasswordSuccess, setLoadingFalse, changePasswordAttempt, changePasswordSuccess } from '../../slices';
+import { addUsersFailed, addUsersSuccess, createUserFailed, createUserSuccess, addMessage, deleteUserFailed, deleteUserSuccess, updateUserSuccess, resetPasswordSuccess, setLoadingFalse, changePasswordAttempt, changePasswordSuccess } from '../../slices';
 import { PayloadAction } from "@reduxjs/toolkit";
 const userMangementService = new UserManagementService();
 
