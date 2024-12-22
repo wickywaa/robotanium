@@ -5,11 +5,16 @@ import { ICreateBotDTo, IBot } from "../models";
 
 export class BotsService {
   createBot = async (createBotDto: ICreateBotDTo): Promise<AxiosResponse> => {
+
+    console.log('create bots dto', createBotDto)
     const formData = new FormData();
+    const bodyData =  {
+      name: createBotDto.name,
+      cockpits: createBotDto.cockpits
+    }
     formData.append('file', createBotDto.image)
-    formData.append('name', createBotDto.name )
     try {
-      return await adminBaseAxios.post("bots/bot",formData)
+      return await adminBaseAxios.post("/bot",{...bodyData,formData})
       .then((response)=>{
         return response.data
       })

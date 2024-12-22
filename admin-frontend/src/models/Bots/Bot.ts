@@ -1,3 +1,4 @@
+import { Session } from "inspector";
 import { ILoggedInUser } from "../User";
 
 export interface IBot {
@@ -6,9 +7,14 @@ export interface IBot {
   img: string;
 }
 
+export interface ICockpit {
+  name:string,
+  sessionId: string
+}
+
 export interface ICreateBotDTo {
   name: string;
   image: File;
   password: string;
-  cockits: string[];
+  cockpits: ICockpit[]
 }

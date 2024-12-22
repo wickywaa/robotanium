@@ -1,6 +1,6 @@
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
-import { ICreateBotDTo } from '../../models';
+import { ICockpit, ICreateBotDTo } from '../../models';
 import validate from 'validator';
 
 import React, { useState } from 'react';
@@ -20,7 +20,7 @@ export const CreateBotModule: React.FC<ICreateBotModule> = ({close, createBot})=
   const [botName, setBotName] = useState<string>('');
   const [ botPassword, setBotPassword ] = useState<string>('');
   const [ botRepeatPassword, setbotRepeatPassword ] = useState<string>('');
-  const [cockpits, setCockpits] = useState<string[]>(['']);
+  const [cockpits, setCockpits] = useState<ICockpit[]>([]);
 
   const handleImage = (event:React.ChangeEvent<HTMLInputElement>) => {
     if(!event.target.files?.length) return;
@@ -32,7 +32,20 @@ export const CreateBotModule: React.FC<ICreateBotModule> = ({close, createBot})=
     if(imageFile !== null || imageUrl !== null) setErrorMessage('');
     if(botName.length >55 ) setErrorMessage('');
     if(validate.isStrongPassword(botPassword)) setErrorMessage('');
+  }
 
+  const handleCockpitChange = (key: number, name:string) =>{
+
+  const newCockpits = cockpits.map((cockpit,index) => {
+    if (index === key ) return {
+      name,
+      sessionId:''
+    }
+    
+    return cockpit
+  })
+
+  setCockpits(newCockpits)
   }
 
   const handleCreateBot = () => {
@@ -42,11 +55,13 @@ export const CreateBotModule: React.FC<ICreateBotModule> = ({close, createBot})=
     if(!validate.isStrongPassword(botPassword)) return setErrorMessage('Bot Password Be 8 digits long, contain 1 lowercase 1 uppercase and 1 special character');
     if(botPassword  !==  botRepeatPassword) return setErrorMessage('Passwords do not match')
 
+    
+
     return createBot({
       image:imageFile,
       name: botName,
       password: botPassword,
-      cockits: []
+      cockpits: cockpits,
     })
   }
 
@@ -74,12 +89,12 @@ export const CreateBotModule: React.FC<ICreateBotModule> = ({close, createBot})=
         <div style={{display:'flex', height:'70%', overflow:'auto'}} >
         <div style={{display:'flex', flexDirection:'column'}}>
         {cockpits.map((_,key)=> {
-          return (<div key={key} style={{display:'flex', flexDirection:'column'}}><InputText placeholder={`cockpit ${key+1}`}/></div>)
+          return (<div key={key} style={{display:'flex', flexDirection:'column'}}><InputText onChange={(event)=>handleCockpitChange(key,event.target.value)}  placeholder={`cockpit ${key+1}`}/></div>)
         })  }
       
         </div>
         <Button style={{maxHeight:'30px'}}  disabled={cockpits.length<2} onClick={()=> setCockpits(cockpits.slice(0,-1))} icon='pi pi-minus'/>
-        <Button style={{maxHeight:'30px'}} onClick={()=> setCockpits([...cockpits,''])} icon='pi pi-plus'/>
+        <Button style={{maxHeight:'30px'}} onClick={()=> setCockpits([...cockpits,{name:'', sessionId:''}])} icon='pi pi-plus'/>
         </div>
         
         {errorMessage}  

@@ -23,7 +23,6 @@ function * loginUser(action: PayloadAction<ILoginCredentials>) {
   }
 }
 
-
 function* logoutSaga() {
   console.log('logout ssage')
   try {
@@ -36,14 +35,14 @@ function* logoutSaga() {
      });
      
      console.log('fired it herer')
-     yield put(setEditUser(null));
+     //yield put(setEditUser(null));
      yield put(setShowCreateUser(false))
   
      yield put(logout())
   }
   catch(e) {
     localStorage.setItem('authToken','')
-    yield put(setEditUser(null));
+    //yield put(setEditUser(null));
     yield put(setShowCreateUser(false))
     yield put(logout())
   }

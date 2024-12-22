@@ -21,7 +21,7 @@ export const userManagementSlice = createSlice({
   initialState,
   reducers: {
     setShowCreateUser:(state,action: PayloadAction<boolean>)=>({...state, showCreateAdminUser:action.payload}),
-    setEditUser:(state,action: PayloadAction<{user:ILoggedInUser, showResetPassword:boolean}>)=>({...state, editUser:action.payload}),
+    setEditUser:(state,action: PayloadAction<{user:ILoggedInUser, showResetPassword:boolean} | null>)=>({...state, editUser:action.payload}),
     addUsersAttempt: (state ) => ({...state, isLoading: true}),
     addUsersFailed: (state ) => ({...state, users: [], loading: false }),
     addUsersSuccess: (state, action: PayloadAction<ILoggedInUser[]>) => ({...state, users: action.payload}),

@@ -33,7 +33,7 @@ export const BotSlice = createSlice({
     setShowCreateBot: (state, action: PayloadAction<boolean>) => ({ ...state, showCreateBot:action.payload }),
     createBotAttempt: (state, action: PayloadAction<ICreateBotDTo>) => ({ ...state, isLoading: true }),
     createBotFailed: (state) => ({...state, isLoading: false }),
-    createBotSuccess: (state, action: PayloadAction<IBot[]>) => ({ ...state, bots: action.payload }),
+    createBotSuccess: (state, action: PayloadAction<IBot[]>) => ({ ...state, bots: action.payload, showCreateBot:false, isLoading:false }),
   }
 })
 

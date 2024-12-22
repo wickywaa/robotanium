@@ -7,6 +7,8 @@ const botsService = new BotsService()
 
 export function * CreateBot( action: PayloadAction<ICreateBotDTo>) {
 
+  console.log('here is the create bot dto', action.payload)
+
   try {
     const response:{bots:IBot[]} = yield botsService.createBot(action.payload);
     console.log(response.bots)

@@ -7,7 +7,7 @@ import { User } from 'src/auth/interfaces';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Injectable()
-@Controller('api/admin/bots')
+@Controller('api/admin')
 
 export class BotsUsersController {
 
@@ -41,7 +41,7 @@ export class BotsUsersController {
     }
   }
 
-  @Get('bots')
+  @Get('/bots')
   async getAllBots(@Res()res: Response) {
     try {
       const bots = await this.botModel.find({});

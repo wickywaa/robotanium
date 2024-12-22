@@ -11,5 +11,4 @@ import { DatabaseModule } from 'src/database/database.module';
   ]
 })
 
-
 export class BotModule {}
