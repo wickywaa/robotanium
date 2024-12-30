@@ -22,10 +22,17 @@ export const NavBar: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const start = () => <img className="h-20" src={robotaniumLogo} />;
+
+  const onEditUserClick = () => {
+    if(user !== null){
+      dispatch(setEditUser({user, showResetPassword:true}))
+    }
+  }
+  
   const end = () => {
     return (
       <>
-        <Button icon='pi pi-user' onClick={()=> dispatch(setEditUser({user, showResetPassword:true}))}/>
+        <Button icon='pi pi-user' onClick={onEditUserClick}/>
         <Button onClick={(() => dispatch(logoutAttempt()))} style={{ color: '#00fefc' }} title="Logout">logout</Button>
       </>
     )

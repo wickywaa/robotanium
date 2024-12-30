@@ -21,6 +21,7 @@ export const CreateBotModule: React.FC<ICreateBotModule> = ({close, createBot})=
   const [ botPassword, setBotPassword ] = useState<string>('');
   const [ botRepeatPassword, setbotRepeatPassword ] = useState<string>('');
   const [cockpits, setCockpits] = useState<ICockpit[]>([]);
+  const [botImageUrl, setBotImageUrl] = useState<string>('');
 
   const handleImage = (event:React.ChangeEvent<HTMLInputElement>) => {
     if(!event.target.files?.length) return;
@@ -29,7 +30,7 @@ export const CreateBotModule: React.FC<ICreateBotModule> = ({close, createBot})=
   }
 
   const validateBot = () => {
-    if(imageFile !== null || imageUrl !== null) setErrorMessage('');
+    //if(imageFile !== null || imageUrl !== null) setErrorMessage('');
     if(botName.length >55 ) setErrorMessage('');
     if(validate.isStrongPassword(botPassword)) setErrorMessage('');
   }
@@ -49,7 +50,6 @@ export const CreateBotModule: React.FC<ICreateBotModule> = ({close, createBot})=
   }
 
   const handleCreateBot = () => {
-    if(imageFile === null) return setErrorMessage('Image file needed');
     if(botName.length < 5) return setErrorMessage('Bot name should be atleast 5 digits');
     if(botPassword.length <5 ) return setErrorMessage('Bot Password mus be stronger');
     if(!validate.isStrongPassword(botPassword)) return setErrorMessage('Bot Password Be 8 digits long, contain 1 lowercase 1 uppercase and 1 special character');
@@ -58,15 +58,15 @@ export const CreateBotModule: React.FC<ICreateBotModule> = ({close, createBot})=
     
 
     return createBot({
-      image:imageFile,
       name: botName,
       password: botPassword,
       cockpits: cockpits,
+      botImageUrl,
     })
   }
 
   return(
-      <Card style={{overflow:'auto', position:'absolute', width:'100%', height:'80%', boxSizing:'border-box'}} className="create-bot-from-container" 
+      <Card style={{overflow:'auto', position:'absolute', width:'100%', height:'80%', boxSizing:'border-box', zIndex:'20000'}} className="create-bot-from-container" 
       pt={{
         body:()=>({
           style:{'height':'100%'}
@@ -81,8 +81,9 @@ export const CreateBotModule: React.FC<ICreateBotModule> = ({close, createBot})=
         <div style={{padding:'10px', height:'100%', position:'relative'}}>
         <div className='card-body-form-wrapper' style={{display:'flex', height:'100%'}}>
         <div className='form-inputs-wrapper'>
-        <input type='file' onChange={e=>{handleImage(e); validateBot()}}/>
+        {/*<input type='file' onChange={e=>{handleImage(e); validateBot()}}/>*/}
         <InputText placeholder='Bot Name' value={botName} onChange={(e)=>setBotName(e.target.value)} />
+        <InputText placeholder='Image Url' value={botImageUrl} onChange={(e)=>setBotImageUrl(e.target.value)} />
         <PasswordInput onChange={setBotPassword} value={botPassword}  placeHolder='bot Password'/>
         <PasswordInput onChange={setbotRepeatPassword} value={botRepeatPassword}  placeHolder='repeat bot Password'/>
         
@@ -102,7 +103,7 @@ export const CreateBotModule: React.FC<ICreateBotModule> = ({close, createBot})=
         </div>
         <Button style={{position:'absolute', bottom:'30px'}} onClick={handleCreateBot} className="create-user-confirm-button" label="Create Bot" />
         </div>
-        {imageUrl ? <img style={{width:'80%'}} src={imageUrl??''}/>: 
+        {botImageUrl ? <img style={{width:'80%',height:'100%'}} src={botImageUrl??''}/>: 
           <div style={{display:'flex',justifyContent:'center',alignItems:'center', border:'1px solid blue',width:'100%', height:'100%'}}>Image Preview</div>
          }
         </div>

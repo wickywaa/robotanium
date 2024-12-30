@@ -5,3 +5,5 @@ export * from './global';
 export * from './UserEditModal/UserEditmodal';
 export * from './PasswordInput/PasswordInput';
 export * from './CreateBotsModule/CreateBotsModule';
+export * from './BotsTable/BotsTable';
+export * from './BotsExpansionTemplate/BotsExpansionTemplate';

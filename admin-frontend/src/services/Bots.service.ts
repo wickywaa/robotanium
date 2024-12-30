@@ -7,14 +7,13 @@ export class BotsService {
   createBot = async (createBotDto: ICreateBotDTo): Promise<AxiosResponse> => {
 
     console.log('create bots dto', createBotDto)
-    const formData = new FormData();
     const bodyData =  {
       name: createBotDto.name,
-      cockpits: createBotDto.cockpits
+      cockpits: createBotDto.cockpits,
+      imageUrl: createBotDto.botImageUrl
     }
-    formData.append('file', createBotDto.image)
     try {
-      return await adminBaseAxios.post("/bot",{...bodyData,formData})
+      return await adminBaseAxios.post("/bot",{...bodyData})
       .then((response)=>{
         return response.data
       })
@@ -23,5 +22,29 @@ export class BotsService {
     }
   };
 
+  getBots = async (): Promise<AxiosResponse> => {
+
+    try {
+      return await adminBaseAxios.get("/bots").then((response)=>{
+        return response.data
+      })
+    } 
+    catch(e:any) {
+      throw new Error("bots could not be loaded", e);
+    }
+  }
+
+  deleteBotById = async (id: string): Promise<IBot[]> => {
+    try {
+      return await adminBaseAxios.delete<{ bots: IBot[] }>(`/bot/${id}`).then((response) => {
+        return response.data.bots;
+      })
+    }
+    catch (e: any) {
+      if (e.response.data.message) throw new Error(e.response.data.message);
+      if (e.message) throw new Error(e.message);
+      throw new Error('Bot could not be Deleted');
+    }
+  }
 
 }

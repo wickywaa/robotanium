@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IBot, ICreateBotDTo } from '../../models';
 
-
 export interface IBotReducer {
   createBot: {
     image: string | null;
@@ -12,7 +11,6 @@ export interface IBotReducer {
   isLoading: boolean;
 }
 
- 
 export const initialState: IBotReducer = {
   createBot: {
     image: '',
@@ -28,12 +26,18 @@ export const BotSlice = createSlice({
   name: "botSlice",
   initialState,
   reducers: {
+    setBotsListAttempt: (state) => ({ ...state, isLoading:true }),
+    setBotsListFailed: (state) => ({ ...state, isLoading:false }),
+    setBotsListSuccess: (state, action:PayloadAction<{bots:IBot[]}>) => ({ ...state, bots:action.payload.bots, isLoading:false }),  
     setCreateBotName: (state,action: PayloadAction<string>) => ({ ...state, createBot: {...state.createBot,name:action.payload} }),
     setCreateBotImage: (state, action: PayloadAction<string>) => ({ ...state, createBot: {...state.createBot,name:action.payload} }),
     setShowCreateBot: (state, action: PayloadAction<boolean>) => ({ ...state, showCreateBot:action.payload }),
     createBotAttempt: (state, action: PayloadAction<ICreateBotDTo>) => ({ ...state, isLoading: true }),
     createBotFailed: (state) => ({...state, isLoading: false }),
     createBotSuccess: (state, action: PayloadAction<IBot[]>) => ({ ...state, bots: action.payload, showCreateBot:false, isLoading:false }),
+    deleteBotAttempt: (state, action:PayloadAction<string>) =>({...state}),
+    deleteBotFailed: (state) =>({...state, isLoading: true}),
+    deleteBotSuccess: (state, action:PayloadAction<IBot[]>) =>({...state,bots:action.payload, isLoading: false}),
   }
 })
 
@@ -43,6 +47,12 @@ export const {
   setShowCreateBot,
   createBotAttempt,
   createBotFailed,
-  createBotSuccess
+  createBotSuccess,
+  setBotsListAttempt,
+  setBotsListFailed,
+  setBotsListSuccess,
+  deleteBotAttempt,
+  deleteBotFailed,
+  deleteBotSuccess
 } = BotSlice.actions
 

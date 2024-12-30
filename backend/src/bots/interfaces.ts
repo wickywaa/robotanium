@@ -12,7 +12,6 @@ export interface ICreateBotDto {
   name:string;
   cockpits: IBotCockpits[],
   imageUrl: string,
-  image: File
 }
 
 export interface IBotMethods {
@@ -23,5 +22,5 @@ export interface IBot {
   name: string;
   token: string;
   cameras: IBotCockpits[];
-  imageUrl: string,
+  imageUrl: string
 }

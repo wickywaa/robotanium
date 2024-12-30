@@ -28,6 +28,7 @@ export const BotsSChema = new mongoose.Schema<IBot, IBotModel, IBotMethods>({
   },
 
   cameras: {
+    unique:true,
     type: [{
       name: String,
       sessionId: String
@@ -39,6 +40,7 @@ export const BotsSChema = new mongoose.Schema<IBot, IBotModel, IBotMethods>({
       }
     }
   },
+
 
   imageUrl: {
     type: String
