@@ -38,9 +38,18 @@ export const BotsExpansionTemplate:React.FC<BotsExpansion> = ({data}) => {
    )
   }
 
+  const renderImage = ():React.ReactElement | null => {
+    return data.imageUrl.length > 1 ? ( 
+      <div>
+        <img src={data.imageUrl} alt='bot'/>
+      </div>
+   ) : null
+  }
+
   return(
     <Card footer={footer} >
       {cameraList()}
+      {renderImage()}
     </Card>
   )
 }

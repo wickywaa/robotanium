@@ -11,6 +11,7 @@ export interface IBot {
   _id: string,
   name: string;
   img: string;
+  imageUrl: string;
   cameras: camera[]
 }
 

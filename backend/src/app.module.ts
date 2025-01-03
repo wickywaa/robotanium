@@ -7,6 +7,8 @@ import { UsersController} from './auth/controllers/Users.Controller'
 import { UsersService } from './auth/services';
 import { DatabaseModule } from './database/database.module';
 import { BotModule } from './bots/bots.module';
+import {SocketGateway} from './bots/services/webSocketService';
+import { WsGateway } from './ws.gateway';
 
 
 @Module({

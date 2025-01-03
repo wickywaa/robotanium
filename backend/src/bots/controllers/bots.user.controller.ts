@@ -20,7 +20,6 @@ export class BotsUsersController {
   @UseInterceptors(FileInterceptor('file'))
   async createBot(@Body() body:ICreateBotDto,@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
 
-
     try {
       const newBot:IBot = {
         name: body.name,
