@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import { IBot, IBotMethods, IBotModel, ICreateBotDto } from '../interfaces';
 import { User } from 'src/auth/interfaces';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { BotAuthService } from '../services/authService';
 
 @Injectable()
 @Controller('api/admin')
@@ -14,19 +15,26 @@ export class BotsUsersController {
   constructor(
     @Inject('BOT_MODEL')
     private botModel: Model<IBot, IBotModel, IBotMethods>,
+    private  botAuthService : BotAuthService,
   ) { }
 
   @Post('bot')
   @UseInterceptors(FileInterceptor('file'))
   async createBot(@Body() body:ICreateBotDto,@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
 
+    console.log('body',body)
+
+    const hashedPassword = await this.botAuthService.hashPassword(body.password);
+    //console.log('hashed Pasword', hashedPassword)
     try {
       const newBot:IBot = {
         name: body.name,
-        token: '',
+        token:  hashedPassword,
         cameras: body.cockpits,
         imageUrl: body.imageUrl,
       }
+
+      console.log('newBot', newBot)
     
       const bot = new this.botModel(newBot);
       await bot.save();

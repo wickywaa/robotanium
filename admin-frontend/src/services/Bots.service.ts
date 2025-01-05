@@ -10,7 +10,8 @@ export class BotsService {
     const bodyData =  {
       name: createBotDto.name,
       cockpits: createBotDto.cockpits,
-      imageUrl: createBotDto.botImageUrl
+      imageUrl: createBotDto.botImageUrl,
+      password: createBotDto.password
     }
     try {
       return await adminBaseAxios.post("/bot",{...bodyData})

@@ -7,10 +7,34 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from "@nestjs/websockets";
+import { Inject, UseGuards } from '@nestjs/common';
+import {AuthGuard} from '../guards/AuthGuards'
+import { Model } from 'mongoose';
+import { IBot, IBotMethods, IBotModel } from '../interfaces';
+import { BotAuthService } from './authService';
+
+
+interface botAuth {
+  password: string,
+  name: string,
+  id: string,
+}
 
 @WebSocketGateway()
 export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+  
+
+ readonly  connectedBots: IBot[];
+  constructor(
+    @Inject('BOT_MODEL')
+    private botModel: Model<IBot, IBotModel, IBotMethods>,
+    private readonly botsService : BotAuthService
+  ) {
+    this.connectedBots = []
+   }
+
   @WebSocketServer() io: Server;
+
 
   afterInit() {
     console.log('web sockets initiated first tie')
@@ -20,10 +44,18 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     console.log('hello there')
   }
 
-  handleConnection(client: any, ...args: any[]) {
+  handleConnection = async(client: any, ...args: any[]) => {
     const { sockets } = this.io.sockets;
 
-    console.log('this is the requested connection')
+    const authData:botAuth = client.handshake.auth;
+
+    const bot = await this.botModel.findOne({_id:authData.id});
+    console.log(bot)
+
+    console.log('connectedBots', this.connectedBots)
+    if(!bot) return client.disconnect()
+
+
 
     console.log(`Client id: ${client.id} connected`);
     console.log(`Number of connected clients: ${sockets.size}`);
@@ -34,7 +66,8 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   }
 
   // Example method to emit a message to a specific room
-  @SubscribeMessage("ping")
+  @UseGuards(AuthGuard)
+  @SubscribeMessage("login")
   handleMessage(client: any, data: any) {
     console.log(`Message received from client id: ${client.id}`);
     console.log(`Payload: ${data}`);
