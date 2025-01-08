@@ -4,7 +4,6 @@ var bcrypt = require('bcryptjs');
 
 export class BotAuthService {
 
-
   async hashPassword(password: string): Promise<string> {
     return await bcrypt.hash(password,8);
  }

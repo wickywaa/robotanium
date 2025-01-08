@@ -20,6 +20,7 @@ export interface IBotMethods {
 }
 
 export interface IBot {
+  id: string;
   name: string;
   token: string;
   cameras: IBotCockpits[];

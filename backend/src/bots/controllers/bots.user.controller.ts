@@ -3,7 +3,6 @@ import { Response } from 'express';
 import { Multer } from 'multer';
 import { Model } from 'mongoose';
 import { IBot, IBotMethods, IBotModel, ICreateBotDto } from '../interfaces';
-import { User } from 'src/auth/interfaces';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { BotAuthService } from '../services/authService';
 
@@ -25,9 +24,8 @@ export class BotsUsersController {
     console.log('body',body)
 
     const hashedPassword = await this.botAuthService.hashPassword(body.password);
-    //console.log('hashed Pasword', hashedPassword)
     try {
-      const newBot:IBot = {
+      const newBot:Omit<IBot,'id'> = {
         name: body.name,
         token:  hashedPassword,
         cameras: body.cockpits,
@@ -68,8 +66,6 @@ export class BotsUsersController {
 
   @Delete('bot/:id')
   async deleteUserById(@Res() response:Response, @Param('id') id: string) {
-  
-    console.log('deletring', id)
     
     try {
       const bot = await this.botModel.findByIdAndDelete(id);

@@ -5,6 +5,7 @@ import { DatabaseModule } from 'src/database/database.module';
 import {SocketGateway} from './services/webSocketService'
 import { AuthGuard } from './guards/AuthGuards';
 import { BotAuthService } from './services/authService';
+import { OpenTokService } from './services/openTokServices';
 
 @Module({
   imports: [DatabaseModule],
@@ -13,7 +14,8 @@ import { BotAuthService } from './services/authService';
     ...botsProviders,
     BotAuthService,
     SocketGateway,
-    AuthGuard
+    AuthGuard,
+    OpenTokService
   ]
 })
 

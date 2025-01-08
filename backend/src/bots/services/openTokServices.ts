@@ -1,9 +1,19 @@
-const OpenTok = require("opentok")
-const opentok = new OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_SECRET);
 
+
+const OpenTok = require("opentok")
+
+const opentok = new OpenTok('48001991', '886432f0480e2a325bb8dae17cfa4dfa80843171');
 
 export class OpenTokService {
 
   createAccesstoken = (sessionId:string) => opentok.generateToken(sessionId);
-  createSessionID = () => opentok.createSession();
+  createSessionID = async() => await new Promise(function(Resolve, Reject) {
+    // "Producing Code" (May take some time)
+
+    opentok.createSession({mediaMode:'routed'},(error,session) => {
+      if(error) return Reject();
+      return Resolve(session)
+    })
+
+    }); 
 }
