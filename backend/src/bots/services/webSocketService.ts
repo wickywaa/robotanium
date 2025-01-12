@@ -1,5 +1,7 @@
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import {
+  ConnectedSocket,
+  MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
   OnGatewayInit,
@@ -9,18 +11,30 @@ import {
 } from "@nestjs/websockets";
 import { Inject, UseGuards } from '@nestjs/common';
 import {AuthGuard} from '../guards/AuthGuards'
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { IBot, IBotCockpits, IBotMethods, IBotModel } from '../interfaces';
 import { BotAuthService } from './authService';
-import { OpenTokService } from './openTokServices';
+import { OpenTokService } from './openTokServices'
+import { IUserMethods, User, UserModel } from 'src/auth/interfaces';
+var jwt = require('jsonwebtoken');
 
 
 interface botAuth {
+  type: 'bot',
   password: string,
   name: string,
   botId: string,
   camId: string
 }
+
+interface userAuth {
+  type: 'user',
+  token: string,
+  id: string,
+}
+
+type connectedClient = userAuth | botAuth
+
 
 interface IConnectedCockpit extends IBotCockpits {
   player: {
@@ -33,24 +47,40 @@ interface IConnectedCockpit extends IBotCockpits {
 interface IConnectedBot {
   id: string,
   name: string,
-  cockpits: IConnectedCockpit[]
+  cockpits: IConnectedCockpit[],
+  socketId: string,
+}
+
+interface IConnectedUser {
+  id: string,
+  socketId: string,
+  userName: string,
 }
 
 @WebSocketGateway()
 export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   
 
- readonly  connectedBots: IConnectedBot[];
+ connectedBots: IConnectedBot[];
+  connectedUsers: IConnectedUser[];
   constructor(
     @Inject('BOT_MODEL')
     private botModel: Model<IBot, IBotModel, IBotMethods>,
+    @Inject('USER_MODEL')
+    private userModel: Model<URIError,UserModel, IUserMethods>,
     private readonly botsService: BotAuthService,
     private readonly openTokService: OpenTokService
   ) {
     this.connectedBots = []
    }
 
+
+
+
+
   @WebSocketServer() io: Server;
+
+  
 
 
   afterInit() {
@@ -81,48 +111,81 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     this.connectedBots.push({
       id,
       name:bot.name,
-      cockpits:cameras
+      cockpits:cameras,
+      socketId: '12121',
     })
 
-    console.log('connectedBots', this.connectedBots[0].cockpits)
-  }
-
-  handleConnection = async(client: any, ...args: any[]) => {
-    const { sockets } = this.io.sockets;
-
-    const authData:botAuth = client.handshake.auth;
-
-    console.log('authData', authData)
-
-    const bot = await this.botModel.findOne({_id:authData.botId});
-    console.log(bot)
-
     console.log('connectedBots', this.connectedBots)
-    if(!bot) return client.disconnect();
-    const passwordMatches = await this.botsService.passwordMatches(authData.password,bot.token)
-
-    console.log('passwordMatch', passwordMatches)
-    if(!passwordMatches) return client.disconnect();
-
-
-    console.log(`Client id: ${client.id} connected`);
-    console.log(`Number of connected clients: ${sockets.size}`);
-    this.updateBotList(bot, bot._id.toString())
   }
+
+  handleConnection = async(client ) => {
+
+
+    client.on('test', (socket)=> {
+
+      console.log('handling the connection here ', socket)
+    } )
+
+    console.log('connecting')
+
+
+    const { sockets } = this.io.sockets;
+    const authData: connectedClient = client.handshake.auth;
+    const socketId =  client.conn.id
+
+    
+
+    if( authData.type === 'bot') {
+      const bot = await this.botModel.findOne({_id:authData.botId});
+      if(!bot) return client.disconnect();
+      const passwordMatches = await this.botsService.passwordMatches(authData.password,bot.token)
+      if(!passwordMatches) return client.disconnect();
+      this.updateBotList(bot, bot._id.toString());    
+    }
+
+    if( authData.type === 'user') {
+
+      var decoded = jwt.verify(authData.token, 'supersecretpassword');
+      const {_id:id, iat} = decoded;
+
+
+    // time is currently at 5 minutes needs to ba 24 hours
+    if(new Date().getTime() - (iat * 1000)  >= 86400000 ) return ;
+    const _id = mongoose.Types.ObjectId.createFromTime(parseInt(id));
+    const user:User = await this.userModel.findOne({_id:id});
+
+    if(!user) return client.disconnect();
+
+    if(user.isRobotaniumAdmin) {
+      
+    }
+
+    }
+
+    return true
+
+
+  }
+
+  @SubscribeMessage('test')
+  handleMessage(socket: Socket, data: any) {
+    console.log('socket test',socket)
+    console.log('data',data)
+  }
+
+
+  sendNewBotList = () => this.io.to('userRoom').emit('updatedBotList', this.connectedBots);
+  sendNewUserList = () => this.io.to('userRoom').emit('updateUserList', this.connectedBots);
+
 
   handleDisconnect(client: any) {
-    console.log('Client disconnected');
+    const socketId = client.conn.id as string
+    this.connectedBots = this.connectedBots.filter((bot)=> bot.socketId !== socketId)
+
+
+    //TODO send message to connected use to let them know bot was connected
   }
 
   // Example method to emit a message to a specific room
-  @UseGuards(AuthGuard)
-  @SubscribeMessage("login")
-  handleMessage(client: any, data: any) {
-    console.log(`Message received from client id: ${client.id}`);
-    console.log(`Payload: ${data}`);
-    return {
-      event: "pong",
-      data: "Wrong data that will make the test fail",
-    };
-  }
+
 }

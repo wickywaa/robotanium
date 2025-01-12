@@ -6,16 +6,18 @@ import {SocketGateway} from './services/webSocketService'
 import { AuthGuard } from './guards/AuthGuards';
 import { BotAuthService } from './services/authService';
 import { OpenTokService } from './services/openTokServices';
+import { AuthModule } from 'src/auth/auth.module';
+import { UserSchema } from 'src/auth/schemas/users.schema';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, AuthModule],
   controllers,
   providers: [
     ...botsProviders,
     BotAuthService,
     SocketGateway,
     AuthGuard,
-    OpenTokService
+    OpenTokService,
   ]
 })
 

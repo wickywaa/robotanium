@@ -13,7 +13,8 @@ import controllers from './controllers';
     ...services,
     MailService,
     ...usersProviders,
-  ]
+  ],
+  exports:[...usersProviders]
   
 })
 export class AuthModule implements NestModule {
