@@ -12,50 +12,13 @@ import {
 import { Inject, UseGuards } from '@nestjs/common';
 import {AuthGuard} from '../guards/AuthGuards'
 import mongoose, { Model } from 'mongoose';
-import { IBot, IBotCockpits, IBotMethods, IBotModel } from '../interfaces';
+import { IBot, IBotCockpits, IBotMethods, IBotModel, botAuth, userAuth,IConnectedBot, IConnectedUser,IConnectedCockpit, connectedClient  } from '../interfaces';
 import { BotAuthService } from './authService';
 import { OpenTokService } from './openTokServices'
 import { IUserMethods, User, UserModel } from 'src/auth/interfaces';
+import { authDTOIsValid, botAuthValid, userAuthValid } from '../validators/socket.validator';
 var jwt = require('jsonwebtoken');
 
-
-interface botAuth {
-  type: 'bot',
-  password: string,
-  name: string,
-  botId: string,
-  camId: string
-}
-
-interface userAuth {
-  type: 'user',
-  token: string,
-  id: string,
-}
-
-type connectedClient = userAuth | botAuth
-
-
-interface IConnectedCockpit extends IBotCockpits {
-  player: {
-    id: string | null,
-    name: string | null,
-  }
-  status: 'online' | 'offline' | 'occupied',  
-}
-
-interface IConnectedBot {
-  id: string,
-  name: string,
-  cockpits: IConnectedCockpit[],
-  socketId: string,
-}
-
-interface IConnectedUser {
-  id: string,
-  socketId: string,
-  userName: string,
-}
 
 @WebSocketGateway()
 export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -63,6 +26,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
  connectedBots: IConnectedBot[];
   connectedUsers: IConnectedUser[];
+  connectedAdminUsers: IConnectedUser[];
   constructor(
     @Inject('BOT_MODEL')
     private botModel: Model<IBot, IBotModel, IBotMethods>,
@@ -72,10 +36,9 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     private readonly openTokService: OpenTokService
   ) {
     this.connectedBots = []
+    this.connectedUsers = []
+    this.connectedAdminUsers = []
    }
-
-
-
 
 
   @WebSocketServer() io: Server;
@@ -91,7 +54,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     console.log('hello there')
   }
 
-  updateBotList = async(bot: IBot, id:string) => {
+  updateBotList = async(bot: IBot, id:string, socketId) => {
     const isBotConnected = this.connectedBots.find((connectedBot)=> connectedBot.id = id)
 
     const cameras: IConnectedCockpit[] = await  Promise.all(
@@ -112,52 +75,50 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       id,
       name:bot.name,
       cockpits:cameras,
-      socketId: '12121',
+      socketId:socketId
     })
 
-    console.log('connectedBots', this.connectedBots)
+    console.log('cnnected Bots', this.connectedBots)
+
   }
 
-  handleConnection = async(client ) => {
+  handleConnection = async(socket ) => {
 
-
-    client.on('test', (socket)=> {
-
-      console.log('handling the connection here ', socket)
-    } )
-
-    console.log('connecting')
-
-
-    const { sockets } = this.io.sockets;
-    const authData: connectedClient = client.handshake.auth;
-    const socketId =  client.conn.id
-
+    const authData: connectedClient = socket.handshake;
+    console.log('authjon', socket.handshake.headers.auth)
+    
+    const authDataJson : connectedClient = JSON.parse(JSON.stringify(socket.handshake.headers.auth))
     
 
+    console.log('json auth',authDataJson)
+
+
+    if(!authDTOIsValid(authData)) return socket.disconnect();
+
+  
     if( authData.type === 'bot') {
+      console.log('bot connection')
       const bot = await this.botModel.findOne({_id:authData.botId});
-      if(!bot) return client.disconnect();
+      if(!bot) return socket.disconnect();
+      if(botAuthValid(bot,authData))return false;
       const passwordMatches = await this.botsService.passwordMatches(authData.password,bot.token)
-      if(!passwordMatches) return client.disconnect();
-      this.updateBotList(bot, bot._id.toString());    
+      if(!passwordMatches) return socket.disconnect();
+      this.updateBotList(bot, bot._id.toString(), socket.id);    
     }
 
+
     if( authData.type === 'user') {
-
-      var decoded = jwt.verify(authData.token, 'supersecretpassword');
-      const {_id:id, iat} = decoded;
-
-
-    // time is currently at 5 minutes needs to ba 24 hours
-    if(new Date().getTime() - (iat * 1000)  >= 86400000 ) return ;
-    const _id = mongoose.Types.ObjectId.createFromTime(parseInt(id));
-    const user:User = await this.userModel.findOne({_id:id});
-
-    if(!user) return client.disconnect();
+    if(!userAuthValid(authData)) return socket.disconnect();
+    const _id = mongoose.Types.ObjectId.createFromTime(parseInt(authData.id));
+    const user:User = await this.userModel.findOne({_id});
+    if(!user) return socket.disconnect();
 
     if(user.isRobotaniumAdmin) {
-      
+      this.connectedAdminUsers.push({
+        userName:user.userName,
+        id: user._id,
+        socketId:socket.id
+      })
     }
 
     }
@@ -167,11 +128,24 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   }
 
-  @SubscribeMessage('test')
+  @SubscribeMessage('registerBot')
   handleMessage(socket: Socket, data: any) {
-    console.log('socket test',socket)
+    console.log('socket test',socket.id)
     console.log('data',data)
   }
+
+  @SubscribeMessage('connectUserToBot')
+  handleconnectUserToBo(socket: Socket, data: {botId:string, cockpits:string[]}) {
+    console.log('bot connected', socket.id)
+    console.log('data',data)
+    console.log('bots', this.connectedBots)
+    const user = this.connectedUsers.find((user)=>user.socketId)
+    const bot = this.connectedBots.find((bot)=> bot.id === data.botId)
+
+    console.log('user', user)
+    console.log('bot', bot)
+    
+  } 
 
 
   sendNewBotList = () => this.io.to('userRoom').emit('updatedBotList', this.connectedBots);
@@ -180,10 +154,22 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   handleDisconnect(client: any) {
     const socketId = client.conn.id as string
-    this.connectedBots = this.connectedBots.filter((bot)=> bot.socketId !== socketId)
+    this.connectedBots = this.connectedBots.filter((bot)=> bot.socketId !== socketId);
+    this.connectedUsers = this.connectedUsers.filter((user) => user.socketId !== socketId);
+    this.connectedAdminUsers = this.connectedAdminUsers.filter((user)=> user.socketId !== socketId) 
 
+    this.broadCastConections(client)
 
     //TODO send message to connected use to let them know bot was connected
+  }
+
+  broadCastConections(socket:Socket) {
+    console.log('broadcasting')
+      socket.broadcast.emit('connections',{
+      bots: this.connectedBots,
+      admins: this.connectedBots,
+      users: this.connectedUsers
+    })
   }
 
   // Example method to emit a message to a specific room

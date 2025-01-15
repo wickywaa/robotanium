@@ -15,6 +15,7 @@ export interface User {
   changePassword: boolean;
   theme: string;
   rememberme: boolean;
+  _id?: string
 }
 
 export interface ILoginCredentials {

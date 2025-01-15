@@ -26,3 +26,55 @@ export interface IBot {
   cameras: IBotCockpits[];
   imageUrl: string
 }
+
+export interface botAuth {
+  type: 'bot',
+  password: string,
+  name: string,
+  botId: string,
+  camId: string,
+  camName: string
+}
+
+export interface userAuth {
+  type: 'user',
+  token: string,
+  id: string,
+}
+
+export type connectedClient = userAuth | botAuth
+
+
+export interface IConnectedCockpit extends IBotCockpits {
+  player: {
+    id: string | null,
+    name: string | null,
+  }
+  status: 'online' | 'offline' | 'occupied',  
+}
+
+ export interface IConnectedBot {
+  id: string,
+  name: string,
+  cockpits: IConnectedCockpit[],
+  socketId: string,
+}
+
+export interface IConnectedUser {
+  id: string,
+  socketId: string,
+  userName: string,
+}
+
+export interface IConnectedCockpit extends IBotCockpits {
+  player: {
+    id: string | null,
+    name: string | null,
+  }
+  status: 'online' | 'offline' | 'occupied',  
+}
+
+export interface IConnectUserToCockpit {
+  userId: string,
+  cockpits: string []
+}
