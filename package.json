@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "@types/node": "^20.17.11"
+  },
+  "dependencies": {
+    "@types/socket.io-client": "^3.0.0"
   }
 }

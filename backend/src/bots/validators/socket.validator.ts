@@ -2,18 +2,26 @@ import { User } from "src/auth/interfaces";
 import { botAuth, connectedClient, IBot, userAuth } from "../interfaces";
 var jwt = require('jsonwebtoken');
 
-export const authDTOIsValid = (authData:connectedClient) => {
+export const authDTOIsValid = (authData:connectedClient): boolean => {
+
+
+
   if(!authData) return false;
   if(!authData?.type) return false;
   if(authData.type !== 'bot' && authData.type !== 'user') return false;
   if(authData.type === 'bot') return isBotAuthDtoValid(authData);
   if(authData.type === 'user') return isUserAuthDtoValid(authData)
+
+    return true
 }
 
-export const isUserAuthDtoValid = (user: userAuth) => {
+export const isUserAuthDtoValid = (user: userAuth):boolean => {
+
+  console.log('got here', user)
  if(!user.id) return false;
  if(user.id.length < 5) return false;
- if(user.token?.length >5) return false;
+ if(user.token?.length <5) return false;
+ return true
 }
 
 export const isBotAuthDtoValid = (bot: botAuth) => {
@@ -23,18 +31,21 @@ export const isBotAuthDtoValid = (bot: botAuth) => {
   if(!bot.name?.length) return false;
   if(!bot.password?.length) return false;
   if(!bot.camName?.length) return false;
+  return true;
 }
 
-export const userAuthValid = (authData:userAuth) => {
+export const userAuthValid = (authData:userAuth):boolean => {
   var decoded = jwt.verify(authData.token, 'supersecretpassword');
   const {_id:id, iat} = decoded;
-  if(new Date().getTime() - (iat * 1000)  >= 86400000 ) return false ;
+  if((new Date().getTime() - (iat * 1000))  >= 3600000 ) return false ;
+  return true
 }
 
-export const botAuthValid = (bot:IBot, authData:botAuth) => {
+export const botAuthValid = (bot:IBot, authData:botAuth):boolean => {
 
   if(bot.id !== authData.botId) return false;
   const camera = bot.cameras.find((camera)=>camera.name);
   if(!camera) return false;
   if(bot.name !== authData.name) return false;
+  return true
 }

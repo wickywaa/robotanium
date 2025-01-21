@@ -31,7 +31,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     @Inject('BOT_MODEL')
     private botModel: Model<IBot, IBotModel, IBotMethods>,
     @Inject('USER_MODEL')
-    private userModel: Model<URIError,UserModel, IUserMethods>,
+    private userModel: Model<User,UserModel, IUserMethods>,
     private readonly botsService: BotAuthService,
     private readonly openTokService: OpenTokService
   ) {
@@ -78,39 +78,43 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       socketId:socketId
     })
 
+  
+
     console.log('cnnected Bots', this.connectedBots)
 
   }
 
   handleConnection = async(socket ) => {
 
-    const authData: connectedClient = socket.handshake;
-    console.log('authjon', socket.handshake.headers.auth)
-    
-    const authDataJson : connectedClient = JSON.parse(JSON.stringify(socket.handshake.headers.auth))
-    
-
-    console.log('json auth',authDataJson)
+    const authData: connectedClient = socket.handshake.auth;
 
 
     if(!authDTOIsValid(authData)) return socket.disconnect();
 
   
     if( authData.type === 'bot') {
-      console.log('bot connection')
       const bot = await this.botModel.findOne({_id:authData.botId});
       if(!bot) return socket.disconnect();
-      if(botAuthValid(bot,authData))return false;
+      if(!botAuthValid(bot,authData))return false;
       const passwordMatches = await this.botsService.passwordMatches(authData.password,bot.token)
       if(!passwordMatches) return socket.disconnect();
-      this.updateBotList(bot, bot._id.toString(), socket.id);    
+      await this.updateBotList(bot, bot._id.toString(), socket.id); 
+      console.log('bot list', this.connectedBots.find((bot)=>{
+        return bot.cockpits
+      }))   
+
+      this.broadCastConections(socket)
     }
 
 
     if( authData.type === 'user') {
+
     if(!userAuthValid(authData)) return socket.disconnect();
-    const _id = mongoose.Types.ObjectId.createFromTime(parseInt(authData.id));
-    const user:User = await this.userModel.findOne({_id});
+
+
+
+    const user:User = await this.userModel.findOne({_id:authData.id});
+
     if(!user) return socket.disconnect();
 
     if(user.isRobotaniumAdmin) {
@@ -124,8 +128,6 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     }
 
     return true
-
-
   }
 
   @SubscribeMessage('registerBot')

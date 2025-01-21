@@ -1,5 +1,4 @@
 import { AxiosResponse } from "axios";
-import { ILoggedInUser, UserType } from "../models/User";
 import { adminBaseAxios } from "./Base.service";
 import { ICreateBotDTo, IBot } from "../models";
 
