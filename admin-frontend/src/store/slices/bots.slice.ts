@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IBot, ICreateBotDTo } from '../../models';
+import { IBot, IConnectedBot, ICreateBotDTo } from '../../models';
 
 export interface IBotReducer {
   createBot: {
@@ -9,6 +9,7 @@ export interface IBotReducer {
   bots: IBot[],
   showCreateBot: boolean;
   isLoading: boolean;
+  onlineBots: IConnectedBot[]
 }
 
 export const initialState: IBotReducer = {
@@ -19,6 +20,7 @@ export const initialState: IBotReducer = {
   bots: [],
   showCreateBot:false,
   isLoading:false,
+  onlineBots: []
 };
 
 
@@ -38,6 +40,7 @@ export const BotSlice = createSlice({
     deleteBotAttempt: (state, action:PayloadAction<string>) =>({...state}),
     deleteBotFailed: (state) =>({...state, isLoading: true}),
     deleteBotSuccess: (state, action:PayloadAction<IBot[]>) =>({...state,bots:action.payload, isLoading: false}),
+    setOnlineBots: (state, action: PayloadAction<{bots: IConnectedBot[]}>) => ({...state, onlineBots: action.payload.bots})
   }
 })
 
@@ -53,6 +56,7 @@ export const {
   setBotsListSuccess,
   deleteBotAttempt,
   deleteBotFailed,
-  deleteBotSuccess
+  deleteBotSuccess,
+  setOnlineBots
 } = BotSlice.actions
 

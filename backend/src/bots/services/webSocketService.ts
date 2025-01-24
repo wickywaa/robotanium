@@ -57,10 +57,14 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   updateBotList = async(bot: IBot, id:string, socketId) => {
     const isBotConnected = this.connectedBots.find((connectedBot)=> connectedBot.id = id)
 
+    console.log('connectingbot', bot)
+
     const cameras: IConnectedCockpit[] = await  Promise.all(
-      bot.cameras.map(async()=>{
+      bot.cameras.map(async(camera)=>{
         return  {
+          _id: camera._id,
           sessionId: await this.openTokService.createSessionID().then((session:any)=>session.sessionId),
+          accessToken: '',
           name: bot.name,
           player: {
             id:null,
@@ -71,7 +75,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       })
     )
 
-    this.connectedBots.push({
+   this.connectedBots =  this.connectedBots.filter((bot)=>bot.id !== id).concat({
       id,
       name:bot.name,
       cockpits:cameras,
@@ -80,7 +84,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   
 
-    console.log('cnnected Bots', this.connectedBots)
+    console.log('connected Bots', this.connectedBots)
 
   }
 
@@ -103,7 +107,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
         return bot.cockpits
       }))   
 
-      this.broadCastConections(socket)
+      this.emitAllConnections(socket)
     }
 
 
@@ -111,19 +115,28 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
     if(!userAuthValid(authData)) return socket.disconnect();
 
-
-
     const user:User = await this.userModel.findOne({_id:authData.id});
 
     if(!user) return socket.disconnect();
+    const connectedUser = {
+      userName:user.userName,
+      id: user._id.toString(),
+      socketId:socket.id
+    }
 
     if(user.isRobotaniumAdmin) {
-      this.connectedAdminUsers.push({
-        userName:user.userName,
-        id: user._id,
-        socketId:socket.id
-      })
+      console.log('socket', socket.id)
+      console.log('list1,',this.connectedAdminUsers)
+      this.addToAdminUserArray(connectedUser);
+
+      console.log('admin usr list ', this.connectedAdminUsers)
+      this.emitAllConnections(socket)
+      return
     }
+
+    this.addToUserArray(connectedUser)
+    this.emitAllConnections(socket)
+
 
     }
 
@@ -132,44 +145,47 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   @SubscribeMessage('registerBot')
   handleMessage(socket: Socket, data: any) {
-    console.log('socket test',socket.id)
-    console.log('data',data)
+    
   }
 
   @SubscribeMessage('connectUserToBot')
   handleconnectUserToBo(socket: Socket, data: {botId:string, cockpits:string[]}) {
-    console.log('bot connected', socket.id)
-    console.log('data',data)
-    console.log('bots', this.connectedBots)
+
     const user = this.connectedUsers.find((user)=>user.socketId)
     const bot = this.connectedBots.find((bot)=> bot.id === data.botId)
 
-    console.log('user', user)
-    console.log('bot', bot)
-    
+  
   } 
+
+  addToAdminUserArray = (adminUser:IConnectedUser) =>
+   this.connectedAdminUsers =  this.connectedAdminUsers.filter((user)=>adminUser.id !== user.id).concat(adminUser)
+
+  addToUserArray = (connectedUser:IConnectedUser ) =>  
+    this.connectedUsers = this.connectedUsers.filter((user)=>user.id !== connectedUser.id).concat(connectedUser)
 
 
   sendNewBotList = () => this.io.to('userRoom').emit('updatedBotList', this.connectedBots);
   sendNewUserList = () => this.io.to('userRoom').emit('updateUserList', this.connectedBots);
 
 
-  handleDisconnect(client: any) {
-    const socketId = client.conn.id as string
+  handleDisconnect(socket: any) {
+  
+
+    const socketId = socket.id as string
     this.connectedBots = this.connectedBots.filter((bot)=> bot.socketId !== socketId);
     this.connectedUsers = this.connectedUsers.filter((user) => user.socketId !== socketId);
     this.connectedAdminUsers = this.connectedAdminUsers.filter((user)=> user.socketId !== socketId) 
 
-    this.broadCastConections(client)
+    this.emitAllConnections(socket)
 
     //TODO send message to connected use to let them know bot was connected
   }
 
-  broadCastConections(socket:Socket) {
+  emitAllConnections(socket:Socket) {
     console.log('broadcasting')
-      socket.broadcast.emit('connections',{
+      socket.emit('connections',{
       bots: this.connectedBots,
-      admins: this.connectedBots,
+      admins: this.connectedAdminUsers,
       users: this.connectedUsers
     })
   }

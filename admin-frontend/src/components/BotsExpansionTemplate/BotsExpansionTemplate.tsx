@@ -1,10 +1,12 @@
 import React from 'react';
 import { DataTable  } from 'primereact/datatable';
-import { IBot } from '../../models';
+import { IBot, IConnectedBot } from '../../models';
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
+import { Session } from 'inspector';
+import { setOnlineBots } from '../../store';
 
 
 interface BotsExpansion {
@@ -18,6 +20,8 @@ export const BotsExpansionTemplate:React.FC<BotsExpansion> = ({data}) => {
       <InputText/>
     </div>
   }
+
+
 
   const cameraList = ():React.ReactElement => {
     return data.cameras.length ? ( <div> 

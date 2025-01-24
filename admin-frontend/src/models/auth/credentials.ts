@@ -9,3 +9,9 @@ export interface IRegisterCredentials {
   email: string;
   password: string;
 }
+
+export interface IConnectedUser {
+  id: string,
+  socketId: string,
+  userName: string,
+}

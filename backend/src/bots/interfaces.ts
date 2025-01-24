@@ -4,8 +4,10 @@ export type IBotModel = mongoose.Model<IBot, {}, IBotMethods>;
 
 
 export interface IBotCockpits {
+  _id: string;
   name: string;
   sessionId: string;
+  accessToken: string;
 }
 
 export interface ICreateBotDto {

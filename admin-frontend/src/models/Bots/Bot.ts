@@ -2,7 +2,7 @@ import { Session } from "inspector";
 import { ILoggedInUser } from "../User";
 
 interface camera{
-    id:string;
+    _id:string;
     name:string;
     sessionId: string;
 }
@@ -27,3 +27,40 @@ export interface ICreateBotDTo {
   cockpits: ICockpit[];
   botImageUrl: string;
 }
+
+export interface IBotCockpits {
+  name: string;
+  sessionId: string;
+}
+
+
+export interface IConnectedCockpit extends IBotCockpits {
+  _id:string,
+  player: {
+    id: string | null,
+    name: string | null,
+  }
+  status: 'online' | 'offline' | 'occupied',  
+}
+
+ export interface IConnectedBot {
+  id: string,
+  name: string,
+  cockpits: IConnectedCockpit[],
+  socketId: string,
+}
+
+export interface IConnectedUser {
+  id: string,
+  socketId: string,
+  userName: string,
+}
+
+export interface IConnectedCockpit extends IBotCockpits {
+  player: {
+    id: string | null,
+    name: string | null,
+  }
+  status: 'online' | 'offline' | 'occupied',  
+}
+

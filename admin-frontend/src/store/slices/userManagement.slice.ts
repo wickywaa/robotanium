@@ -1,9 +1,12 @@
 import type { PayloadAction  } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import { ILoggedInUser, UserType } from '../../models/User'
+import { IConnectedUser } from '../../models';
 
 interface userManagementState {
   users: ILoggedInUser[];
+  onlineUsers: IConnectedUser[];
+  onlineAdmins: IConnectedUser[];
   loading: boolean;
   showCreateAdminUser: boolean;
   editUser: {user:ILoggedInUser, showResetPassword:boolean} | null ; 
@@ -11,6 +14,8 @@ interface userManagementState {
 
 const initialState: userManagementState = {
   users: [],
+  onlineAdmins: [],
+  onlineUsers: [],
   loading: true,
   showCreateAdminUser: false,
   editUser: null,
@@ -40,6 +45,7 @@ export const userManagementSlice = createSlice({
     changePasswordAttempt: (state, action:PayloadAction<{email:string, password:string, newPassword:string}>) => ({...state, loading: false }),
     changePasswordSuccess: (state) => ({...state, loading:false, editUser:null}),
     setLoadingFalse: (state) => ({...state, loading: false, setEditUser:false }),
+    setOnLineUsers: (state, action: PayloadAction<{users: IConnectedUser[], admins:IConnectedUser}> ) =>( {...state, onlineUsers:action.payload.users, onlineAdmins: action.payload.admins })
   }
 })
 
@@ -63,6 +69,7 @@ export  const {
   resetPasswordSuccess,
   changePasswordAttempt,
   setLoadingFalse,
-  changePasswordSuccess
+  changePasswordSuccess,
+  setOnLineUsers
 } = userManagementSlice.actions
 

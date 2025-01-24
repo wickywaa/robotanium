@@ -36,7 +36,7 @@ const renderApp = () => {
 
 if (user) {
   renderApp();
-  connectsocket(response.user._id, response.token)
+  connectsocket(user._id,user.token)
 } else {
   if (authToken?.length) {
     new AuthService().loginWithToken().then((response) => {

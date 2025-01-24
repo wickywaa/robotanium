@@ -1,7 +1,7 @@
 import { Button } from "primereact/button";
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { selectCreateBot, selectShowCreateBot, selectBots } from '../../store/selectors'
+import { selectCreateBot, selectShowCreateBot, selectBots, selectOnlinebots } from '../../store/selectors'
 import { createBotAttempt, deleteBotAttempt, setBotsListAttempt, setShowCreateBot  } from "../../store";
 import { BotsTable, CreateBotModule } from "../../components";
 import { ICreateBotDTo } from "../../models";
@@ -15,6 +15,7 @@ export const BotsContainer: React.FC = () => {
   const createBot = useAppSelector(selectCreateBot);
   const showCreateBot = useAppSelector(selectShowCreateBot);
   const bots = useAppSelector(selectBots);
+  const onlineBots = useAppSelector(selectOnlinebots);
   const [showDeleteBotModal, setShowDeleteBotModal] = useState<string>('');
 
   const handleBot = (bot: ICreateBotDTo) => dispatch(createBotAttempt(bot))
@@ -51,7 +52,7 @@ export const BotsContainer: React.FC = () => {
   return <div style={{height:'89%', overflow:'auto'}}>
     <Button label='createBot' onClick={()=> dispatch(setShowCreateBot(true))}/>
       { showCreateBot && <CreateBotModule createBot={handleBot} close={()=> dispatch(setShowCreateBot(false))}/>}
-      <BotsTable bots={bots} botsOnline={[]} onDeleteBot={(id)=>setShowDeleteBotModal(id)} />
+      <BotsTable bots={bots} onlineBots={onlineBots} onDeleteBot={(id)=>setShowDeleteBotModal(id)} />
         {showDeleteBotModal.length ? deleteBotModal(): null}
     </div>;
 };
