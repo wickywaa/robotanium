@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import {Schema} from 'mongoose';
 import { IBot, IBotMethods, IBotModel, IBotCockpits } from './interfaces';
 
 export interface Bot {
@@ -9,6 +10,16 @@ export interface Bot {
   otherPhotosUrls: string[],
   userId: mongoose.Schema.Types.ObjectId;
 }
+
+const connectedCockpitSchema = new Schema({
+    id: { type: String, default: null },
+});
+
+const connectedBotSchema = new mongoose.Schema({
+  id: { type: String, required: true },
+  name: { type: String, required: true },
+  cockpits: [connectedCockpitSchema],
+});
 
 export const BotsSChema = new mongoose.Schema<IBot, IBotModel, IBotMethods>({
 
@@ -31,7 +42,7 @@ export const BotsSChema = new mongoose.Schema<IBot, IBotModel, IBotMethods>({
     unique:true,
     type: [{
       name: String,
-      sessionId: String
+      sessionId: String,
     }],
     validate(cameras: IBotCockpits[]) {
       const duplicates = cameras.filter((camera, index) => cameras.indexOf(camera) !== index);

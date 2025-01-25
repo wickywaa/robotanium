@@ -1,6 +1,6 @@
 import { Column } from 'primereact/column';
 import { DataTable, DataTableExpandedRows } from 'primereact/datatable';
-import React, { useState } from  'react';
+import React, { useEffect, useState } from  'react';
 import { IBot, IConnectedBot,   } from '../../models';
 import { Button } from 'primereact/button';
 import { BotsExpansionTemplate } from '../'
@@ -15,16 +15,14 @@ interface BotsTable {
 export const BotsTable: React.FC<BotsTable> = ({bots, onDeleteBot, onlineBots}) => {
 
   const [expandedRows, setExpandedRows] = useState< any[] | DataTableExpandedRows>([])
-  const [botsOnline, setBotsonline] = useState< string []>(['671d6a376573dc6f3a99c4d2','671d6af4bdf24cac121b383a'])
-  const [renderDeleteModal, setRenderDeleteModal] = useState<boolean>(false);
 
   const getLengthOfCamera = (value:IBot) =>value.cameras.length
+
   
   const getStatus = (bot:IBot) => {
 
     if(onlineBots.find((onlineBot)=> onlineBot.id ===  bot._id)) return <p style={{background:'green', textAlign:'center'}}>online</p>
 
-    console.log('onein bots', onlineBots)
     //if(onlineBots.find((bot)=>bot.id === bot.id)) return 'online';
 
     return <p style={{background:'red', textAlign:'center'}}>offline</p>
@@ -50,6 +48,10 @@ export const BotsTable: React.FC<BotsTable> = ({bots, onDeleteBot, onlineBots}) 
 
     }
   })
+
+  useEffect(()=>{
+    console.log('the bots are updated', onlineBots)
+  },[onlineBots])
 
   const renderActionButtons = (bot: IBot):React.ReactElement => {
     return (

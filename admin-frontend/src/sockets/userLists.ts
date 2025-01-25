@@ -11,6 +11,8 @@ interface IonlineConnectedUsersAndBots {
 
 export const handleUserListUpdate = (message: IonlineConnectedUsersAndBots) => {
 
+  console.log('updates', message)
+
 store.dispatch(setOnLineUsers({users: message.users, admins: message.admins}));
 store.dispatch(setOnlineBots({bots: message.bots}))
 console.log('mmessage', message)

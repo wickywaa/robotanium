@@ -182,8 +182,14 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   }
 
   emitAllConnections(socket:Socket) {
-    console.log('broadcasting')
-      socket.emit('connections',{
+    console.log('broadcasting',{
+      bots: this.connectedBots,
+      admins: this.connectedAdminUsers,
+      users: this.connectedUsers
+    })
+
+    console.log(socket)
+      this.io.emit('connections',{
       bots: this.connectedBots,
       admins: this.connectedAdminUsers,
       users: this.connectedUsers
