@@ -49,13 +49,6 @@ export interface IConnectedCockpit extends IBotCockpits {
   cockpits: IConnectedCockpit[],
   socketId: string,
 }
-
-export interface IConnectedUser {
-  id: string,
-  socketId: string,
-  userName: string,
-}
-
 export interface IConnectedCockpit extends IBotCockpits {
   player: {
     id: string | null,
