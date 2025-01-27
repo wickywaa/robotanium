@@ -6,15 +6,12 @@ import { Bot } from 'src/bots/bots.schema';
 const { Schema } = mongoose;
 
 const connectedCockpitSchema = new Schema({
-  player: {
-    id: { type: String, default: null },
-    name: { type: String, default: null },
-  }
+    _id: { type: mongoose.Schema.Types.ObjectId, default: null, ref: 'User' },
+    userId: { type: mongoose.Schema.Types.ObjectId, default: null, ref: 'User' },
 });
 
 const connectedBotSchema = new Schema({
-  id: { type: String, required: true },
-  name: { type: String, required: true },
+  _id: mongoose.Schema.Types.ObjectId,
   cockpits: [connectedCockpitSchema],
 });
 
@@ -23,12 +20,7 @@ export const gameSchema = new Schema({
   name: { type: String, required: true },
   startTime: { type: Number, required: true },
   endTime: { type: Number, required: false },
-  players: [
-    {
-      id: { type: String, required: true },
-      name: { type: String, required: true },
-    },
-  ],
+  players: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
   adminPlayerId: { type: String, required: true },
   bots: [connectedBotSchema],  // Now an array of connected bots
   gameType: {
@@ -45,8 +37,8 @@ export const gameSchema = new Schema({
   voiceChatEnabled: { type: Boolean, required: true },
   camerasEnabled: { type: Boolean, required: true },
   gamestopped: { type: Boolean, required: true },
-  gamesStoppedBy: { type: Boolean, required: true },
-  gameStoppedReason: { type: Boolean, required: true },
+  gamesStoppedBy: { type: String, required: false },
+  gameStoppedReason: { type: String, required: false, default:''},
   gameinSeconds: { type: Number, required: true },
   chat: [
     {

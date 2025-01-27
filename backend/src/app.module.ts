@@ -3,6 +3,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
 import { BotModule } from './bots/bots.module';
+import { GamesModule } from './games/games.modules';
 
 
 @Module({
@@ -10,6 +11,6 @@ import { BotModule } from './bots/bots.module';
     ConfigModule.forRoot({
     envFilePath: '.env.local',
     isGlobal: true,
-  }),DatabaseModule, AuthModule, BotModule]
+  }),DatabaseModule, AuthModule, BotModule, GamesModule]
 })
 export class AppModule {}

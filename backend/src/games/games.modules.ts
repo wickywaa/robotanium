@@ -1,11 +1,15 @@
 import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { DatabaseModule } from 'src/database/database.module';
 import { controllers } from './controllers';
+import { AuthModule } from 'src/auth/auth.module';
+import { BotModule } from 'src/bots/bots.module';
+import { gamesProviders } from './games.providers';
+import { botsProviders } from 'src/bots/bots.providers';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, AuthModule, BotModule],
   controllers: controllers,
-  providers: []
+  providers: [...gamesProviders, ...botsProviders]
 })
 
 export class GamesModule {}
