@@ -1,7 +1,7 @@
 export interface IGame {
   name:string;
   startTime: number;
-  endTime: number;
+  endTime: number | null;
   players: string[];
   adminPlayerId: string;
   bots: {
@@ -14,7 +14,7 @@ export interface IGame {
   voiceChatEnabled: boolean;
   camerasEnabled: boolean;
   gamestopped: boolean;
-  gamesStoppedBy: string
+  gamesStoppedBy: string;
   gameStoppedReason: string;
   gameinSeconds: number;
   chat: {
@@ -27,7 +27,7 @@ export interface IGame {
   }[]
 }
 
-export const emptyGame = {
+export const emptyGame: IGame = {
   name: `test game ${new Date().getTime()}`,
   startTime: new Date().getTime(),
   endTime: null,
@@ -40,7 +40,7 @@ export const emptyGame = {
   voiceChatEnabled: false,
   camerasEnabled: false,
   gamestopped: false,
-  gamesStoppedBy: null,
+  gamesStoppedBy: '',
   gameStoppedReason: '',
   gameinSeconds: 0,
   chat:[],
