@@ -1,13 +1,12 @@
+import { IConnectedBot } from "../Bots";
+
 export interface IGame {
   name:string;
   startTime: number;
   endTime: number | null;
   players: string[];
   adminPlayerId: string;
-  bots: {
-    _id: string;
-    cockpits: {_id: string, userId: string}[];
-  }[];
+  bots: IConnectedBot [];
   gameType: 'public' | 'private';
   reason: 'game' | 'practise' | 'test';
   chatEnabled: boolean;
@@ -36,9 +35,9 @@ export const emptyGame: IGame = {
   bots: [],
   gameType: 'private',
   reason: 'test',
-  chatEnabled: false,
-  voiceChatEnabled: false,
-  camerasEnabled: false,
+  chatEnabled: true,
+  voiceChatEnabled: true,
+  camerasEnabled: true,
   gamestopped: false,
   gamesStoppedBy: '',
   gameStoppedReason: '',
