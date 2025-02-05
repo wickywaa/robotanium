@@ -42,6 +42,6 @@ export const {
   createGameAttempt,
   createGameFailed,
   createGameSuccess,
-  updateCreateGame
+  updateCreateGame,
 } = GameSlice.actions
 

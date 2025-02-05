@@ -12,7 +12,8 @@ import { AuthService } from "./services";
 import { loginSuccess } from "./store/slices";
 import { connectsocket} from  './sockets';
 import { Socket } from "socket.io-client";
-export const user = store.getState().auth.user;
+import { ILoggedInUser } from "./models";
+export const user:ILoggedInUser | null = store.getState().auth.user;
 const authToken = localStorage.getItem("authToken");
 
 
@@ -36,7 +37,7 @@ const renderApp = () => {
 
 if (user) {
   renderApp();
-  connectsocket(user._id,user.token)
+  connectsocket(user._id,localStorage.getItem('authtoken') ?? '')
 } else {
   if (authToken?.length) {
     new AuthService().loginWithToken().then((response) => {

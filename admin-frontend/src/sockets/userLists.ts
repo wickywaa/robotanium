@@ -3,9 +3,9 @@ import {store} from '../store/store';
 import { userManagementSlice, setOnLineUsers, setOnlineBots } from '../store/slices';
 
 interface IonlineConnectedUsersAndBots {
-  admins: IConnectedUser,
-  users: IConnectedUser,
-  bots: IConnectedBot
+  admins: IConnectedUser[],
+  users: IConnectedUser[],
+  bots: IConnectedBot[]
 }
 
 
