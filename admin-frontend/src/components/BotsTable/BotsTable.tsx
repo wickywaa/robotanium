@@ -21,7 +21,7 @@ export const BotsTable: React.FC<BotsTable> = ({bots, onDeleteBot, onlineBots}) 
   
   const getStatus = (bot:IBot) => {
 
-    if(onlineBots.find((onlineBot)=> onlineBot.id ===  bot._id)) return <p style={{background:'green', textAlign:'center'}}>online</p>
+    if(onlineBots.find((onlineBot)=> onlineBot._id ===  bot._id)) return <p style={{background:'green', textAlign:'center'}}>online</p>
 
     //if(onlineBots.find((bot)=>bot.id === bot.id)) return 'online';
 
@@ -30,7 +30,7 @@ export const BotsTable: React.FC<BotsTable> = ({bots, onDeleteBot, onlineBots}) 
 
   const completeBots:IBot[] =  bots.map((bot)=>{
 
-    const onlineBot:IConnectedBot | undefined = onlineBots.find((onlineBot)=> onlineBot?.id === bot._id);
+    const onlineBot:IConnectedBot | undefined = onlineBots.find((onlineBot)=> onlineBot?._id === bot._id);
 
     return {
       _id: bot._id,

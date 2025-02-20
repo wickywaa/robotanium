@@ -3,6 +3,7 @@ import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import React, { useEffect, useState } from 'react';
 import { IBot, IConnectedBot, IGame, ILoggedInUser } from '../../models';
+import { CockpitAutoComplete } from './CockpitAutoComplete';
 
 interface IBotForm {
     bot?: IConnectedBot;
@@ -57,10 +58,6 @@ interface IBotForm {
     }
 
 
-    const handleUserSearch = (event:AutoCompleteCompleteEvent) => {
-      console.log('search user ',event)
-    }
-
 
     return bot ? (
       <Card style={{position:'relative', display:'flex', flexDirection:'column'}}>
@@ -68,7 +65,7 @@ interface IBotForm {
           <AutoComplete field="name" value={bot} suggestions={possibleBots} completeMethod={search} onChange={handleChange} dropdown />
           {bot.cockpits.map((cockpit)=>{
             return (
-              <AutoComplete field="name" value={cockpit.} suggestions={possibleUsers} completeMethod={handleUserSearch} onChange={handleChange} dropdown />
+              <CockpitAutoComplete cockpit={cockpit} availableUsers={availableUsers}/>
             )
           })}
       </Card>

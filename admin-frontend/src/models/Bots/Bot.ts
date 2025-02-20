@@ -43,17 +43,22 @@ export interface IConnectedCockpit extends IBotCockpits {
   status: 'online' | 'offline' | 'occupied',  
 }
 
+
+export const emptyConnectedCokpit:IConnectedCockpit = {
+  _id:'',
+  player: {
+    id: null,
+    name: null,
+  },
+  status: 'offline', 
+  name:'',
+  sessionId:''
+}
+
  export interface IConnectedBot {
   _id: string,
   name: string,
   cockpits: IConnectedCockpit[],
   socketId: string,
-}
-export interface IConnectedCockpit extends IBotCockpits {
-  player: {
-    id: string | null,
-    name: string | null,
-  }
-  status: 'online' | 'offline' | 'occupied',  
 }
 

@@ -17,9 +17,7 @@ interface ICreateGameModal {
   availableBots: IBot[];
 }
 
-export const CreateGameModal: React.FC<ICreateGameModal> = ({ close, onSave, availableBots }) => {
-
-
+export const CreateGameModal: React.FC<ICreateGameModal> = ({ close, onSave, availableBots, availableUsers }) => {
 
   const [createGame, setCreateGame] = useState<IGame>({ ...emptyGame });
   const numbers = [
@@ -39,6 +37,8 @@ export const CreateGameModal: React.FC<ICreateGameModal> = ({ close, onSave, ava
   const onChange = () => {
 
   }
+
+  console.log('users',availableUsers)
 
 
 
@@ -87,8 +87,6 @@ export const CreateGameModal: React.FC<ICreateGameModal> = ({ close, onSave, ava
       socketId: '',
     }
 
-    console.log('bot',bot)
-    console.log('newbots',createGame.bots.concat(connnectedBot))
 
      setCreateGame(
       {
@@ -98,7 +96,6 @@ export const CreateGameModal: React.FC<ICreateGameModal> = ({ close, onSave, ava
 
     ) 
   }
-
 
   return (
     <Card style={{ overflow: 'auto', position: 'absolute', width: '100%', height: '80%', boxSizing: 'border-box' }} className="create-bot-from-container"
@@ -127,11 +124,11 @@ export const CreateGameModal: React.FC<ICreateGameModal> = ({ close, onSave, ava
         <div style={{ display: 'flex', flexDirection: 'column', width: '30%', position: 'relative', alignItems: 'left', justifyContent: 'space-between' }}>
           {createGame.bots.map((bot) => {
             return (
-              <BotForm createGame={createGame} availableBots={availableBots} deleteBot={handleDeleteBot} bot={bot}   onChange={(e) => console.log('hello')} />
+              <BotForm availableUsers={availableUsers} createGame={createGame} availableBots={availableBots} deleteBot={handleDeleteBot} bot={bot}   onChange={(e) => console.log('hello')} />
             )
           })
           }
-          <BotForm createGame={createGame} availableBots={availableBots} onChange={(e) => handleAddBot(e)} deleteBot={()=>console.log('delete')} />
+          <BotForm availableUsers={availableUsers} createGame={createGame} availableBots={availableBots} onChange={(e) => handleAddBot(e)} deleteBot={()=>console.log('delete')} />
         </div>
       </div>
       <div style={{ display: 'flex', height: '70%', overflow: 'auto' }} >
