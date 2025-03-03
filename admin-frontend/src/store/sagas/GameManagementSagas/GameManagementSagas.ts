@@ -4,7 +4,7 @@ import { takeEvery } from "redux-saga/effects";
 
 function* CreateGame(action: PayloadAction<IGame>) {
   try {
-    console.log('creating game')
+    console.log('creating game in saga', action.payload)
 
   }
   catch (e) {
@@ -15,6 +15,5 @@ function* CreateGame(action: PayloadAction<IGame>) {
 export function* GameManagementSagas() {
 
   yield takeEvery("gameSlice/createGameAttempt", CreateGame);
-
 
 }

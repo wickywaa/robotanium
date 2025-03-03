@@ -4,10 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { emptyGame, IBot, IConnectedBot, IGame, ILoggedInUser } from '../../models';
 import { InputText } from 'primereact/inputtext';
 import { SelectButton } from 'primereact/selectbutton';
-import { Dropdown } from 'primereact/dropdown';
-import { MultiSelect } from 'primereact/multiselect';
-import { AutoComplete, AutoCompleteCompleteEvent } from 'primereact/autocomplete';
-import { InputNumber, InputNumberValueChangeEvent } from 'primereact/inputnumber';
 import { BotForm } from './Createbotfrom';
 
 interface ICreateGameModal {
@@ -26,6 +22,7 @@ export const CreateGameModal: React.FC<ICreateGameModal> = ({ close, onSave, ava
     { name: 'Cameras enabled', code: 'camerasEnabled' }
   ];
   const [value, setValue] = useState<number | null | undefined>(0);
+  const [availableBotsList, setAvailableBotsList] = useState<IConnectedBot[]>([]);
 
 
   const handleNumberOBotsChange = (value: number = 0) => {
@@ -38,64 +35,74 @@ export const CreateGameModal: React.FC<ICreateGameModal> = ({ close, onSave, ava
 
   }
 
-  console.log('users',availableUsers)
-
-
 
   const handleChange = (key: keyof IGame, value: any) => {
-
     const newState = {
       ...createGame,
       [key]: value
     }
-
     setCreateGame(newState)
-
   }
 
-  const handleSelectedoptions = (options: keyof IGame[]) => {
 
-    console.log(' options', options)
-  }
+  useEffect(() => {
+    console.log('createGame', createGame)
+  }, [createGame])
 
-  const handleDeleteBot = (id: string) => {
-    console.log(id)
 
-    const filteredBots =  createGame.bots.filter((bot) => bot._id !== id)
-
-    console.log('filteredbots', filteredBots)
-
-  }
-
-  const handleAddBot = (bot: IBot) => {
-
-    const connnectedBot:IConnectedBot = {
+  const availableConnectedBots: IConnectedBot[] = availableBots.map((bot) => {
+    return {
       _id: bot._id,
       name: bot.name,
-      cockpits: bot.cameras.map((cam)=>{
+      cockpits: bot.cameras.map((cam) => {
         return {
           _id: cam._id,
           name: cam.name,
           player: {
-            name:'',
-            id:''
+            name: '',
+            id: ''
           },
           status: 'offline',
-          sessionId:''
+          sessionId: ''
         }
       }),
-      socketId: '',
+      adminId: '',
+      socketId: ''
     }
+  })
+
+  useEffect(() => {
+    setAvailableBotsList(availableConnectedBots)
+  }, [])
 
 
-     setCreateGame(
+  const handleDeleteBot = (id: string) => {
+
+    const filteredBots = createGame.bots.filter((bot) => bot._id !== id)
+
+  }
+
+  const handleAddBot = (bot: IConnectedBot) => {
+
+    console.log('bot to add', bot)
+    setCreateGame(
       {
         ...createGame,
-        bots:createGame.bots.concat(connnectedBot)
+        bots:createGame.bots.filter((b)=>b._id!==bot._id).concat(bot)
       }
 
-    ) 
+    )
   }
+
+  const handleSave = () => {
+
+    console.log('createGame', createGame)
+    onSave(createGame)
+  }
+
+  useEffect(()=>{
+    console.log('latest createGame', createGame)
+  },[createGame])
 
   return (
     <Card style={{ overflow: 'auto', position: 'absolute', width: '100%', height: '80%', boxSizing: 'border-box' }} className="create-bot-from-container"
@@ -109,6 +116,7 @@ export const CreateGameModal: React.FC<ICreateGameModal> = ({ close, onSave, ava
       }}>
       <div className="close-button-container">
         <Button onClick={() => close()} style={{ margin: 0 }} icon="pi pi-times" />
+        <Button label='Save' onClick={() => handleSave()} />
       </div>
       <div style={{ margin: 'auto', flexDirection: 'column', justifyContent: 'start', alignItems: 'left', display: 'flex' }}>
         <InputText placeholder='name' value={createGame.name} style={{ width: '20%' }} />
@@ -124,11 +132,11 @@ export const CreateGameModal: React.FC<ICreateGameModal> = ({ close, onSave, ava
         <div style={{ display: 'flex', flexDirection: 'column', width: '30%', position: 'relative', alignItems: 'left', justifyContent: 'space-between' }}>
           {createGame.bots.map((bot) => {
             return (
-              <BotForm availableUsers={availableUsers} createGame={createGame} availableBots={availableBots} deleteBot={handleDeleteBot} bot={bot}   onChange={(e) => console.log('hello')} />
+              <BotForm availableUsers={availableUsers} createGame={createGame} availableBots={availableBotsList} deleteBot={handleDeleteBot} bot={bot} onChange={(e) => handleAddBot(e)} />
             )
           })
           }
-          <BotForm availableUsers={availableUsers} createGame={createGame} availableBots={availableBots} onChange={(e) => handleAddBot(e)} deleteBot={()=>console.log('delete')} />
+          <BotForm availableUsers={availableUsers} createGame={createGame} availableBots={availableBotsList} onChange={(e) => handleAddBot(e)} deleteBot={() => console.log('delete')} />
         </div>
       </div>
       <div style={{ display: 'flex', height: '70%', overflow: 'auto' }} >

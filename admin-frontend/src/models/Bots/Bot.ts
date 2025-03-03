@@ -60,5 +60,6 @@ export const emptyConnectedCokpit:IConnectedCockpit = {
   name: string,
   cockpits: IConnectedCockpit[],
   socketId: string,
+  adminId: string
 }
 

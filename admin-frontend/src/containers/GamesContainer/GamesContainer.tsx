@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { setBotsListAttempt, setShowCreateGameModal, updateCreateGame, } from '../../store/slices';
+import { createGameAttempt, setBotsListAttempt, setShowCreateGameModal, updateCreateGame,  } from '../../store/slices';
 import { Button } from 'primereact/button';
 import { selectallUsers, selectBots, selectCreateGame, selectShowCreateGameModal, selectUserManagement } from "../../store/selectors";
 import { CreateGameModal }  from '../../components/CreateGames';
-import { IGame } from "../../models";
+import { IConnectedBot, IGame } from "../../models";
 
 export const GamesContainer: React.FC = () => {
 
@@ -13,7 +13,6 @@ export const GamesContainer: React.FC = () => {
   const bots = useAppSelector(selectBots);
   const users = useAppSelector(selectallUsers);
   const createGame = useAppSelector(selectCreateGame).game
-  console.log('select', selectShowCreateGame)
 
   useEffect(()=>{
     if(!bots.length ){
@@ -24,11 +23,13 @@ export const GamesContainer: React.FC = () => {
 
   const handleChange = (game: IGame) => dispatch(updateCreateGame(game))
 
+  const handleSave = (game: IGame) => dispatch(createGameAttempt(game))
+
+
   return (
   <div style={{height:'89%', width:'100%'}}>
     <Button label="Create Game" onClick={()=>dispatch(setShowCreateGameModal(!selectShowCreateGame))} />
-    { selectShowCreateGame && <CreateGameModal availableBots={bots}  availableUsers={users} onSave={(game:IGame) => handleChange(game)} close={()=>dispatch(setShowCreateGameModal(false))}/>}
-    hello here is the Games container
+    { selectShowCreateGame && <CreateGameModal availableBots={bots}  availableUsers={users} onSave={(game:IGame) => handleSave(game)} close={()=>dispatch(setShowCreateGameModal(false))}/>}
    </div>)
 };
 

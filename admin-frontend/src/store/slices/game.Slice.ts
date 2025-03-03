@@ -25,12 +25,13 @@ export interface IGamesReducer {
   onlineBots: []
 };
 
+
 export const GameSlice = createSlice({
   name: "gameSlice",
   initialState: initialGameState,
   reducers: {
     setShowCreateGameModal: (state, action:PayloadAction<boolean>) => ({ ...state, showCreateGameModal: action.payload }),
-    createGameAttempt: (state, action: PayloadAction<ICreateGameDto>) => ({ ...state, isLoading: true }),
+    createGameAttempt: (state, action: PayloadAction<IGame>) => ({ ...state, isLoading: true }),
     createGameFailed: (state) => ({...state, isLoading: false }),
     createGameSuccess: (state, action: PayloadAction<IGame[]>) => ({ ...state, games: action.payload, showCreateGame:false, isLoading:false }),
     updateCreateGame: (state, action:PayloadAction<IGame>) => ({...state,createGame:{...state.createGame,game:action.payload} , showCreateGameModal:false})

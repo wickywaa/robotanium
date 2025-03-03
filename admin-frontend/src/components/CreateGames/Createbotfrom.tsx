@@ -2,14 +2,15 @@ import { AutoComplete, AutoCompleteCompleteEvent } from 'primereact/autocomplete
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import React, { useEffect, useState } from 'react';
-import { IBot, IConnectedBot, IGame, ILoggedInUser } from '../../models';
+import { IBot, IConnectedBot, IConnectedCockpit, IGame, ILoggedInUser } from '../../models';
 import { CockpitAutoComplete } from './CockpitAutoComplete';
+import { SelectAdminId } from './SelectAdminId';
 
 interface IBotForm {
     bot?: IConnectedBot;
-    onChange: (e: IBot) => void;
+    onChange: (e: IConnectedBot) => void;
     deleteBot: (id:string) => void;
-    availableBots: IBot[];
+    availableBots: IConnectedBot[];
     availableUsers: ILoggedInUser[]
     createGame: IGame 
   }
@@ -17,16 +18,14 @@ interface IBotForm {
 
  export const BotForm: React.FC<IBotForm> = ({ bot, onChange, deleteBot, availableBots, createGame, availableUsers }): React.ReactElement => {
 
-    const [emptyBot, setBot] = useState<IBot[]>([]);
-    const [possibleBots, setPossibleBots] = useState<IBot[]>([]);
-    const [possibleUsers, setPossibleUser] = useState<ILoggedInUser[]> ([])
+    const [possibleBots, setPossibleBots] = useState<IConnectedBot[]>([]);
     const [value, setValue] = useState<string>('');
+    const [possibleAdmins, setPossibleAdmins] = useState<{name:string, id:string}[]>([])
+    const [selectedBotId, setSelectedBotID] = useState<IConnectedBot | null>(null)
 
-    const [selectedUser, setSelectedUser] =  useState<ILoggedInUser | null>(null)
 
     useEffect(() => {
       setPossibleBots(availableBots)
-      console.log('possible bots', possibleBots)
     }, [availableBots])
 
     const search = (event: AutoCompleteCompleteEvent) => {
@@ -40,39 +39,76 @@ interface IBotForm {
         return {
           _id: bot._id,
           name: `${bot.name} (${bot._id})`,
-          img: bot.img,
-          imageUrl: bot.imageUrl,
-          cameras: bot.cameras
+          cockpits: bot.cockpits,
+          socketId: bot.socketId,
+          adminId: bot.adminId
         }
       })
       setPossibleBots(allBots)
     }
 
-    const handleChange = (e:{value:IBot} ) => {
-
-      const bot =  e.value 
-      const selectedBot =  availableBots.find((bot)=>bot._id === e.value._id) ?? null
-      console.log('selected bot', selectedBot)
-
+    const handleBotChange = (e:{value:IConnectedBot} ) =>{
+      console.log('bot', e.value)
       onChange(e.value)
+    } 
+
+    const handleAdminChange = (e:string) => {
+
+      if(!bot?.cockpits.length) return
+      console.log('admin', e)
+      const findBot = createGame.bots.find((bot)=>bot._id===bot._id)
+      if(!findBot) return
+      const newBot:IConnectedBot = {
+        ...findBot,
+        adminId: e
+      }
+
+      console.log('newBot', newBot)
+      onChange(newBot)
     }
 
+    const handleCockpitChange = (e:IConnectedCockpit) => { 
+
+      if(!bot) return
+     const newBot:IConnectedBot = {
+      ...bot,
+      cockpits: bot.cockpits.map((cockpit)=>{
+        if(cockpit._id === e._id){
+          return e
+        }
+        return cockpit
+      })
+     }
+     setPossibleAdmins(getPlayers(e))
+     onChange(newBot)
+    }
+
+
+    const getPlayers = (connectedCockpit:IConnectedCockpit) => {
+
+      console.log('connectedCockpit', connectedCockpit)
+      if(possibleAdmins.find((admin)=>admin.id===connectedCockpit.player.id)) return possibleAdmins
+      return [...possibleAdmins, {name:connectedCockpit.player.name??'', id:connectedCockpit.player.id??''}]
+    }
 
 
     return bot ? (
       <Card style={{position:'relative', display:'flex', flexDirection:'column'}}>
+        <Button>Save</Button>
         <Button onClick={() => deleteBot(bot._id)} style={{ margin: 0, position:'absolute', right:'10px', top:'5px' }} icon="pi pi-times" />
-          <AutoComplete field="name" value={bot} suggestions={possibleBots} completeMethod={search} onChange={handleChange} dropdown />
+          <AutoComplete field="name" value={bot} suggestions={possibleBots} completeMethod={search} onChange={handleBotChange} dropdown />
           {bot.cockpits.map((cockpit)=>{
             return (
-              <CockpitAutoComplete cockpit={cockpit} availableUsers={availableUsers}/>
+              <CockpitAutoComplete onChange={handleCockpitChange} cockpit={cockpit} availableUsers={availableUsers}/>
             )
           })}
+          <SelectAdminId availableUsers={possibleAdmins} onChange={handleAdminChange} />
+          
       </Card>
     ) : (
       <Card>
         <div className="card flex justify-content-center">
-          <AutoComplete field="name" value={value} suggestions={possibleBots} completeMethod={search} onChange={handleChange} dropdown />
+          <AutoComplete field="name" value={value} suggestions={possibleBots} completeMethod={search} onChange={handleBotChange} dropdown />
         </div>
       </Card>
     )

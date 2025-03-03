@@ -12,6 +12,20 @@ export interface ILoggedInUser {
   theme: string,
 }
 
+export const emptyUser:  ILoggedInUser = {
+  _id: '',
+  email: '',
+  isRobotaniumAdmin: false,
+  isPlayerAdmin: false,
+  userName: '',
+  imgsrc: '',
+  isActive: true,
+  isEmailVerified:true,
+  changePassword: false,
+  rememberme: false,
+  theme: '',
+}
+
 export interface IEditUser extends ILoggedInUser {
   password: string;
 }
