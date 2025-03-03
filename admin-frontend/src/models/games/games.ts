@@ -1,6 +1,7 @@
 import { IConnectedBot } from "../Bots";
 
-export interface IGame {
+export interface IGame {  
+  _id: string;
   name:string;
   startTime: number;
   endTime: number | null;
@@ -26,7 +27,8 @@ export interface IGame {
   }[]
 }
 
-export const emptyGame: IGame = {
+export const emptyGame: IGame = {   
+  _id: '',
   name: `test game ${new Date().getTime()}`,
   startTime: new Date().getTime(),
   endTime: null,

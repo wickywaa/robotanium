@@ -20,8 +20,8 @@ export const gameSchema = new Schema({
   name: { type: String, required: true },
   startTime: { type: Number, required: true },
   endTime: { type: Number, required: false },
-  players: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-  adminPlayerId: { type: String, required: true },
+  players: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
+  adminPlayerId: { type: String, required: false },
   bots: [connectedBotSchema],  // Now an array of connected bots
   gameType: {
     type: String,

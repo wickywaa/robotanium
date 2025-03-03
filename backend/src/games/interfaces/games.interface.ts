@@ -13,7 +13,7 @@ export interface IGame {
   startTime: number,
   endTime: number, 
   players: string[] | mongoose.Types.ObjectId[],
-  adminPlayerId: mongoose.Types.ObjectId;
+  adminPlayerId: string,
   bots: {
     _id: mongoose.Types.ObjectId,
     cockpits: {_id: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId}[]

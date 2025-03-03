@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Inject, Injectable, Post, Res, Delete } from '@nestjs/common';
-import { Response } from 'express';
+import { Body, Controller, Get, Inject, Injectable, Post, Res, Delete, Param } from '@nestjs/common';
+import { request, Response } from 'express';
 import { CreateGameDto, ICreateGame, IGame, IGameMethods, IGameModel } from '../interfaces/games.interface';
 import * as mongoose from 'mongoose';
 import { Model } from 'mongoose';
@@ -23,20 +23,25 @@ export class AdminGamesController {
   @Post('game')
   async createGame(@Body() body: CreateGameDto, @Res() response: Response) {
 
+    const getUniqueUserIds = async () => {
+      const ids = body.bots.map((bot) => 
+        bot.cockpits.map((cockpit) => cockpit.userId)
+      ).flat();
+
+      const uniqueIds = ids.filter((id, key, arr) => arr.indexOf(id) === key);
+      console.log('Unique IDs before conversion:', uniqueIds);
+      return uniqueIds.map((id) =>  new mongoose.Types.ObjectId(id))
+    }
+
+
     try {
-      const allPlayerIds = body.players.map((player) => mongoose.Types.ObjectId.createFromTime(parseInt(player)));
+        
       const findPlayers = await this.userModel.find({ _id: { $in: body.players } });
-
-      console.log('all players', findPlayers)
-
       const allBotIds = body.bots.map((bot) => mongoose.Types.ObjectId.createFromTime(parseInt(bot._id)))
       const bots = await this.botModel.find({ _id: { $in: body.bots.map((bot) => bot._id) } });
 
       const botsArray = bots.map((dbbot) => {
 
-        console.log('here is the cocpit id',)
-
-        console.log('dbbot', dbbot)
         return {
           _id: dbbot._id,
           cockpits: body.bots.find((reqbot) => reqbot._id === dbbot._id.toString()).cockpits.map((cockpit) => {
@@ -49,18 +54,12 @@ export class AdminGamesController {
       })
 
 
-      console.log('new bots array', botsArray[0])
-
-      console.log('allbotsid', allBotIds)
-      console.log('selectedBots', bots)
-
-
       const newGame: IGame = {
-        name: `test game ${new Date().getTime()}`,
+        name: `robo game ${new Date().getTime()}`,
         startTime: new Date().getTime(),
         endTime: null,
-        players: allPlayerIds,
-        adminPlayerId: new mongoose.Types.ObjectId(body.adminPlayerId),
+        players: await getUniqueUserIds(),
+        adminPlayerId: body.adminPlayerId,
         bots: botsArray,
         gameType: 'private',
         reason: 'test',
@@ -83,10 +82,11 @@ export class AdminGamesController {
         newGames
       })
 
-      console.log('saved Game', game)
 
     } catch (e) {
-      response.status(400).json({ e })
+
+      console.log('error', e)
+      response.status(400).json({ error: e })
     }
 
 
@@ -125,13 +125,21 @@ export class AdminGamesController {
   }
 
   @Delete('game/:id')
-  async deleteGameById(@Res() response: Response) {
-    const games = await this.gameModel.find();
+  async deleteGameById(@Res() response: Response, @Param('id') id: string) {
+  
+
+    try {
+      const game = await this.gameModel.findByIdAndDelete(id);
+      const games = await this.gameModel.find();
 
 
     return response.status(200).json({
       games
-    });
+      });
+    } catch (e) {
+      console.log('error', e)
+      response.status(400).json({ error: e })
+    }
 
   }
 }

@@ -105,7 +105,7 @@ export const CreateGameModal: React.FC<ICreateGameModal> = ({ close, onSave, ava
   },[createGame])
 
   return (
-    <Card style={{ overflow: 'auto', position: 'absolute', width: '100%', height: '80%', boxSizing: 'border-box' }} className="create-bot-from-container"
+    <Card style={{ overflow: 'auto', position: 'absolute', width: '100%', height: '80%', boxSizing: 'border-box', top: '10%',left: '0' }} className="create-bot-from-container"
       pt={{
         body: () => ({
           style: { 'height': '100%' }

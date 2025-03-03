@@ -34,7 +34,17 @@ export const GameSlice = createSlice({
     createGameAttempt: (state, action: PayloadAction<IGame>) => ({ ...state, isLoading: true }),
     createGameFailed: (state) => ({...state, isLoading: false }),
     createGameSuccess: (state, action: PayloadAction<IGame[]>) => ({ ...state, games: action.payload, showCreateGame:false, isLoading:false }),
-    updateCreateGame: (state, action:PayloadAction<IGame>) => ({...state,createGame:{...state.createGame,game:action.payload} , showCreateGameModal:false})
+    updateCreateGame: (state, action:PayloadAction<IGame>) => ({...state,createGame:{...state.createGame,game:action.payload} , showCreateGameModal:false}),
+    getGamesAttempt: (state) => ({...state, isLoading: true}),
+    getGamesSuccess: (state, action: PayloadAction<IGame[]>) => ({...state, games: action.payload, isLoading: false}),
+    getGamesFailed: (state) => ({...state, isLoading: false}),
+    deleteGameAttempt: (state, action: PayloadAction<string>) => ({ ...state, isLoading: true }),
+    deleteGameSuccess: (state, action: PayloadAction<IGame[]>) => ({ 
+      ...state, 
+      games: action.payload, 
+      isLoading: false 
+    }),
+    deleteGameFailed: (state) => ({ ...state, isLoading: false }),
   }
 })
 
@@ -44,5 +54,11 @@ export const {
   createGameFailed,
   createGameSuccess,
   updateCreateGame,
+  getGamesAttempt,
+  getGamesSuccess,
+  getGamesFailed,
+  deleteGameAttempt,
+  deleteGameSuccess,
+  deleteGameFailed,
 } = GameSlice.actions
 
