@@ -7,11 +7,20 @@ const { Schema } = mongoose;
 
 const connectedCockpitSchema = new Schema({
     _id: { type: mongoose.Schema.Types.ObjectId, default: null, ref: 'User' },
-    userId: { type: mongoose.Schema.Types.ObjectId, default: null, ref: 'User' },
+    player: {
+      id: { type: String, default: null },
+      name: { type: String, default: null }
+  },
+    name: { type: String, default: 'unknown_name' },
+    sessionId: { type: String, default: '' },
+    accessToken: { type: String, default: '' },
+    status: { type: String, default: 'offline' },
 });
 
 const connectedBotSchema = new Schema({
   _id: mongoose.Schema.Types.ObjectId,
+  name: { type: String, required: true, default: 'unknown_name' },
+  adminId: { type: String, default: '' },
   cockpits: [connectedCockpitSchema],
 });
 

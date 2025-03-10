@@ -1,19 +1,22 @@
 import React from 'react';
-import { DataTable } from 'primereact/datatable';
+import { DataTable, DataTableRowEvent } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { IGame } from '../../models';
 import { Button } from 'primereact/button';
 import { Tag } from 'primereact/tag';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import './GamesTable.scss';
 
 interface IGamesTableProps {
   games: IGame[];
   onGameDelete?: (gameId: string) => void;
   onGameEdit?: (game: IGame) => void;
   onGameSelect?: (game: IGame) => void;
+  onRowClick: (game: IGame) => void;
+  selectedGameRowId: string;
 }
 
-export const GamesTable: React.FC<IGamesTableProps> = ({ games, onGameSelect, onGameDelete, onGameEdit }) => {
+export const GamesTable: React.FC<IGamesTableProps> = ({ games, onGameSelect, onGameDelete, onGameEdit, onRowClick ,selectedGameRowId}) => {
   
   const statusBodyTemplate = (game: IGame) => {
     const severity = game.gamestopped ? 'danger' : 'success';
@@ -95,8 +98,10 @@ export const GamesTable: React.FC<IGamesTableProps> = ({ games, onGameSelect, on
       tableStyle={{ minWidth: '50rem' }}
       sortField="startTime"
       sortOrder={-1}
+      onRowClick={(data) => onRowClick(data.data as IGame)}
+      rowClassName={(game) => game._id === selectedGameRowId ? 'selected-game-row' : ''}
     >
-      <Column field="name" header="Name" sortable style={{ width: '25%' }}/>
+      <Column field="name" header="Name" sortable style={{ width: '25%'  }}/>
       <Column field="startTime" header="Start Time" body={dateBodyTemplate} sortable style={{ width: '15%' }}/>
       <Column field="gameType" header="Type" sortable style={{ width: '10%' }}/>
       <Column field="reason" header="Reason" sortable style={{ width: '10%' }}/>

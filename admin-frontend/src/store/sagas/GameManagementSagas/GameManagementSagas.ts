@@ -19,7 +19,6 @@ function* CreateGame(action: PayloadAction<IGame>) {
       yield put(createGameFailed())
     }
 
-
   }
   catch (e) {
     yield put(createGameFailed())
@@ -45,7 +44,6 @@ function* GetGames() {
 function* DeleteGame(action: PayloadAction<string>) {
   try {
     const gamesresponse:IGame[] = yield gamesService.deleteGameById(action.payload)
-    console.log('gamesresponse', gamesresponse)
   
     yield put(deleteGameSuccess(gamesresponse))
    

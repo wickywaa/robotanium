@@ -22,6 +22,16 @@ export const CockpitAutoComplete:React.FC<ICockpitAutoComplete> = ({cockpit, ava
     sessionId:''
   })
 
+  useEffect(()=>{
+
+    console.log('cockpit', cockpit)
+    const user = availableUsers.find((user)=>user._id === cockpit.player.id)
+    if(user){
+      setNewCockpit(cockpit)
+      setSelectedUser(user)
+    }
+  },[])
+
   const [selectedUser,setSelectedUser]  = useState<ILoggedInUser| null >(null)
   const [possibleUsers, setPossibleUsers] = useState<ILoggedInUser[]>(availableUsers);
 

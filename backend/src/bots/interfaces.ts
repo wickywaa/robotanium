@@ -48,6 +48,7 @@ export type connectedClient = userAuth | botAuth
 
 
 export interface IConnectedCockpit extends IBotCockpits {
+  id?: string,	
   player: {
     id: string | null,
     name: string | null,
@@ -55,12 +56,14 @@ export interface IConnectedCockpit extends IBotCockpits {
   status: 'online' | 'offline' | 'occupied',  
 }
 
- export interface IConnectedBot {
-  id: string,
+export interface IConnectedBot {
+  _id?: string,
   name: string,
   cockpits: IConnectedCockpit[],
   socketId: string,
+  adminId: string
 }
+
 
 export interface IConnectedUser {
   id: string,

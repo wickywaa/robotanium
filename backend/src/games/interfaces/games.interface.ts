@@ -14,10 +14,7 @@ export interface IGame {
   endTime: number, 
   players: string[] | mongoose.Types.ObjectId[],
   adminPlayerId: string,
-  bots: {
-    _id: mongoose.Types.ObjectId,
-    cockpits: {_id: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId}[]
-  }[];
+  bots:IConnectedBot[];
   gameType: 'public' | 'private',
   reason: 'game' | 'practise' | 'test',
   chatEnabled: boolean;
@@ -58,20 +55,30 @@ export const emptyGame = {
 }
 
 export interface CreateGameDto {
-  name:string,
-  startTime: number,
-  endTime: number, 
-  players: string[] | mongoose.mongo.BSON.ObjectId[],
+  name?: string,
+  startTime?: number,
+  endTime?: number, 
+  players: string[],
   adminPlayerId: string;
   bots: {
     _id: string,
-    cockpits: {_id: string, userId: string}[]
+    name: string,
+    cockpits: {
+      _id: string,
+      player: {
+        id: string | null,
+        name: string | null
+      }
+      name?: string,
+      sessionId?: string,
+      accessToken?: string
+    }[]
   }[];
-  gameType: 'public' | 'private',
-  reason: 'game' | 'practise' | 'test',
-  chatEnabled: boolean;
-  voiceChatEnabled: boolean;
-  camerasEnabled: boolean;
+  gameType?: 'public' | 'private',
+  reason?: 'game' | 'practise' | 'test',
+  chatEnabled?: boolean;
+  voiceChatEnabled?: boolean;
+  camerasEnabled?: boolean;
 }
 
 export interface IGameMethods {

@@ -11,9 +11,11 @@ interface ICreateGameModal {
   onSave: (game: IGame) => void;
   availableUsers: ILoggedInUser[];
   availableBots: IBot[];
+  gameToEdit?: IGame;
+  mode?: 'create' | 'edit';
 }
 
-export const CreateGameModal: React.FC<ICreateGameModal> = ({ close, onSave, availableBots, availableUsers }) => {
+export const CreateGameModal: React.FC<ICreateGameModal> = ({ close, onSave, availableBots, availableUsers, mode='create', gameToEdit }) => {
 
   const [createGame, setCreateGame] = useState<IGame>({ ...emptyGame });
   const numbers = [
@@ -31,9 +33,25 @@ export const CreateGameModal: React.FC<ICreateGameModal> = ({ close, onSave, ava
     setValue(value)
   }
 
-  const onChange = () => {
 
-  }
+  useEffect(() => {
+
+    console.log('mode', mode)
+    console.log('gameToEdit', gameToEdit)
+    if (mode === 'edit' && gameToEdit) {
+
+      console.log('gameToEdit', gameToEdit)
+      const botsToEdit = gameToEdit.bots.map((bot) => {
+        return { ...bot, key: bot._id }
+      })
+
+      console.log('botsToEdit', botsToEdit)
+      setCreateGame({
+        ...gameToEdit,
+        bots: botsToEdit
+      })
+    }
+  }, [])
 
 
   const handleChange = (key: keyof IGame, value: any) => {
@@ -50,12 +68,14 @@ export const CreateGameModal: React.FC<ICreateGameModal> = ({ close, onSave, ava
   }, [createGame])
 
 
-  const availableConnectedBots: IConnectedBot[] = availableBots.map((bot) => {
+  const availableConnectedBots: IConnectedBot[] = availableBots.map((bot, index) => {
     return {
+      key: index,
       _id: bot._id,
       name: bot.name,
-      cockpits: bot.cameras.map((cam) => {
+      cockpits: bot.cameras.map((cam, index) => {
         return {
+          key: index,
           _id: cam._id,
           name: cam.name,
           player: {
@@ -105,7 +125,7 @@ export const CreateGameModal: React.FC<ICreateGameModal> = ({ close, onSave, ava
   },[createGame])
 
   return (
-    <Card style={{ overflow: 'auto', position: 'absolute', width: '100%', height: '80%', boxSizing: 'border-box', top: '10%',left: '0' }} className="create-bot-from-container"
+    <Card title={mode === 'create' ? 'Create Game' : 'Edit Game'} style={{ overflow: 'auto', position: 'absolute', width: '100%', height: '80%', boxSizing: 'border-box', top: '10%',left: '0' }} className="create-bot-from-container"
       pt={{
         body: () => ({
           style: { 'height': '100%' }
@@ -130,9 +150,9 @@ export const CreateGameModal: React.FC<ICreateGameModal> = ({ close, onSave, ava
         <div className="card flex justify-content-center">
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', width: '30%', position: 'relative', alignItems: 'left', justifyContent: 'space-between' }}>
-          {createGame.bots.map((bot) => {
+          {createGame.bots.map((bot, index) => {
             return (
-              <BotForm availableUsers={availableUsers} createGame={createGame} availableBots={availableBotsList} deleteBot={handleDeleteBot} bot={bot} onChange={(e) => handleAddBot(e)} />
+              <BotForm key={index} availableUsers={availableUsers} createGame={createGame} availableBots={availableBotsList} deleteBot={handleDeleteBot} bot={bot} onChange={(e) => handleAddBot(e)} />
             )
           })
           }

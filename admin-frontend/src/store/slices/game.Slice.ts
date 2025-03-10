@@ -9,6 +9,8 @@ export interface IGamesReducer {
   },
   games: IGame[],
   showCreateGameModal: boolean;
+  showEditGameModal: boolean;
+  selectedGameRowId: string;
   isLoading: boolean;
   onlineBots: IConnectedBot[]
 }
@@ -20,7 +22,9 @@ export interface IGamesReducer {
     name: '',
   },
   games: [],
-  showCreateGameModal: false,
+  showCreateGameModal: false, 
+  selectedGameRowId: '',
+  showEditGameModal: false,
   isLoading: false,
   onlineBots: []
 };
@@ -45,8 +49,10 @@ export const GameSlice = createSlice({
       isLoading: false 
     }),
     deleteGameFailed: (state) => ({ ...state, isLoading: false }),
-  }
-})
+    setSelectedGameRowId: (state, action: PayloadAction<string>) => ({ ...state, selectedGameRowId: action.payload }),
+    showEditGameModal: (state, action: PayloadAction<boolean>) => ({ ...state, showEditGameModal: action.payload }),
+    setSelectedGame: (state, action: PayloadAction<IGame>) => ({ ...state, selectedGame: action.payload })
+}})
 
 export const {
   setShowCreateGameModal,
@@ -60,5 +66,8 @@ export const {
   deleteGameAttempt,
   deleteGameSuccess,
   deleteGameFailed,
+  setSelectedGameRowId,
+  setSelectedGame,
+  showEditGameModal
 } = GameSlice.actions
 

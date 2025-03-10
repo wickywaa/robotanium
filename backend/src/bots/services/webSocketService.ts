@@ -55,7 +55,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   }
 
   updateBotList = async(bot: IBot, id:string, socketId) => {
-    const isBotConnected = this.connectedBots.find((connectedBot)=> connectedBot.id = id)
+    const isBotConnected = this.connectedBots.find((connectedBot)=> connectedBot._id = id)
 
     console.log('connectingbot', bot)
 
@@ -75,11 +75,12 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       })
     )
 
-   this.connectedBots =  this.connectedBots.filter((bot)=>bot.id !== id).concat({
-      id,
+   this.connectedBots =  this.connectedBots.filter((bot)=>bot._id !== id).concat({
+      _id:id,
       name:bot.name,
       cockpits:cameras,
-      socketId:socketId
+      socketId:socketId,
+      adminId: ''
     })
 
   
@@ -152,9 +153,9 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   handleconnectUserToBo(socket: Socket, data: {botId:string, cockpits:string[]}) {
 
     const user = this.connectedUsers.find((user)=>user.socketId)
-    const bot = this.connectedBots.find((bot)=> bot.id === data.botId)
+    const bot = this.connectedBots.find((bot)=> bot._id === data.botId)
 
-  
+
   } 
 
   addToAdminUserArray = (adminUser:IConnectedUser) =>

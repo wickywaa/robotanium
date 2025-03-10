@@ -25,7 +25,7 @@ export class AdminGamesController {
 
     const getUniqueUserIds = async () => {
       const ids = body.bots.map((bot) => 
-        bot.cockpits.map((cockpit) => cockpit.userId)
+        bot.cockpits.map((cockpit) => cockpit.player.id)
       ).flat();
 
       const uniqueIds = ids.filter((id, key, arr) => arr.indexOf(id) === key);
@@ -40,19 +40,28 @@ export class AdminGamesController {
       const allBotIds = body.bots.map((bot) => mongoose.Types.ObjectId.createFromTime(parseInt(bot._id)))
       const bots = await this.botModel.find({ _id: { $in: body.bots.map((bot) => bot._id) } });
 
-      const botsArray = bots.map((dbbot) => {
 
+      const botsArray: IConnectedBot[] = bots.map((dbbot) => {
+        const requestBot = body.bots.find((reqbot) => reqbot._id === dbbot._id.toString());
+        console.log('requestBot cockpita', requestBot.cockpits)
         return {
-          _id: dbbot._id,
-          cockpits: body.bots.find((reqbot) => reqbot._id === dbbot._id.toString()).cockpits.map((cockpit) => {
-            return {
-              _id: new mongoose.Types.ObjectId(cockpit._id),
-              userId: new mongoose.Types.ObjectId(cockpit.userId),
-            }
-          })
+          _id: dbbot._id.toString(),
+          name: dbbot.name,
+          socketId: '',
+          adminId: '',
+          cockpits: requestBot.cockpits.map((cockpit) => ({
+            _id: cockpit._id,
+            name: cockpit.name || '',
+            sessionId: cockpit.sessionId || '',
+            accessToken: cockpit.accessToken || '',
+            player: {
+              id: cockpit.player.id || '',
+              name: cockpit.player.name || ''
+            },
+            status: 'offline'
+          }))
         }
-      })
-
+      });
 
       const newGame: IGame = {
         name: `robo game ${new Date().getTime()}`,
@@ -61,11 +70,11 @@ export class AdminGamesController {
         players: await getUniqueUserIds(),
         adminPlayerId: body.adminPlayerId,
         bots: botsArray,
-        gameType: 'private',
-        reason: 'test',
-        chatEnabled: false,
-        voiceChatEnabled: false,
-        camerasEnabled: false,
+        gameType: body.gameType ?? 'private',
+        reason: body.reason ?? 'test',
+        chatEnabled: body.chatEnabled ?? false,
+        voiceChatEnabled: body.voiceChatEnabled ?? false,
+        camerasEnabled: body.camerasEnabled ?? false,
         gamestopped: false,
         gamesStoppedBy: null,
         gameStoppedReason: '',
@@ -73,8 +82,11 @@ export class AdminGamesController {
         chat: [],
         notes: [],
       }
+      console.log('newGame', newGame)
+      console.log('newGame bots', newGame.bots.map((bot) => bot.cockpits.map((cockpit) => cockpit.player.id)))
 
       const game = await new this.gameModel(newGame)
+      console.log('game bots', game.bots.map((bot) => bot.cockpits.map((cockpit) => cockpit.player.id)))
 
       await game.save();
       const newGames = await this.gameModel.find();

@@ -25,8 +25,15 @@ interface IBotForm {
 
 
     useEffect(() => {
+      console.log('createGame', createGame)
+      console.log('availableBots', availableBots)
       setPossibleBots(availableBots)
     }, [availableBots])
+
+
+    useEffect(() => {
+      console.log('bot', bot)
+    }, [])
 
     const search = (event: AutoCompleteCompleteEvent) => {
       const filteredbots = availableBots.filter((bot) => {
