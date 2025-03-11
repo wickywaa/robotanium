@@ -4,7 +4,6 @@ import { useAppSelector } from '../store/hooks';
 import { selectUser } from '../store/selectors';
 
 //import { Auth } from "../firebase/AdminFirebase";
-
 export const PrivateRoute: React.FC<any> = ({ children }) => {
 
   const Auth = {

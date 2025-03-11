@@ -25,8 +25,6 @@ interface IBotForm {
 
 
     useEffect(() => {
-      console.log('createGame', createGame)
-      console.log('availableBots', availableBots)
       setPossibleBots(availableBots)
     }, [availableBots])
 
@@ -69,8 +67,6 @@ interface IBotForm {
         ...findBot,
         adminId: e
       }
-
-      console.log('newBot', newBot)
       onChange(newBot)
     }
 
@@ -92,12 +88,9 @@ interface IBotForm {
 
 
     const getPlayers = (connectedCockpit:IConnectedCockpit) => {
-
-      console.log('connectedCockpit', connectedCockpit)
       if(possibleAdmins.find((admin)=>admin.id===connectedCockpit.player.id)) return possibleAdmins
       return [...possibleAdmins, {name:connectedCockpit.player.name??'', id:connectedCockpit.player.id??''}]
     }
-
 
     return bot ? (
       <Card style={{position:'relative', display:'flex', flexDirection:'column'}}>
@@ -109,7 +102,7 @@ interface IBotForm {
               <CockpitAutoComplete onChange={handleCockpitChange} cockpit={cockpit} availableUsers={availableUsers}/>
             )
           })}
-          <SelectAdminId availableUsers={possibleAdmins} onChange={handleAdminChange} />
+          <SelectAdminId bot={bot}  availableUsers={possibleAdmins} onChange={handleAdminChange} />
           
       </Card>
     ) : (

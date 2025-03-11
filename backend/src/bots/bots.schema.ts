@@ -6,6 +6,7 @@ export interface Bot {
   name: string;
   token: string;
   cockpits: IBotCockpits,
+  adminId: string,
   mainPhotoUrl: string,
   otherPhotosUrls: string[],
   userId: mongoose.Schema.Types.ObjectId;
@@ -19,6 +20,7 @@ const connectedBotSchema = new mongoose.Schema({
   id: { type: String, required: true },
   name: { type: String, required: true },
   cockpits: [connectedCockpitSchema],
+  adminId: { type: String, required: true },
 });
 
 export const BotsSChema = new mongoose.Schema<IBot, IBotModel, IBotMethods>({

@@ -23,32 +23,31 @@ export class AdminGamesController {
   @Post('game')
   async createGame(@Body() body: CreateGameDto, @Res() response: Response) {
 
+
     const getUniqueUserIds = async () => {
       const ids = body.bots.map((bot) => 
         bot.cockpits.map((cockpit) => cockpit.player.id)
       ).flat();
 
-      const uniqueIds = ids.filter((id, key, arr) => arr.indexOf(id) === key);
-      console.log('Unique IDs before conversion:', uniqueIds);
-      return uniqueIds.map((id) =>  new mongoose.Types.ObjectId(id))
+      const uniqueIds = ids.filter((id, key, arr) => arr.indexOf(id) === key && id !== '');
+      const convertedIds = await Promise.all(uniqueIds.map(async(id) => await new mongoose.Types.ObjectId(id)));
+      return convertedIds;
+
     }
 
 
     try {
         
-      const findPlayers = await this.userModel.find({ _id: { $in: body.players } });
-      const allBotIds = body.bots.map((bot) => mongoose.Types.ObjectId.createFromTime(parseInt(bot._id)))
       const bots = await this.botModel.find({ _id: { $in: body.bots.map((bot) => bot._id) } });
-
 
       const botsArray: IConnectedBot[] = bots.map((dbbot) => {
         const requestBot = body.bots.find((reqbot) => reqbot._id === dbbot._id.toString());
-        console.log('requestBot cockpita', requestBot.cockpits)
+  
         return {
           _id: dbbot._id.toString(),
           name: dbbot.name,
           socketId: '',
-          adminId: '',
+          adminId:  body.bots.find((bot) => bot._id === dbbot._id.toString()).adminId,
           cockpits: requestBot.cockpits.map((cockpit) => ({
             _id: cockpit._id,
             name: cockpit.name || '',
@@ -62,6 +61,7 @@ export class AdminGamesController {
           }))
         }
       });
+
 
       const newGame: IGame = {
         name: `robo game ${new Date().getTime()}`,
@@ -82,22 +82,19 @@ export class AdminGamesController {
         chat: [],
         notes: [],
       }
-      console.log('newGame', newGame)
-      console.log('newGame bots', newGame.bots.map((bot) => bot.cockpits.map((cockpit) => cockpit.player.id)))
 
       const game = await new this.gameModel(newGame)
-      console.log('game bots', game.bots.map((bot) => bot.cockpits.map((cockpit) => cockpit.player.id)))
+      console.log('game', game)
 
       await game.save();
       const newGames = await this.gameModel.find();
+      console.log('newGames', newGames)
       response.status(200).json({
         newGames
       })
 
 
     } catch (e) {
-
-      console.log('error', e)
       response.status(400).json({ error: e })
     }
 

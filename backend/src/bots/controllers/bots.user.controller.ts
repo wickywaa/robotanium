@@ -29,7 +29,7 @@ export class BotsUsersController {
         name: body.name,
         token:  hashedPassword,
         cameras: body.cockpits,
-        imageUrl: body.imageUrl,
+        imageUrl: body.imageUrl
       }
 
       console.log('newBot', newBot)

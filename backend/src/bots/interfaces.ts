@@ -14,7 +14,8 @@ export interface ICreateBotDto {
   name:string;
   cockpits: IBotCockpits[],
   imageUrl: string,
-  password:string
+  password:string,
+  adminId: string
 }
 
 export interface IBotMethods {

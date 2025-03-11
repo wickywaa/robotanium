@@ -63,6 +63,7 @@ export interface CreateGameDto {
   bots: {
     _id: string,
     name: string,
+    adminId: string,
     cockpits: {
       _id: string,
       player: {
