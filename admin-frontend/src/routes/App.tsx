@@ -19,13 +19,11 @@ export const AppRouter: React.FC = () => {
     <ToastMessages/>
     {userManagement.editUser !== null && <EditUserModal editUser={userManagement.editUser}/>}
     <Routes>
-  
-        <Route path="/admin" element={<PrivateRoute/>}>
-          <Route path="/admin" element={<HomeContainer/>}/>
-          <Route path="/admin/bots" element={<BotsContainer/>}/>
-          <Route path="/admin/games" element={<GamesContainer/>}/>
-          <Route path="/admin/adminusers" element={<AdminUsersContainer/>}/>
-        </Route>
+          <Route path="/admin" element={<PrivateRoute><HomeContainer /></PrivateRoute>}/>
+          <Route path="/admin/bots" element={<PrivateRoute><BotsContainer /></PrivateRoute>}/>
+          <Route path="/admin/games" element={<PrivateRoute><GamesContainer /></PrivateRoute>}/>
+          <Route path="/admin/adminusers" element={<PrivateRoute><AdminUsersContainer /></PrivateRoute>}/>
+          <Route path="/admin/login" element={<LoginContainer />}/>
       </Routes>
     </BrowserRouter>
     </>
