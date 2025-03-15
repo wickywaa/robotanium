@@ -10,7 +10,7 @@ export const connectsocket = (userId: string,usertoken: string) => {
   console.log('userId', userId);
   console.log('usertoken', usertoken)
 
-  const socket = io('http://localhost:46000',{
+  const socket = io('http://localhost:47000',{
     auth: {
       type:'user',
       id:userId,

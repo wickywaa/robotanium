@@ -47,7 +47,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
 
   afterInit() {
-    console.log('web sockets initiated first tie')
+    console.log('web sockets initiated first time')
   }
 
   OnGatewayInit() {
@@ -98,6 +98,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   
     if( authData.type === 'bot') {
+      console.log('bot auth data', authData)
       const bot = await this.botModel.findOne({_id:authData.botId});
       if(!bot) return socket.disconnect();
       if(!botAuthValid(bot,authData))return false;
@@ -189,7 +190,6 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       users: this.connectedUsers
     })
 
-    console.log(socket)
       this.io.emit('connections',{
       bots: this.connectedBots,
       admins: this.connectedAdminUsers,
