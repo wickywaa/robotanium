@@ -1,13 +1,14 @@
 import { Button } from "primereact/button";
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { selectCreateBot, selectShowCreateBot, selectBots, selectOnlinebots } from '../../store/selectors'
-import { createBotAttempt, deleteBotAttempt, setBotsListAttempt, setShowCreateBot  } from "../../store";
+import { selectCreateBot, selectShowCreateBot, selectBots, selectOnlinebots, selectLoggedInUser } from '../../store/selectors'
+import { createBotAttempt, deleteBotAttempt, setBotsListAttempt, setShowCreateBot, createGameAttempt } from "../../store";
 import { BotsTable, CreateBotModule } from "../../components";
-import { ICreateBotDTo } from "../../models";
+import { ICreateBotDTo, IBot, IConnectedBot } from "../../models";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Card } from "primereact/card";
+import { mapBotToTestGame } from './mappers';
 
 export const BotsContainer: React.FC = () => {
 
@@ -17,6 +18,7 @@ export const BotsContainer: React.FC = () => {
   const bots = useAppSelector(selectBots);
   const onlineBots = useAppSelector(selectOnlinebots);
   const [showDeleteBotModal, setShowDeleteBotModal] = useState<string>('');
+  const user = useAppSelector(selectLoggedInUser);
 
   const handleBot = (bot: ICreateBotDTo) => dispatch(createBotAttempt(bot))
 
@@ -48,11 +50,18 @@ export const BotsContainer: React.FC = () => {
       </div>
     ) : <></>
   }
+  const handleConnectBot = (bot: IBot) => {
+    console.log('bot', bot);
+    console.log('user', user);
+    if (!user) return;
+    const newGame = mapBotToTestGame(bot, user);
+    dispatch(createGameAttempt({game:newGame, isLive:true}));
+  }
 
   return <div style={{height:'89%', overflow:'auto'}}>
     <Button label='createBot' onClick={()=> dispatch(setShowCreateBot(true))}/>
       { showCreateBot && <CreateBotModule createBot={handleBot} close={()=> dispatch(setShowCreateBot(false))}/>}
-      <BotsTable bots={bots} onlineBots={onlineBots} onDeleteBot={(id)=>setShowDeleteBotModal(id)} />
+      <BotsTable onConnectBot={handleConnectBot} bots={bots} onlineBots={onlineBots} onDeleteBot={(id)=>setShowDeleteBotModal(id)} />
         {showDeleteBotModal.length ? deleteBotModal(): null}
     </div>;
 };

@@ -4,24 +4,28 @@ import { call, put, takeEvery } from "redux-saga/effects";
 import { gamesService } from "../../../services/Games.service";
 import { createGameFailed, createGameSuccess, deleteGameFailed, deleteGameSuccess, getGamesFailed, getGamesSuccess, setShowCreateGameModal } from "../../slices/game.Slice"
 
+interface CreateGameAction extends PayloadAction<{
+  game: IGame;
+  isLive?: boolean;
+}> {}
 
-function* CreateGame(action: PayloadAction<IGame>) {
+function* CreateGame(action: CreateGameAction) {
   try {
-
-    const gamesresponse:IGame[] = yield gamesService.createGame(action.payload)
-    console.log('gamesresponse', gamesresponse)
-    if(gamesresponse.length > 0) {
-      yield put(createGameSuccess(gamesresponse))
-      yield put(setShowCreateGameModal(false))
+    const gamesresponse: IGame[] = yield gamesService.createGame(action.payload.game);
+    
+    if (gamesresponse.length > 0) {
+      yield put(createGameSuccess(gamesresponse));
+      yield put(setShowCreateGameModal(false));
+      
+      // If it's a live game, navigate to the cockpit
+      if (action.payload.isLive) {
+        window.location.href = `/admin/cockpit?gameId=${gamesresponse[0]._id}`;
+      }
+    } else {
+      yield put(createGameFailed());
     }
-
-    if(gamesresponse.length === 0) {
-      yield put(createGameFailed())
-    }
-
-  }
-  catch (e) {
-    yield put(createGameFailed())
+  } catch (e) {
+    yield put(createGameFailed());
   }
 }
 

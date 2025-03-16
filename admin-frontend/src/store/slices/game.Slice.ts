@@ -12,10 +12,11 @@ export interface IGamesReducer {
   showEditGameModal: boolean;
   selectedGameRowId: string;
   isLoading: boolean;
-  onlineBots: IConnectedBot[]
+  onlineBots: IConnectedBot[];
+  isLive: boolean;
 }
 
- export const initialGameState: IGamesReducer = {
+export const initialGameState: IGamesReducer = {
   createGame: {
     game: emptyGame,
     image: '',
@@ -26,16 +27,26 @@ export interface IGamesReducer {
   selectedGameRowId: '',
   showEditGameModal: false,
   isLoading: false,
-  onlineBots: []
+  onlineBots: [],
+  isLive: false
 };
 
+// Add interface for the create game payload
+interface CreateGamePayload {
+  game: IGame;
+  isLive?: boolean;
+}
 
 export const GameSlice = createSlice({
   name: "gameSlice",
   initialState: initialGameState,
   reducers: {
     setShowCreateGameModal: (state, action:PayloadAction<boolean>) => ({ ...state, showCreateGameModal: action.payload }),
-    createGameAttempt: (state, action: PayloadAction<IGame>) => ({ ...state, isLoading: true }),
+    createGameAttempt: (state, action: PayloadAction<CreateGamePayload>) => ({ 
+      ...state, 
+      isLoading: true,
+      isLive: action.payload.isLive || false 
+    }),
     createGameFailed: (state) => ({...state, isLoading: false }),
     createGameSuccess: (state, action: PayloadAction<IGame[]>) => ({ ...state, games: action.payload, showCreateGame:false, isLoading:false }),
     updateCreateGame: (state, action:PayloadAction<IGame>) => ({...state,createGame:{...state.createGame,game:action.payload} , showCreateGameModal:false}),
@@ -51,8 +62,26 @@ export const GameSlice = createSlice({
     deleteGameFailed: (state) => ({ ...state, isLoading: false }),
     setSelectedGameRowId: (state, action: PayloadAction<string>) => ({ ...state, selectedGameRowId: action.payload }),
     showEditGameModal: (state, action: PayloadAction<boolean>) => ({ ...state, showEditGameModal: action.payload }),
-    setSelectedGame: (state, action: PayloadAction<IGame>) => ({ ...state, selectedGame: action.payload })
-}})
+    setSelectedGame: (state, action: PayloadAction<IGame>) => ({ ...state, selectedGame: action.payload }),
+    createLiveGameAttempt: (state, action: PayloadAction<IGame>) => ({ 
+      ...state, 
+      isLoading: true,
+      isLive: true 
+    }),
+    createLiveGameSuccess: (state, action: PayloadAction<IGame[]>) => ({ 
+      ...state, 
+      games: action.payload, 
+      showCreateGame: false, 
+      isLoading: false,
+      isLive: false 
+    }),
+    createLiveGameFailed: (state) => ({
+      ...state, 
+      isLoading: false,
+      isLive: false
+    }),
+  }
+});
 
 export const {
   setShowCreateGameModal,
@@ -68,6 +97,9 @@ export const {
   deleteGameFailed,
   setSelectedGameRowId,
   setSelectedGame,
-  showEditGameModal
+  showEditGameModal,
+  createLiveGameAttempt,
+  createLiveGameSuccess,
+  createLiveGameFailed
 } = GameSlice.actions
 
