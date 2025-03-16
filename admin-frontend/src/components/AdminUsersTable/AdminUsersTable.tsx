@@ -1,7 +1,6 @@
-import React,{ useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-
 import { selectUserManagement } from '../../store/selectors';
 import { DataTable, DataTableFilterMeta } from 'primereact/datatable';
 import { classNames } from 'primereact/utils';
@@ -13,10 +12,9 @@ import { FilterMatchMode } from 'primereact/api';
 import { TriStateCheckbox, TriStateCheckboxChangeEvent } from 'primereact/tristatecheckbox';
 
 export const AdminUsersTable: React.FC = () => {
-
   const dispatch = useAppDispatch();
-  const users = useAppSelector(selectUserManagement).users
-  const userManagement = useAppSelector(selectUserManagement)
+  const { users } = useAppSelector(selectUserManagement);
+
   const [filters, setFilters] = useState<DataTableFilterMeta>({
     _id: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     email: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -24,59 +22,144 @@ export const AdminUsersTable: React.FC = () => {
     userName: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     isEmailVerified: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     isActive: { value: null, matchMode: FilterMatchMode.EQUALS },
-    isPlayerAdmin: {value: null, matchMode: FilterMatchMode.EQUALS}
-  })
+    isPlayerAdmin: { value: null, matchMode: FilterMatchMode.EQUALS }
+  });
 
-  useEffect(()=>{
-    dispatch(addUsersAttempt())
-  },[])
+  useEffect(() => {
+    dispatch(addUsersAttempt());
+  }, []);
 
-  const accept = (data: ILoggedInUser) => dispatch(deleteUserAttempt({id:data._id, userName:data.userName}))
-  const confirm1 = (data: ILoggedInUser) => {
+  const confirmDelete = (user: ILoggedInUser) => {
     confirmDialog({
-        message: 'Are you sure you want to delete this user?',
-        header: 'Confirmation',
-        icon: 'pi pi-exclamation-triangle',
-        defaultFocus: 'accept',
-        accept: ()=> accept(data),
+      message: `Are you sure you want to delete user "${user.userName}"?`,
+      header: 'Delete Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      acceptClassName: 'p-button-danger',
+      accept: () => dispatch(deleteUserAttempt({ id: user._id, userName: user.userName })),
     });
-};
+  };
 
-  const actionsComponent = (data: ILoggedInUser): JSX.Element => {
-    return(<div>
-      <Button onClick={()=> confirm1(data)} style={{color:'red', borderColor: 'red', margin:'5px'}} icon="pi pi-trash"></Button>
-      <Button onClick={()=> dispatch(setEditUser({user: data, showResetPassword:false}))} style={{margin:'5px'}} icon="pi pi-user-edit"></Button>
-    </div>)
-  }
-  const isRobotaniumAdminFilterTemplate = (options: ColumnFilterElementTemplateOptions) => {
-    return <TriStateCheckbox value={options.value} onChange={(e: TriStateCheckboxChangeEvent) => options.filterApplyCallback(e.value)} />;
-};
-  const isRobotaniumAdminTemplate = (rowData: ILoggedInUser) => {
-    return <i className={classNames('pi', { 'true-icon pi-check-circle': rowData.isRobotaniumAdmin, 'false-icon pi-times-circle': !rowData.isRobotaniumAdmin })}></i>;
-};
+  const actionBodyTemplate = (user: ILoggedInUser): JSX.Element => {
+    return (
+      <div className="flex gap-2">
+        <Button 
+          icon="pi pi-pencil"
+          rounded
+          outlined
+          severity="success"
+          tooltip="Edit User"
+          tooltipOptions={{ position: 'top' }}
+          onClick={() => dispatch(setEditUser({ user, showResetPassword: false }))}
+        />
+        <Button 
+          icon="pi pi-trash"
+          rounded
+          outlined
+          severity="danger"
+          tooltip="Delete User"
+          tooltipOptions={{ position: 'top' }}
+          onClick={() => confirmDelete(user)}
+        />
+      </div>
+    );
+  };
 
-const isPlayerAdminTemplate = (rowData: ILoggedInUser) => {
-  return <i className={classNames('pi', { 'true-icon pi-check-circle': rowData.isPlayerAdmin, 'false-icon pi-times-circle': !rowData.isPlayerAdmin })}></i>;
-};
+  const adminStatusTemplate = (rowData: ILoggedInUser, type: 'robotanium' | 'player') => {
+    const isAdmin = type === 'robotanium' ? rowData.isRobotaniumAdmin : rowData.isPlayerAdmin;
+    return (
+      <i className={classNames('pi', { 
+        'true-icon pi-check-circle': isAdmin, 
+        'false-icon pi-times-circle': !isAdmin 
+      })}></i>
+    );
+  };
 
-const isPlayerFilterAdminTemplate = (options: ColumnFilterElementTemplateOptions) => {
-  return <TriStateCheckbox value={options.value} onChange={(e: TriStateCheckboxChangeEvent) => options.filterApplyCallback(e.value)} />;
-};
+  const adminFilterTemplate = (options: ColumnFilterElementTemplateOptions) => {
+    return (
+      <TriStateCheckbox 
+        value={options.value} 
+        onChange={(e: TriStateCheckboxChangeEvent) => options.filterApplyCallback(e.value)} 
+      />
+    );
+  };
 
   return (
-    <div>
-      <ConfirmDialog/>
-      <DataTable 
-        filters={filters} filterDisplay="row" value={users?? []} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '50rem' }} >
-        <Column field="_id" filter filterPlaceholder="Search by id" header="Id" ></Column>
-        <Column field="email" filter filterPlaceholder="Search by email" header="Email"></Column>
-        <Column field="userName" filter filterPlaceholder="Search by userName" header="UserName" ></Column>
-        <Column field="isEmailVerified" filterPlaceholder="Search by verified" filter header="Verified" ></Column>
-        <Column field="isActive" header="Active" filter filterPlaceholder="Search by is active" ></Column>
-        <Column body={isRobotaniumAdminTemplate} filterElement={isRobotaniumAdminFilterTemplate} field="isRobotaniumAdmin" dataType="boolean" filter header="Robotanium Admin"></Column>
-        <Column body={isPlayerAdminTemplate} filterElement={isPlayerFilterAdminTemplate} field="isPlayerAdmin" dataType="boolean" filter header="Player Admin"></Column>
-        <Column body={actionsComponent} header="Actions" ></Column>
-      </DataTable>
+    <div style={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      minHeight: 'calc(100vh - 80px)', // Adjust this value based on your navbar height
+    }}>
+      <div className="custom-datatable">
+        <ConfirmDialog />
+        <DataTable 
+          value={users ?? []}
+          filters={filters}
+          filterDisplay="row"
+          paginator 
+          rows={10}
+          rowsPerPageOptions={[5, 10, 25, 50]}
+          tableStyle={{ minWidth: '50rem' }}
+          stripedRows
+          showGridlines
+          responsiveLayout="scroll"
+          className="flex-grow-0" // Prevents table from stretching
+        >
+          <Column 
+            field="userName" 
+            header="Username" 
+            filter 
+            filterPlaceholder="Search username"
+            sortable
+          />
+          <Column 
+            field="email" 
+            header="Email" 
+            filter 
+            filterPlaceholder="Search email"
+            sortable
+          />
+          <Column 
+            field="isEmailVerified" 
+            header="Verified" 
+            filter 
+            sortable
+            bodyClassName="text-center"
+          />
+          <Column 
+            field="isActive" 
+            header="Active" 
+            filter 
+            sortable
+            bodyClassName="text-center"
+          />
+          <Column 
+            field="isRobotaniumAdmin" 
+            header="Robotanium Admin" 
+            dataType="boolean"
+            filter
+            filterElement={adminFilterTemplate}
+            body={(rowData) => adminStatusTemplate(rowData, 'robotanium')}
+            bodyClassName="text-center"
+            sortable
+          />
+          <Column 
+            field="isPlayerAdmin" 
+            header="Player Admin" 
+            dataType="boolean"
+            filter
+            filterElement={adminFilterTemplate}
+            body={(rowData) => adminStatusTemplate(rowData, 'player')}
+            bodyClassName="text-center"
+            sortable
+          />
+          <Column 
+            body={actionBodyTemplate} 
+            header="Actions"
+            bodyClassName="text-center"
+          />
+        </DataTable>
+      </div>
+      <div style={{ flexGrow: 1 }}></div> {/* This creates the space */}
     </div>
-  )
-}
+  );
+};

@@ -88,29 +88,29 @@ export const GamesTable: React.FC<IGamesTableProps> = ({ games, onGameSelect, on
 
 
   return (
-    <>
-    <ConfirmDialog />
-    <DataTable 
-      value={games} 
-      paginator 
-      rows={10} 
-      rowsPerPageOptions={[5, 10, 25, 50]} 
-      tableStyle={{ minWidth: '50rem' }}
-      sortField="startTime"
-      sortOrder={-1}
-      onRowClick={(data) => onRowClick(data.data as IGame)}
-      rowClassName={(game) => game._id === selectedGameRowId ? 'selected-game-row' : ''}
-    >
-      <Column field="name" header="Name" sortable style={{ width: '25%'  }}/>
-      <Column field="startTime" header="Start Time" body={dateBodyTemplate} sortable style={{ width: '15%' }}/>
-      <Column field="gameType" header="Type" sortable style={{ width: '10%' }}/>
-      <Column field="reason" header="Reason" sortable style={{ width: '10%' }}/>
-      <Column field="bots" header="Bots" body={botsBodyTemplate} sortable style={{ width: '10%' }}/>
-      <Column field="players" header="Players" body={playersBodyTemplate} sortable style={{ width: '10%' }}/>
-      <Column field="duration" header="Duration" body={durationBodyTemplate} style={{ width: '10%' }}/>
-      <Column field="status" header="Status" body={statusBodyTemplate} sortable style={{ width: '10%' }}/>
-      <Column body={actionBodyTemplate} style={{ width: '5%' }}/>
-    </DataTable>
-    </>
+    <div className="custom-datatable">
+      <ConfirmDialog />
+      <DataTable 
+        value={games} 
+        paginator 
+        rows={10} 
+        rowsPerPageOptions={[5, 10, 25, 50]} 
+        tableStyle={{ minWidth: '50rem' }}
+        sortField="startTime"
+        sortOrder={-1}
+        onRowClick={(data) => onRowClick(data.data as IGame)}
+        rowClassName={(game) => game._id === selectedGameRowId ? 'selected-game-row' : ''}
+      >
+        <Column field="name" header="Name" sortable style={{ width: '25%'  }}/>
+        <Column field="startTime" header="Start Time" body={dateBodyTemplate} sortable style={{ width: '15%' }}/>
+        <Column field="gameType" header="Type" sortable style={{ width: '10%' }}/>
+        <Column field="reason" header="Reason" sortable style={{ width: '10%' }}/>
+        <Column field="bots" header="Bots" body={botsBodyTemplate} sortable style={{ width: '10%' }}/>
+        <Column field="players" header="Players" body={playersBodyTemplate} sortable style={{ width: '10%' }}/>
+        <Column field="duration" header="Duration" body={durationBodyTemplate} style={{ width: '10%' }}/>
+        <Column field="status" header="Status" body={statusBodyTemplate} sortable style={{ width: '10%' }}/>
+        <Column body={actionBodyTemplate} style={{ width: '5%' }}/>
+      </DataTable>
+    </div>
   );
 };

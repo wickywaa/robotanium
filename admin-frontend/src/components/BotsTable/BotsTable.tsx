@@ -76,7 +76,7 @@ export const BotsTable: React.FC<BotsTableProps> = ({
   };
 
   return (
-    <div className="bots-table-container">
+    <div className="custom-datatable">
       <DataTable 
         rowExpansionTemplate={(value) => <BotsExpansionTemplate data={value} />}
         onRowToggle={(e) => setExpandedRows(e.data)} 
