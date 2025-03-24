@@ -6,8 +6,6 @@ export type IBotModel = mongoose.Model<IBot, {}, IBotMethods>;
 export interface IBotCockpits {
   _id: string;
   name: string;
-  sessionId: string;
-  accessToken: string;
 }
 
 export interface ICreateBotDto {
@@ -22,12 +20,19 @@ export interface IBotMethods {
   
 }
 
+export type botProfile = Omit<IBot,'token'>;
+
 export interface IBot {
   id: string;
   name: string;
   token: string;
-  cameras: IBotCockpits[];
+  cockpits: IBotCockpits[];
   imageUrl: string
+}
+
+
+export interface IPublicBot {
+
 }
 
 export interface botAuth {
@@ -64,6 +69,7 @@ export interface IConnectedBot {
   socketId: string,
   adminId: string
 }
+
 
 
 export interface IConnectedUser {

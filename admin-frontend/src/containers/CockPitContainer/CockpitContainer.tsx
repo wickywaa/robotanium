@@ -1,6 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CockpitScreen, CockpitSidebar, LayoutControls, type LayoutType } from '../../components/Cockpit';
+import  {gameSelectors, selectUser } from '../../store/selectors';
+import  { useAppSelector,useAppDispatch } from '../../store/hooks';
+import { useSearchParams } from 'react-router-dom';
 import './CockpitContainer.css';
+import { webSocketServer } from '../../sockets';
+import { user } from '../..';
 
 interface ICockpitScreen {
   id: string;
@@ -20,6 +25,35 @@ const mockScreens: ICockpitScreen[] = [
 export const CockpitContainer: React.FC = () => {
   const [activeScreens, setActiveScreens] = useState<ICockpitScreen[]>([mockScreens[0]]);
   const [layout, setLayout] = useState<LayoutType>('single');
+  const [screens, setScreens] = useState<ICockpitScreen[]>();
+  const [gameId, setGameId] = useState<string | null>(null);
+  const [searchParams] =  useSearchParams();
+  const userId = useAppSelector(selectUser)
+
+
+  const liveGame = useAppSelector(gameSelectors.selectCockpitGame)
+
+
+  useEffect(()=>{
+
+    if(liveGame) {
+      console.log('this is the live game', liveGame)
+    }
+
+  },[liveGame])
+
+  useEffect(()=>{
+    const gameId = searchParams.get('gameId')
+    const token = localStorage.getItem('authToken');
+    console.log('token', token);
+    console.log('gameId', gameId)
+    if(gameId && token !== null ) {
+      setGameId(gameId)
+      console.log('connec to live game')
+      webSocketServer.connectToGame(gameId,token)
+    }
+
+  },[])
 
   const handleLayoutChange = (newLayout: LayoutType) => {
     setLayout(newLayout);

@@ -2,7 +2,8 @@ import { PayloadAction } from "@reduxjs/toolkit";
 import { IGame } from "../../../models";
 import { call, put, takeEvery } from "redux-saga/effects";
 import { gamesService } from "../../../services/Games.service";
-import { createGameFailed, createGameSuccess, deleteGameFailed, deleteGameSuccess, getGamesFailed, getGamesSuccess, setShowCreateGameModal } from "../../slices/game.Slice"
+import { createGameFailed, createGameSuccess, deleteGameFailed, deleteGameSuccess, getGamesFailed, getGamesSuccess, setLiveGame, setShowCreateGameModal } from "../../slices/game.Slice"
+import { utimes } from "fs";
 
 interface CreateGameAction extends PayloadAction<{
   game: IGame;

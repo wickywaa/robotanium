@@ -1,10 +1,9 @@
 import { User } from "src/auth/interfaces";
-import { botAuth, connectedClient, IBot, userAuth } from "../interfaces";
+import { botAuth, connectedClient, IBot, userAuth } from "../../bots/interfaces";
 var jwt = require('jsonwebtoken');
 
 export const authDTOIsValid = (authData:connectedClient): { message:string, valid:boolean} => {
 
-console.log('authDTOIsValid', authData)
 
   if(!authData) return {message:'Invalid auth data', valid:false};
   if(!authData?.type) return {message:'Invalid auth data', valid:false};
@@ -17,7 +16,6 @@ console.log('authDTOIsValid', authData)
 
 export const isUserAuthDtoValid = (user: userAuth):{message:string, valid:boolean} => {
 
-  console.log('got here', user)
  if(!user.id) return {message:'Invalid user id', valid:false}; 
  if(user.id.length < 5) return {message:'Invalid user id', valid:false};
  if(user.token?.length <5) return {message:'Invalid user token', valid:false};
@@ -42,8 +40,7 @@ export const userAuthValid = (authData:userAuth):{message:string, valid:boolean}
 }
 
 export const botAuthValid = (bot:IBot, authData:botAuth):{message:string, valid:boolean} => {
-console.log('bot auth bot', bot)  
-console.log('bot auth authData', authData)  
+
   if(bot.id !== authData.botId) return {valid:false, message:'Invalid bot id'};
   const camera = bot.cockpits.find((camera)=>camera.name);
   if(!camera) return {valid:false, message:'Invalid camera'};

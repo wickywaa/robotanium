@@ -12,6 +12,7 @@ export interface IGamesReducer {
   showEditGameModal: boolean;
   selectedGameRowId: string;
   isLoading: boolean;
+  cockpitGame: IGame | null;
   onlineBots: IConnectedBot[];
   isLive: boolean;
 }
@@ -28,6 +29,7 @@ export const initialGameState: IGamesReducer = {
   showEditGameModal: false,
   isLoading: false,
   onlineBots: [],
+  cockpitGame: null,
   isLive: false
 };
 
@@ -63,6 +65,7 @@ export const GameSlice = createSlice({
     setSelectedGameRowId: (state, action: PayloadAction<string>) => ({ ...state, selectedGameRowId: action.payload }),
     showEditGameModal: (state, action: PayloadAction<boolean>) => ({ ...state, showEditGameModal: action.payload }),
     setSelectedGame: (state, action: PayloadAction<IGame>) => ({ ...state, selectedGame: action.payload }),
+    setLiveGame: (state, action:PayloadAction<IGame>) => ({...state, cockpitGame: action.payload}),
     createLiveGameAttempt: (state, action: PayloadAction<IGame>) => ({ 
       ...state, 
       isLoading: true,
@@ -100,6 +103,7 @@ export const {
   showEditGameModal,
   createLiveGameAttempt,
   createLiveGameSuccess,
-  createLiveGameFailed
+  createLiveGameFailed,
+  setLiveGame
 } = GameSlice.actions
 

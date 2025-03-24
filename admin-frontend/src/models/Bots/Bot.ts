@@ -4,7 +4,6 @@ import { ILoggedInUser } from "../User";
 interface camera{
     _id:string;
     name:string;
-    sessionId: string;
 }
 
 export interface IBot {
@@ -12,7 +11,7 @@ export interface IBot {
   name: string;
   img: string;
   imageUrl: string;
-  cameras: camera[]
+  cockpits: camera[]
 }
 
 export interface ICockpit {

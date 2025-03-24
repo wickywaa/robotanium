@@ -15,17 +15,10 @@ interface BotsExpansion {
 
 export const BotsExpansionTemplate:React.FC<BotsExpansion> = ({data}) => {
 
-  const editSessionId = () => {
-    <div>
-      <InputText/>
-    </div>
-  }
-
-
 
   const cameraList = ():React.ReactElement => {
-    return data.cameras.length ? ( <div> 
-      <DataTable value={data.cameras}>
+    return data.cockpits?.length ? ( <div> 
+      <DataTable value={data?.cockpits}>
         <Column field='name' header='camera name'/>
         <Column field='_id' header='id'/>
         <Column field='sessionId' header='Sesion Id'/>
@@ -43,9 +36,9 @@ export const BotsExpansionTemplate:React.FC<BotsExpansion> = ({data}) => {
   }
 
   const renderImage = ():React.ReactElement | null => {
-    return data.imageUrl.length > 1 ? ( 
+    return data.imageUrl?.length > 1 ? ( 
       <div>
-        <img src={data.imageUrl} alt='bot'/>
+        <img src={data?.imageUrl} alt='bot'/>
       </div>
    ) : null
   }

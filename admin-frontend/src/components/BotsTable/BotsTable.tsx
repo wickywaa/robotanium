@@ -22,7 +22,7 @@ export const BotsTable: React.FC<BotsTableProps> = ({
   const [expandedRows, setExpandedRows] = useState<any[] | DataTableExpandedRows>([]);
 
   const getLengthOfCamera = (value: IBot) => (
-    <span className="camera-count">{value.cameras.length}</span>
+    <span className="camera-count">{value?.cockpits?.length ?? 0}</span>
   );
 
   const getStatus = (bot: IBot) => {
@@ -42,13 +42,10 @@ export const BotsTable: React.FC<BotsTableProps> = ({
       name: bot.name,
       img: bot.img,
       imageUrl: bot.imageUrl,
-      cameras: bot.cameras.map((cm) => ({
+      cockpits: bot.cockpits?.map((cm) => ({
         _id: cm._id,
-        name: cm.name,
-        sessionId: onlineBot?.cockpits.find((cam) => 
-          cam._id.toString() === cm._id.toString()
-        )?.sessionId ?? '',
-      }))
+        name: cm.name
+      })) ?? []
     };
   });
 
@@ -84,11 +81,10 @@ export const BotsTable: React.FC<BotsTableProps> = ({
         value={completeBots}
         stripedRows
         showGridlines
-        responsiveLayout="scroll"
       >
         <Column expander={true} style={{ width: '4rem' }} />
         <Column field="name" header="Name" sortable />
-        <Column body={getLengthOfCamera} header="Cameras" sortable style={{ width: '150px' }} />
+        <Column body={getLengthOfCamera} header="Cockpits" sortable style={{ width: '150px' }} />
         <Column header="Status" body={getStatus} style={{ width: '150px' }} />
         <Column header="Actions" body={renderActionButtons} style={{ width: '250px' }} />
       </DataTable>

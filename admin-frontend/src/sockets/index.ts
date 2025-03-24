@@ -3,32 +3,60 @@ import { store } from '../store/store';
 import { ILoggedInUser } from '../models';
 import { handleConnection, handleDisconnect } from './handleConnection';
 import { handleUserListUpdate } from './userLists';
+import { user } from '..';
 
-export const connectsocket = (userId: string,usertoken: string) => {
+
+
+export class WebSocketServer  {
+
+  socket:Socket | null
+
+  constructor ( ) {
+      this.socket = null
+  }
+
+   
+  connectsocket = (userId: string,usertoken: string):void => {
+
+    console.log('connecting now', userId, usertoken)
+
+    const socket = io('http://localhost:47000',{
+      auth: {
+        type:'user',
+        id:userId,
+        token: usertoken
+      },
+      autoConnect:false,
+    });
   
-  console.log('connecting')
-  console.log('userId', userId);
-  console.log('usertoken', usertoken)
+    if(!userId.length || !usertoken.length) return;
+    console.log('should connect now')
+  
+    socket.connect();
+  
+    socket.on('connect',handleConnection)
+    socket.on('disconnect', handleDisconnect)
+    socket.on('connections',handleUserListUpdate)
 
-  const socket = io('http://localhost:47000',{
-    auth: {
-      type:'user',
-      id:userId,
-      token: usertoken
-    },
-    autoConnect:false,
-  });
+    this.socket = socket
 
-  if(!userId.length || !usertoken.length) return;
-  console.log('should connect now')
+  }
 
-  socket.connect();
+  connectToGame = (gameId: string, usertoken:string) => {
 
-  socket.on('connect',handleConnection)
-  socket.on('disconnect', handleDisconnect)
-  socket.on('connections',handleUserListUpdate)
+    console.log('trying to connect to game', gameId, usertoken)
+
+    if(this.socket === null ) return;
+
+    this.socket.emit('connectToGame',{ gameId, usertoken})
+  }
 
 }
+
+
+export const webSocketServer = new WebSocketServer()
+
+
 
 
 

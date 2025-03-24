@@ -7,3 +7,15 @@ export const selectCreateGame = (state: RootState) => state.gameSlice.createGame
 export const selectSelectedGameRowId = (state: RootState) => state.gameSlice.selectedGameRowId;
 export const selectShowEditGameModal = (state: RootState) => state.gameSlice.showEditGameModal;
 export const selectSelectedGame = (state: RootState) => state.gameSlice.selectedGameRowId;
+export const selectCockpitGame = (state: RootState) => state.gameSlice.cockpitGame
+
+
+export const gameSelectors = {
+  selectCockpitGame,
+  selectCreateGame,
+  selectGames,
+  selectSelectedGame,
+  selectShowCreateGame,
+  selectShowEditGameModal,
+  selectSelectedGameRowId
+}

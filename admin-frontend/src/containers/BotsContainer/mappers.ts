@@ -11,7 +11,7 @@ export const mapBotToTestGame = (bot: IBot, user: ILoggedInUser): IGame => ({
   bots: [{
     _id: bot._id,
     name: bot.name,
-    cockpits: bot.cameras.map(camera => ({
+    cockpits: bot.cockpits.map(camera => ({
       _id: camera._id,
       name: camera.name,
       player: {
