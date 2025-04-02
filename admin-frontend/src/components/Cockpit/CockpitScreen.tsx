@@ -50,7 +50,9 @@ export const CockpitScreen: React.FC<CockpitScreenProps> = ({
   return (
     <div className="cp-screen" id={`screen-${screen.id}`}>
       <div className="cp-screen__header">
-        <span className="cp-screen__title">{screen.name}</span>
+        <p className="cp-screen__title block">name: {screen.name}</p>
+        <p className="cp-screen__title block">sessionId: {screen.sessionId}</p>
+        <p className="cp-screen__title block">token: {screen.token}</p>
         <div className="cp-screen__controls">
           <Button
             icon={isFullscreen ? "pi pi-window-minimize" : "pi pi-window-maximize"}
@@ -75,7 +77,7 @@ export const CockpitScreen: React.FC<CockpitScreenProps> = ({
           </div>
         )}
         <VideoViewer
-          apiKey={screen.apiKey}
+          apiKey={'48001991'}
           sessionId={screen.sessionId}
           token={screen.token}
           onLoaded={() => setIsLoading(false)}

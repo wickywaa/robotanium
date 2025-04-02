@@ -1,18 +1,19 @@
 import { io, Socket } from 'socket.io-client';
 import { store } from '../store/store';
-import { ILoggedInUser } from '../models';
+import { IRTCCredentials } from '../models';
 import { handleConnection, handleDisconnect } from './handleConnection';
 import { handleUserListUpdate } from './userLists';
-import { user } from '..';
+import { handleRTCCredentials } from './handlecredentials';
 
 
 
 export class WebSocketServer  {
 
   socket:Socket | null
-
+  credentials: IRTCCredentials | null    
   constructor ( ) {
       this.socket = null
+      this.credentials = null
   }
 
    
@@ -37,6 +38,7 @@ export class WebSocketServer  {
     socket.on('connect',handleConnection)
     socket.on('disconnect', handleDisconnect)
     socket.on('connections',handleUserListUpdate)
+    socket.on('credentials', handleRTCCredentials)
 
     this.socket = socket
 
@@ -55,10 +57,6 @@ export class WebSocketServer  {
 
 
 export const webSocketServer = new WebSocketServer()
-
-
-
-
 
 
 // "undefined" means the URL will be computed from the `window.location` object

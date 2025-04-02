@@ -15,6 +15,7 @@ export const Cockpit: React.FC<CockpitProps> = ({ sessionId }) => {
         apiKey={API_KEY}
         sessionId={sessionId}
         token={TOKEN}
+        
       />
     </div>
   );

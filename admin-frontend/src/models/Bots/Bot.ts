@@ -62,3 +62,11 @@ export const emptyConnectedCokpit:IConnectedCockpit = {
   adminId: string
 }
 
+export interface IRTCCredentials {
+  botId: string,
+  botName: string,
+  cockpitId: string,
+  sessionId: string,
+  userToken: string,
+  botToken: string
+}

@@ -62,7 +62,7 @@ export class BotsUsersController {
             cockpits: bot.cockpits.map((cockpit)=>{
               return {
                 name: cockpit.name,
-                _id: cockpit._id
+                _id: cockpit._id,
               }
             })
           }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CockpitScreen, CockpitSidebar, LayoutControls, type LayoutType } from '../../components/Cockpit';
-import  {gameSelectors, selectUser } from '../../store/selectors';
+import  {gameSelectors, selectUser, selectCredentials } from '../../store/selectors';
 import  { useAppSelector,useAppDispatch } from '../../store/hooks';
 import { useSearchParams } from 'react-router-dom';
 import './CockpitContainer.css';
@@ -28,12 +28,11 @@ export const CockpitContainer: React.FC = () => {
   const [screens, setScreens] = useState<ICockpitScreen[]>();
   const [gameId, setGameId] = useState<string | null>(null);
   const [searchParams] =  useSearchParams();
-  const userId = useAppSelector(selectUser)
+  const userId = useAppSelector(selectUser);
+  const credentials = useAppSelector(selectCredentials)
 
 
   const liveGame = useAppSelector(gameSelectors.selectCockpitGame)
-
-
   useEffect(()=>{
 
     if(liveGame) {
@@ -45,8 +44,6 @@ export const CockpitContainer: React.FC = () => {
   useEffect(()=>{
     const gameId = searchParams.get('gameId')
     const token = localStorage.getItem('authToken');
-    console.log('token', token);
-    console.log('gameId', gameId)
     if(gameId && token !== null ) {
       setGameId(gameId)
       console.log('connec to live game')
@@ -54,6 +51,11 @@ export const CockpitContainer: React.FC = () => {
     }
 
   },[])
+
+
+  useEffect(()=>{
+    setScreens(credentials)
+  },[credentials])    
 
   const handleLayoutChange = (newLayout: LayoutType) => {
     setLayout(newLayout);
@@ -82,11 +84,11 @@ export const CockpitContainer: React.FC = () => {
             <CockpitScreen
               key={`position-${index}`}
               screen={screen}
+
             />
           ))}
         </div>
       </div>
-
       <CockpitSidebar />
     </div>
   );

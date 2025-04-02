@@ -180,8 +180,6 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     }))
   }
 
-
- 
   @SubscribeMessage('connectToGame')
   async handleconnectUserToGame (socket: Socket, data: {botId:string, cockpits:string[], gameId:string, usertoken:string}) {
 

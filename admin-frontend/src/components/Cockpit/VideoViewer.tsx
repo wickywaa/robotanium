@@ -21,17 +21,31 @@ export const VideoViewer: React.FC<VideoViewerProps> = ({
   const videoRef = useRef<HTMLDivElement>(null);
   const sessionRef = useRef<OT.Session | null>(null);
   const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
+
+    console.log('video viewer props')
+    console.log('apiKey', apiKey)
+    console.log('sessionId', sessionId)
+    console.log('token', token)
+    console.log('videoRef.current', videoRef.current)
     if (!apiKey || !sessionId || !token || !videoRef.current) return;
+    console.log('now in the video viewer')
+
+    console.log('apiKey', apiKey)
+    console.log('sessionId', sessionId)
+    console.log('token', token)
 
     // Initialize session
     const session = OT.initSession(apiKey, sessionId);
+
+    console.log('session', session)
     sessionRef.current = session;
 
     // Handle connection
     session.on('streamCreated', (event) => {
       const subscriberOptions: OT.SubscriberProperties = {
-        insertMode: 'append',
+        insertMode: '',
         width: '100%',
         height: '100%',
         style: {

@@ -62,7 +62,6 @@ export class AdminGamesController {
         }
       });
 
-
       const newGame: IGame = {
         name: `robo game ${new Date().getTime()}`,
         startTime: new Date().getTime(),

@@ -4,9 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectCreateBot, selectShowCreateBot, selectBots, selectOnlinebots, selectLoggedInUser } from '../../store/selectors'
 import { createBotAttempt, deleteBotAttempt, setBotsListAttempt, setShowCreateBot, createGameAttempt } from "../../store";
 import { BotsTable, CreateBotModule } from "../../components";
-import { ICreateBotDTo, IBot, IConnectedBot } from "../../models";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
+import { ICreateBotDTo, IBot } from "../../models";
 import { Card } from "primereact/card";
 import { mapBotToTestGame } from './mappers';
 
@@ -44,15 +42,13 @@ export const BotsContainer: React.FC = () => {
     return showDeleteBotModal.length ? (
       <div style={{position:'absolute', top:'50%', left:'50%', transform:'translate(-50%,-50%)'}}>
         <Card footer={deleteModalFooter}>
-
           <p>Press Confirm to delete bot {`${showDeleteBotModal}`}</p>
         </Card>
       </div>
     ) : <></>
   }
+
   const handleConnectBot = (bot: IBot) => {
-    console.log('bot', bot);
-    console.log('user', user);
     if (!user) return;
     const newGame = mapBotToTestGame(bot, user);
     dispatch(createGameAttempt({game:newGame, isLive:true}));
