@@ -73,7 +73,7 @@ export const CreateGameModal: React.FC<ICreateGameModal> = ({ close, onSave, ava
       key: index,
       _id: bot._id,
       name: bot.name,
-      cockpits: bot.cameras.map((cam, index) => {
+      cockpits: bot.cockpits.map((cam, index) => {
         return {
           key: index,
           _id: cam._id,

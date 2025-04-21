@@ -1,3 +1,4 @@
+import {store} from '../store/store';
 export const handleConnection  = () => {
   console.log('connected to websocket')
 }

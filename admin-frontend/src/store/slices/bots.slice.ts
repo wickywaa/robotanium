@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IBot, IConnectedBot, ICreateBotDTo } from '../../models';
+import { IBot, IConnectedBot, ICreateBotDTo, IRTCCredentials } from '../../models';
 
 export interface IBotReducer {
   createBot: {
@@ -9,7 +9,8 @@ export interface IBotReducer {
   bots: IBot[],
   showCreateBot: boolean;
   isLoading: boolean;
-  onlineBots: IConnectedBot[]
+  onlineBots: IConnectedBot[],
+  credentials: IRTCCredentials[] | null
 }
 
 export const initialState: IBotReducer = {
@@ -20,7 +21,8 @@ export const initialState: IBotReducer = {
   bots: [],
   showCreateBot:false,
   isLoading:false,
-  onlineBots: []
+  onlineBots: [],
+  credentials: null
 };
 
 
@@ -40,7 +42,8 @@ export const BotSlice = createSlice({
     deleteBotAttempt: (state, action:PayloadAction<string>) =>({...state}),
     deleteBotFailed: (state) =>({...state, isLoading: true}),
     deleteBotSuccess: (state, action:PayloadAction<IBot[]>) =>({...state,bots:action.payload, isLoading: false}),
-    setOnlineBots: (state, action: PayloadAction<{bots: IConnectedBot[]}>) => ({...state, onlineBots: action.payload.bots})
+    setOnlineBots: (state, action: PayloadAction<{bots: IConnectedBot[]}>) => ({...state, onlineBots: action.payload.bots}),
+    setCredentials: (state, action: PayloadAction<IRTCCredentials[]>) => ({...state, credentials: action.payload})
   }
 })
 
@@ -57,6 +60,7 @@ export const {
   deleteBotAttempt,
   deleteBotFailed,
   deleteBotSuccess,
-  setOnlineBots
+  setOnlineBots,
+  setCredentials
 } = BotSlice.actions
 

@@ -59,5 +59,43 @@ services:
       replicas: 1
     volumes:
       - mongo:/data/db
+  backendv2:
+    image: backendv2:${BUILD_ENV:-dev}
+    build:
+      context: ./backendv2
+      dockerfile: Dockerfile
+      args:
+        - BUILD_ENV=${BUILD_ENV:-dev}
+    ports:
+      - "8080:8080"
+      - "40000:40000"  # Debug port (only used in dev)
+    volumes:
+      - ./backendv2:/app  # Only mounted in dev
+    security_opt:
+      - "seccomp:unconfined"  # Only needed in dev
+    cap_add:
+      - SYS_PTRACE  # Only needed in dev
+    environment:
+      - GO_ENV=${BUILD_ENV:-development}
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Robotanium1!
+      POSTGRES_DB: robotanium_db
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
 volumes:
   mongo:
+  postgres_data:

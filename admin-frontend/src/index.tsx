@@ -10,7 +10,7 @@ import { Provider } from "react-redux";
 import { store } from "./store/store";
 import { AuthService } from "./services";
 import { loginSuccess } from "./store/slices";
-import { connectsocket} from  './sockets';
+import { webSocketServer} from  './sockets';
 import { Socket } from "socket.io-client";
 import { ILoggedInUser } from "./models";
 export const user:ILoggedInUser | null = store.getState().auth.user;
@@ -37,14 +37,14 @@ const renderApp = () => {
 
 if (user) {
   renderApp();
-  connectsocket(user._id,localStorage.getItem('authtoken') ?? '')
+  webSocketServer.connectsocket(user._id,localStorage.getItem('authtoken') ?? '')
 } else {
   if (authToken?.length) {
     new AuthService().loginWithToken().then((response) => {
       if (response) {
         localStorage.setItem("authToken", response.token);
         store.dispatch(loginSuccess(response.user));
-        connectsocket(response.user._id, response.token)
+        webSocketServer.connectsocket(response.user._id, response.token)
         return renderApp();
       }
       return renderApp();

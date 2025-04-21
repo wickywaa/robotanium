@@ -33,7 +33,7 @@ export const GamesContainer: React.FC = () => {
   }, [selectedGameRowId])
 
   const handleChange = (game: IGame) => dispatch(updateCreateGame(game));
-  const handleSave = (game: IGame) => dispatch(createGameAttempt(game));
+  const handleSave = (game: IGame) => dispatch(createGameAttempt({game, isLive:false}));
   
   const handleGameSelect = (game: IGame) => {
     // Handle view game details
@@ -52,7 +52,6 @@ export const GamesContainer: React.FC = () => {
     dispatch(setSelectedGameRowId(game._id));
   }
     
- 
 
   useEffect(()=>{
     dispatch(getGamesAttempt())

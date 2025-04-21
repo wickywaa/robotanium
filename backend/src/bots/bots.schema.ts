@@ -40,7 +40,7 @@ export const BotsSChema = new mongoose.Schema<IBot, IBotModel, IBotMethods>({
     type: String,
   },
 
-  cameras: {
+  cockpits: {
     unique:true,
     type: [{
       name: String,

@@ -7,3 +7,6 @@ export * from './PasswordInput/PasswordInput';
 export * from './CreateBotsModule/CreateBotsModule';
 export * from './BotsTable/BotsTable';
 export * from './BotsExpansionTemplate/BotsExpansionTemplate';
+export * from './Cockpit';
+export * from './GamesTable/GamesTable';
+

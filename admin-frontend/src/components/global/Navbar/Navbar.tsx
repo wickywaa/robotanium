@@ -17,14 +17,14 @@ interface IMenuItemWithBadge extends MenuItem {
 }
 
 export const NavBar: React.FC = () => {
-
   const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const start = () => <img className="h-20" src={robotaniumLogo} />;
+
+  const start = () => <img className="h-20" alt="Robotanium Logo" src={robotaniumLogo} />;
 
   const onEditUserClick = () => {
-    if(user !== null){
+    if(user !== null) {
       dispatch(setEditUser({user, showResetPassword:true}))
     }
   }
@@ -32,33 +32,54 @@ export const NavBar: React.FC = () => {
   const end = () => {
     return (
       <>
-        <Button icon='pi pi-user' onClick={onEditUserClick}/>
-        <Button onClick={(() => dispatch(logoutAttempt()))} style={{ color: '#00fefc' }} title="Logout">logout</Button>
+        <Button 
+          icon="pi pi-user"
+          rounded
+          outlined
+          tooltip="Edit Profile"
+          tooltipOptions={{ position: 'bottom' }}
+          onClick={onEditUserClick}
+        />
+        <Button 
+          icon="pi pi-sign-out"
+          label="Logout"
+          rounded
+          outlined
+          severity="danger"
+          tooltip="Sign Out"
+          tooltipOptions={{ position: 'bottom' }}
+          onClick={() => dispatch(logoutAttempt())}
+        />
       </>
-    )
+    );
   };
+
   const items: IMenuItemWithBadge[] = [
     {
       label: "Home",
+      icon: "pi pi-home",
       command: () => navigate('/admin')
     },
     {
       label: "Bots",
+      icon: "pi pi-robot",
       command: () => navigate('/admin/bots')
     },
     {
       label: "Games",
+      icon: "pi pi-gamepad",
       command: () => navigate('/admin/games')
     },
     {
       label: "Users",
+      icon: "pi pi-users",
       command: () => navigate('/admin/adminusers')
     },
-  ] as IMenuItemWithBadge[];
+  ];
 
   return user ? (
-    <div style={{ position: 'relative' }} className="nav-bar" >
-      <Menubar style={{ color: 'red' }} className="bg-primary" model={items} start={start} end={user?._id ? end : null} />
+    <div className="nav-bar">
+      <Menubar model={items} start={start} end={user?._id ? end : null} />
     </div>
   ) : null;
 };

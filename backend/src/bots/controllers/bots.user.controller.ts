@@ -2,7 +2,7 @@ import { Controller, Inject, Injectable, Post, Body, Res, Get,Delete, UseInterce
 import { Response } from 'express';
 import { Multer } from 'multer';
 import { Model } from 'mongoose';
-import { IBot, IBotMethods, IBotModel, ICreateBotDto } from '../interfaces';
+import { botProfile, IBot, IBotMethods, IBotModel, ICreateBotDto } from '../interfaces';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { BotAuthService } from '../services/authService';
 
@@ -21,14 +21,13 @@ export class BotsUsersController {
   @UseInterceptors(FileInterceptor('file'))
   async createBot(@Body() body:ICreateBotDto,@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
 
-    console.log('body',body)
 
     const hashedPassword = await this.botAuthService.hashPassword(body.password);
     try {
       const newBot:Omit<IBot,'id'> = {
         name: body.name,
         token:  hashedPassword,
-        cameras: body.cockpits,
+        cockpits: body.cockpits,
         imageUrl: body.imageUrl
       }
 
@@ -49,14 +48,26 @@ export class BotsUsersController {
   @Get('/bots')
   async getAllBots(@Res()res: Response) {
     try {
-      const bots = await this.botModel.find({});
+      const bots = await this.botModel.find();
       if(!bots) return res.status(404).json({
         message: {
           error: 'no bots found',
         }
       })
       return res.status(200).json({
-        bots,
+       bots:  bots.map((bot)=>{
+          return {
+            _id: bot._id,
+            name: bot.name,
+            cockpits: bot.cockpits.map((cockpit)=>{
+              return {
+                name: cockpit.name,
+                _id: cockpit._id,
+              }
+            })
+          }
+
+        })
       });
     }
     catch (e) {
