@@ -1,5 +1,5 @@
 # Development stage
-FROM golang:1.20-alpine AS dev
+FROM golang:1.23-alpine AS dev
 
 # Set important environment variables
 ENV GOPATH /go
@@ -46,6 +46,7 @@ WORKDIR /root/
 
 # Copy the binary from builder
 COPY --from=builder /app/main .
+COPY --from=builder /app/migrations ./migrations
 
 EXPOSE 8080
 
