@@ -1,6 +1,7 @@
 package main
 
 import (
+	"backendv2/pkg/database"
 	"backendv2/routes"
 	"fmt"
 	"log"
@@ -11,6 +12,12 @@ import (
 )
 
 func main() {
+
+	_, err := database.InitDB()
+	if err != nil {
+		log.Fatalf("Failed to initialize database: %v", err)
+	}
+	log.Println("Database connected successfully")
 	app := fiber.New()
 
 	// Add Fiber's built-in logger
