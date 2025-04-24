@@ -2,6 +2,7 @@
 package database
 
 import (
+	"backendv2/pkg/seed"
 	"fmt"
 	"log"
 	"os"
@@ -50,6 +51,10 @@ func InitDB() (*gorm.DB, error) {
 	// Run migrations
 	if err := RunMigrations(dbURL); err != nil {
 		log.Printf("Warning: Failed to run migrations: %v", err)
+	}
+
+	if err := seed.SeedAdminUser(db); err != nil {
+		log.Printf("Warning: Failed to seed admin user: %v", err)
 	}
 
 	return db, nil

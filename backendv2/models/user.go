@@ -1,7 +1,9 @@
 package models
 
 import (
+	"crypto/rand"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -40,6 +42,14 @@ type UserMethods interface {
 type EmailConfirmationDto struct {
 	RegistrationToken string
 	Email             string
+}
+
+func generateRandomToken() string {
+	b := make([]byte, 32)
+	if _, err := rand.Read(b); err != nil {
+		return ""
+	}
+	return fmt.Sprintf("%x", b)
 }
 
 // BeforeSave hook - similar to your MongoDB pre-save
