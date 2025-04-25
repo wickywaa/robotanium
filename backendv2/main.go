@@ -5,6 +5,7 @@ import (
 	"backendv2/routes"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -12,6 +13,10 @@ import (
 )
 
 func main() {
+	// Verify required environment variables
+	if os.Getenv("JWT_SECRET_KEY") == "" {
+		log.Fatal("JWT_SECRET_KEY environment variable is required")
+	}
 
 	_, err := database.InitDB()
 	if err != nil {

@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"errors"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -86,7 +87,13 @@ func (u *User) GenerateAuthToken() (string, error) {
 	claims["user_id"] = u.ID
 	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 
-	tokenString, err := token.SignedString([]byte("your-secret-key")) // Use env variable in production
+	// Get secret key from environment variable
+	secretKey := os.Getenv("JWT_SECRET_KEY")
+	if secretKey == "" {
+		return "", errors.New("JWT_SECRET_KEY environment variable is not set")
+	}
+
+	tokenString, err := token.SignedString([]byte(secretKey))
 	if err != nil {
 		return "", err
 	}
@@ -140,4 +147,14 @@ func (u *User) ConfirmEmail(dto EmailConfirmationDto) (bool, error) {
 	u.IsEmailVerified = true
 	u.RegistrationToken = nil
 	return true, nil
+}
+
+// GetUserByEmail retrieves a user by their email address
+func GetUserByEmail(db *gorm.DB, email string) (*User, error) {
+	var user User
+	result := db.Where("email = ?", email).First(&user)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &user, nil
 }

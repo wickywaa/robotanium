@@ -11,6 +11,12 @@ import (
 	"gorm.io/gorm"
 )
 
+var db *gorm.DB
+
+func GetDB() *gorm.DB {
+	return db
+}
+
 func GetDatabaseURL() string {
 	host := os.Getenv("DB_HOST")
 	user := os.Getenv("DB_USER")
@@ -43,7 +49,8 @@ func InitDB() (*gorm.DB, error) {
 	dbURL := GetDatabaseURL()
 	log.Printf("Connecting to database: %s", dbURL)
 
-	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
+	var err error
+	db, err = gorm.Open(postgres.Open(dbURL), &gorm.Config{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to database: %w", err)
 	}
