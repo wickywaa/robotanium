@@ -54,7 +54,6 @@ func InitDB() (*gorm.DB, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to database: %w", err)
 	}
-
 	// Run migrations
 	if err := RunMigrations(dbURL); err != nil {
 		log.Printf("Warning: Failed to run migrations: %v", err)

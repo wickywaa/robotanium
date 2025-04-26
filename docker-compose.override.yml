@@ -1,11 +1,6 @@
 version: "3.4"
 
 services:
-  backend:
-    volumes:
-      - /app/node_modules
-      - /app/dist
-      - ./backend:/app
   robotaniumFrontend:
     volumes:
       - /app/node_modules
@@ -14,16 +9,3 @@ services:
     volumes:
       - /app/node_modules
       - ./admin-frontend:/app 
-  mongo-express:
-   image: mongo-express
-   restart: unless-stopped
-   ports:
-    - "8082:8081"  # Access via http://localhost:8082
-   depends_on:
-    - mongo
-   environment:
-    ME_CONFIG_MONGODB_SERVER: "mongo"  # The name of your MongoDB service in Docker
-    ME_CONFIG_BASICAUTH_USERNAME: "admin"  # This is for Mongo Express login
-    ME_CONFIG_BASICAUTH_PASSWORD: "password"
-    ME_CONFIG_MONGODB_ADMINUSERNAME: "root"  # MongoDB username
-    ME_CONFIG_MONGODB_ADMINPASSWORD: "Robotanium1!"

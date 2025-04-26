@@ -7,7 +7,7 @@ export class AuthService {
 
   login = async (user: ILoginCredentials): Promise<ILoggedInUser | null | { unverified: boolean }> => {
     try {
-      return adminBaseAxios.post<ILoggedInUser>('login',
+      return adminBaseAxios.post<ILoggedInUser>('users/login',
         {
           email: user.email,
           password: user.password

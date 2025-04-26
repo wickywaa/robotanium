@@ -32,9 +32,12 @@ func main() {
 	app.Use(func(c *fiber.Ctx) error {
 		log.Printf("DEBUG: Incoming request: %s %s\n", c.Method(), c.Path())
 		fmt.Printf("DEBUG: Incoming request: %s %s\n", c.Method(), c.Path())
+		fmt.Println("Starting server test 3")
 		return c.Next()
 	})
+
 	fmt.Println("Starting server test")
+	fmt.Println("Starting server test 2 3 4 5 ")
 
 	app.Get("/backendv2/test", func(c *fiber.Ctx) error {
 		log.Println("Test route hit!")

@@ -1,5 +1,5 @@
 # Development stage
-FROM golang:1.23-alpine AS dev
+FROM golang:1.23 AS dev
 
 # Set important environment variables
 ENV GOPATH /go
@@ -7,23 +7,24 @@ ENV GO111MODULE on
 ENV CGO_ENABLED 0
 
 # Install development tools
-RUN  go install github.com/cosmtrek/air@v1.40.4
+RUN go install github.com/githubnemo/CompileDaemon@latest
 
 WORKDIR /app
 
 # Copy go mod and sum files
 COPY go.mod go.sum ./
 
-# Use mount cache for better performance
-RUN --mount=type=cache,target=/go/pkg/mod go mod download
+# Download dependencies
+RUN go mod download
 
+# The rest of the files will be mounted as a volume in docker-compose
 COPY . .
 
 # Expose both API and debug ports
 EXPOSE 8080 40000
 
-# Update the air command with full path
-ENTRYPOINT ["/go/bin/air"]
+# Use CompileDaemon for hot reloading
+CMD ["CompileDaemon","--polling", "--build=go build -o main .", "--command=./main"]
 
 # Production build stage
 FROM golang:1.20-alpine AS builder

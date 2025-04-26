@@ -5,7 +5,7 @@ import { authSlice } from '../store/slices/'
 const token = `Bearer ${localStorage.getItem('authToken')}`
 
 export const adminBaseAxios = axios.create({
-  baseURL: '/api/admin',
+  baseURL: '/api/v2',
   headers: {
       'Authorization': token,
   }
