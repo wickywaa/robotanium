@@ -33,7 +33,13 @@ export class AuthService  {
   };
 
   registerUser = async (credentials: IRegisterCredentials): Promise<boolean> => {
-    return baseAxios.post('users/user',{...credentials})
+
+    console.log('credentials', credentials)
+    return baseAxios.post('users/user',{
+      email: credentials.email,
+      username: credentials.userName,
+      password: credentials.password
+    })
   };
 
   confirmEmail = async (credentials: IConfirmEmailCredentials): Promise<{token:string, user: ILoggedInUser}> => {

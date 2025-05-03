@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const token = `Bearer ${localStorage.getItem('authToken')}`
 export const baseAxios = axios.create({
-  baseURL: '/api/',
+  baseURL: '/api/v2',
   headers: {
       'Authorization': token,
   }

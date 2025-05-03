@@ -3,10 +3,14 @@ package controllers
 import (
 	"backendv2/models"
 	"backendv2/pkg/database"
+	"backendv2/pkg/email"
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/go-playground/validator/v10"
 )
+
+var validate = validator.New()
 
 func LoginUser(c *fiber.Ctx) error {
 	type LoginRequest struct {
@@ -25,6 +29,7 @@ func LoginUser(c *fiber.Ctx) error {
 	if err := db.Where("email = ?", req.Email).First(&user).Error; err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid credentials"})
 	}
+
 
 	if !user.CheckPassword(req.Password) {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid credentials"})
@@ -113,16 +118,97 @@ func GetUsers(c *fiber.Ctx) error {
 
 
 func CreateUser(c *fiber.Ctx) error {
-	type User struct {
-		Name string `json:"name"`
+	type CreateUserRequest struct {
+		Email    string `json:"email" validate:"required,email"`
+		Password string `json:"password" validate:"required,min=6"`
 	}
+
 	fmt.Println("Creating user")
-	var user User
-	if err := c.BodyParser(&user); err != nil {
+	var req CreateUserRequest
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request format"})
+	}
+
+	// Validate the request
+	if err := validate.Struct(req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input data"})
+	}
+
+	// Create the user in database
+	db := database.GetDB()
+	user := models.User{
+		Email: req.Email,
+	}
+
+	// Set the password using the model's method
+	if err := user.SetPassword(req.Password); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Failed to set password"})
+	}
+
+	// Generate registration token
+	emailConfirmationDto, err := user.GenerateConfirmEmailDto()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to generate registration token"})
+	}
+
+	// Initialize email service
+	emailService, err := email.NewEmailService()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to initialize email service"})
+	}
+
+	// Send confirmation email
+	if err := emailService.SendConfirmationEmail(req.Email, emailConfirmationDto.RegistrationToken); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to send confirmation email"})
+	}
+
+	if err := db.Create(&user).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to create user"})
+	}
+
+	fmt.Println("User added:", user)
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"message": "User created successfully. Please check your email for confirmation.",
+		"user":    user.GetPublicProfile(),
+	})
+}
+
+
+func ConfirmEmail(c *fiber.Ctx) error {
+	type ConfirmRequest struct {
+		Email string `json:"email"`
+		RegistrationToken  string `json:"registrationToken"`
+	}
+
+	var req ConfirmRequest
+	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request"})
 	}
 
-	return c.Status(fiber.StatusCreated).JSON(user)
+
+	db := database.GetDB()
+	var user models.User
+	if err := db.Where("email = ?", req.Email).First(&user).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User not found"})
+	}
+
+	dto := models.EmailConfirmationDto{
+		RegistrationToken: req.RegistrationToken,
+		Email:             req.Email,
+	}
+
+	ok, err := user.ConfirmEmail(dto)
+	if err != nil || !ok {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid or expired code"})
+	}
+
+	// Save the updated user (email verified, token cleared)
+	if err := db.Save(&user).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to update user"})
+	}
+
+	return c.JSON(fiber.Map{"message": "Email confirmed successfully"})
 }
 
 func DeleteuserById(c *fiber.Ctx) error {

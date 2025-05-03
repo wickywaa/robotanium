@@ -29,4 +29,5 @@ func setupUserRoutes(api fiber.Router) {
 	users.Delete("/user/:id", middleware.AuthMiddleware(), controllers.DeleteuserById)
 	users.Put("/user/:id", middleware.AuthMiddleware(), controllers.UpdateUser)
 	users.Put("/changepassword", middleware.AuthMiddleware(), controllers.UpdatePassword)
+	users.Post("/confirm", controllers.ConfirmEmail)
 }

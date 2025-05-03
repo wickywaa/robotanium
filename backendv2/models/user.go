@@ -3,7 +3,6 @@ package models
 import (
 	"crypto/rand"
 	"errors"
-	"fmt"
 	"os"
 	"time"
 
@@ -45,12 +44,17 @@ type EmailConfirmationDto struct {
 	Email             string
 }
 
-func generateRandomToken() string {
-	b := make([]byte, 32)
-	if _, err := rand.Read(b); err != nil {
-		return ""
+// Helper function for generating a 6-digit code
+func generateSixDigitCode() (string, error) {
+	var digits [6]byte
+	_, err := rand.Read(digits[:])
+	if err != nil {
+		return "", err
 	}
-	return fmt.Sprintf("%x", b)
+	for i := 0; i < 6; i++ {
+		digits[i] = (digits[i] % 10) + '0'
+	}
+	return string(digits[:]), nil
 }
 
 // BeforeSave hook - similar to your MongoDB pre-save
@@ -119,17 +123,21 @@ func (u *User) GetPublicProfile() map[string]interface{} {
 
 // GenerateConfirmEmailDto - similar to your MongoDB method
 func (u *User) GenerateConfirmEmailDto() (EmailConfirmationDto, error) {
-	token := generateRandomToken() // Implement this helper function
-	hashedToken, err := bcrypt.GenerateFromPassword([]byte(token), bcrypt.DefaultCost)
+	code, err := generateSixDigitCode()
 	if err != nil {
 		return EmailConfirmationDto{}, err
 	}
 
-	tokenStr := string(hashedToken)
-	u.RegistrationToken = &tokenStr
+	hashedCode, err := bcrypt.GenerateFromPassword([]byte(code), bcrypt.DefaultCost)
+	if err != nil {
+		return EmailConfirmationDto{}, err
+	}
+
+	codeStr := string(hashedCode)
+	u.RegistrationToken = &codeStr
 
 	return EmailConfirmationDto{
-		RegistrationToken: token,
+		RegistrationToken: code, // plain code for email
 		Email:             u.Email,
 	}, nil
 }

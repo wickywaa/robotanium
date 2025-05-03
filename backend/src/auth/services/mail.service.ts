@@ -3,8 +3,8 @@ import {IEmailConfirmationDto, IForgotPasswordDto, User, UserType} from '../inte
 const Mailjet = require('node-mailjet');
 
 const mailjet = Mailjet.apiConnect(
-  "81ad727ee0ed92304240d02b04eb10f1",
-  "59716f1eafeb6566eecb07a3e0238a39",
+  "example",
+  "exammple",
 );
 
 @Injectable()
