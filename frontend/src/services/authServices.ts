@@ -33,8 +33,6 @@ export class AuthService  {
   };
 
   registerUser = async (credentials: IRegisterCredentials): Promise<boolean> => {
-
-    console.log('credentials', credentials)
     return baseAxios.post('users/user',{
       email: credentials.email,
       username: credentials.userName,
@@ -70,8 +68,26 @@ export class AuthService  {
       throw new Error("Invalid");
     }
   };
-}
 
+  resendConfirmationCode = async (email:string): Promise<boolean> => {
+    try {
+      return baseAxios.post<boolean>('users/resendconfirmationcode',
+        {
+          email
+        })
+  } catch (e) {
+    throw new Error("Invalid");
+  }
+  }
+
+  loginWithToken = async (): Promise<{data:{user:ILoggedInUser, token:string}} | null> => {
+    try {
+      return baseAxios.post<{data:{user:ILoggedInUser, token:string}}>('users/authenticate')
+    } catch (e) {
+      throw new Error("Invalid");
+    }
+  }
+}
 
 export const attachIdTokenToUser = async (): Promise<string | Error> => {
   try {

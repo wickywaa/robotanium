@@ -1,5 +1,5 @@
 export interface ILoggedInUser {
-  _id: string,
+  id: string,
   email: string,
   isRobotaniumAdmin: boolean,
   isPlayerAdmin: boolean,

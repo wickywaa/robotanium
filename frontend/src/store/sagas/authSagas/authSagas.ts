@@ -49,6 +49,8 @@ function* confirmEmailSaga(action:PayloadAction<IConfirmEmailCredentials>) {
       yield put(confirmEmailFailed());
     }
     localStorage.setItem('authToken',response.token)
+
+    console.log("confirmEmailSaga", response)
     yield put(confirmEmailSuccess(response.user))
   }
   catch(e) {
@@ -58,20 +60,12 @@ function* confirmEmailSaga(action:PayloadAction<IConfirmEmailCredentials>) {
 }
 
 function* logoutSaga() {
-  try {
-     yield authService.logout().then((response)=>{
-      if(response.status === 200) {
+
         localStorage.setItem('authToken','')
-        return
-      }
-     });
-     
-     yield put(logout())
-  }
-  catch(e) {
-    localStorage.setItem('authToken','')
-    put(logout())
-  }
+        yield put(logout())
+        window.location.href = "/login"
+
+
 }
 
 function* setResetPasswordToken(action:PayloadAction<string>) {
@@ -87,10 +81,22 @@ function* setResetPasswordToken(action:PayloadAction<string>) {
   }
 }
 
+function* resendConfirmationCode(action:PayloadAction<string>) {
+  try {
+    const response:boolean = yield authService.resendConfirmationCode(action.payload);
+    if(response) {
+      yield put(setResetPasswordTokenSuccess())
+    }
+  }
+  catch(e) {
+    yield put(setResetPasswordTokenFailed())
+  }
+} 
 export  function* authSagas() {
   yield takeEvery("authSlice/requestLogin", loginUser);
   yield takeEvery("authSlice/logoutAttempt", logoutSaga);
   yield takeEvery("authSlice/registerUserAttempt", registerUserAttempt)
   yield takeEvery("authSlice/confirmEmailAttempt", confirmEmailSaga)
   yield takeEvery("authSlice/setResetPasswordTokenAttempt", setResetPasswordToken)
+  yield takeEvery("authSlice/resendConfirmationCodeAttempt", resendConfirmationCode)
 }

@@ -12,6 +12,7 @@ interface IMenuItemWithBadge extends MenuItem {
   label: string;
   badge?: string | number;
   shortcut?: string;
+  id?: string;
 }
 
 export const NavigationBar: React.FC = () => {
@@ -25,22 +26,28 @@ export const NavigationBar: React.FC = () => {
   };
   const items: IMenuItemWithBadge[] = [
     {
-      label: "Home",
+      label: "Profile",
       icon: "pi pi-home",
+      id: "home",
     },
     {
-      label: "Features test",
+      label: "My Bots",
+      command: () => {
+        window.location.href = "/bots";
+      },
       icon: "pi pi-star",
+      id: "features",
     },
     {
-      label: "Projects",
+      label: "Rooms",
       icon: "pi pi-search",
+      id: "projects",
     },
   ] as IMenuItemWithBadge[];
 
   return (
     <div style={{ position: 'relative' }} className="border border-secondary bg-primaary  opacity-30" >
-      <Menubar className="bg-primary color-primary" model={items} start={start} end={user?._id ? end : null} />
+      <Menubar key={user?.id} className="bg-primary color-primary" model={items} start={start} end={user?.id ? end : null} />
     </div>
   );
 };

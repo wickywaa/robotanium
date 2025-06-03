@@ -6,8 +6,8 @@ import (
 	"backendv2/pkg/email"
 	"fmt"
 
-	"github.com/gofiber/fiber/v2"
 	"github.com/go-playground/validator/v10"
+	"github.com/gofiber/fiber/v2"
 )
 
 var validate = validator.New()
@@ -29,7 +29,6 @@ func LoginUser(c *fiber.Ctx) error {
 	if err := db.Where("email = ?", req.Email).First(&user).Error; err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid credentials"})
 	}
-
 
 	if !user.CheckPassword(req.Password) {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid credentials"})
@@ -91,12 +90,11 @@ func GetUsers(c *fiber.Ctx) error {
 		})
 	}
 
-	if  !authenticatedUser.IsRobotaniumAdmin {
+	if !authenticatedUser.IsRobotaniumAdmin {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"error": "User not authorized",
 		})
 	}
-
 
 	users := []models.User{}
 	db := database.GetDB()
@@ -115,7 +113,6 @@ func GetUsers(c *fiber.Ctx) error {
 		"users": publicUsers,
 	})
 }
-
 
 func CreateUser(c *fiber.Ctx) error {
 	type CreateUserRequest struct {
@@ -162,6 +159,8 @@ func CreateUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to send confirmation email"})
 	}
 
+	user.RegistrationToken = &emailConfirmationDto.HashedRegistrationToken
+
 	if err := db.Create(&user).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to create user"})
 	}
@@ -174,11 +173,10 @@ func CreateUser(c *fiber.Ctx) error {
 	})
 }
 
-
 func ConfirmEmail(c *fiber.Ctx) error {
 	type ConfirmRequest struct {
-		Email string `json:"email"`
-		RegistrationToken  string `json:"registrationToken"`
+		Email             string `json:"email"`
+		RegistrationToken string `json:"registrationToken"`
 	}
 
 	var req ConfirmRequest
@@ -186,6 +184,7 @@ func ConfirmEmail(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request"})
 	}
 
+	fmt.Println("ConfirmEmail called", req.Email, req.RegistrationToken)
 
 	db := database.GetDB()
 	var user models.User
@@ -208,7 +207,45 @@ func ConfirmEmail(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to update user"})
 	}
 
-	return c.JSON(fiber.Map{"message": "Email confirmed successfully"})
+	return c.JSON(fiber.Map{
+		"message": "Email confirmed successfully",
+		"user":    user.GetPublicProfile(),
+	})
+}
+
+func ResendConfirmationCode(c *fiber.Ctx) error {
+	userEmail := c.FormValue("email")
+
+	if userEmail == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Email is required"})
+	}
+
+	db := database.GetDB()
+
+	user := models.User{
+		Email: userEmail,
+	}
+
+	if err := db.Where("email = ?", userEmail).First(&user).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User not found"})
+	}
+
+	emailConfirmationDto, err := user.GenerateConfirmEmailDto()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to generate registration token"})
+	}
+
+	emailService, err := email.NewEmailService()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to initialize email service"})
+	}
+
+	if err := emailService.SendConfirmationEmail(userEmail, emailConfirmationDto.RegistrationToken); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to send confirmation email"})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Confirmation email sent successfully"})
+
 }
 
 func DeleteuserById(c *fiber.Ctx) error {
@@ -305,4 +342,19 @@ func UpdatePassword(c *fiber.Ctx) error {
 		"message": "Password updated successfully",
 		"user":    existingUser.GetPublicProfile(),
 	})
+}
+
+func Authenticate(c *fiber.Ctx) error {
+	user := c.Locals("user").(models.User)
+
+	if user.Email == "" {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "User not authenticated"})
+	}
+
+	token, err := user.GenerateAuthToken()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to generate token"})
+	}
+
+	return c.JSON(fiber.Map{"token": token, "user": user.GetPublicProfile()})
 }

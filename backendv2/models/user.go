@@ -3,6 +3,7 @@ package models
 import (
 	"crypto/rand"
 	"errors"
+	"fmt"
 	"os"
 	"time"
 
@@ -40,8 +41,9 @@ type UserMethods interface {
 }
 
 type EmailConfirmationDto struct {
-	RegistrationToken string
-	Email             string
+	RegistrationToken       string
+	Email                   string
+	HashedRegistrationToken string
 }
 
 // Helper function for generating a 6-digit code
@@ -137,18 +139,23 @@ func (u *User) GenerateConfirmEmailDto() (EmailConfirmationDto, error) {
 	u.RegistrationToken = &codeStr
 
 	return EmailConfirmationDto{
-		RegistrationToken: code, // plain code for email
-		Email:             u.Email,
+		RegistrationToken:       code, // plain code for email
+		Email:                   u.Email,
+		HashedRegistrationToken: codeStr,
 	}, nil
 }
 
 // ConfirmEmail - similar to your MongoDB method
 func (u *User) ConfirmEmail(dto EmailConfirmationDto) (bool, error) {
 	if u.RegistrationToken == nil {
+		fmt.Println("ConfirmEmail error", "no registration token found")
 		return false, errors.New("no registration token found")
 	}
 
+	fmt.Println("ConfirmEmail", *u.RegistrationToken, dto.RegistrationToken)
+
 	if err := bcrypt.CompareHashAndPassword([]byte(*u.RegistrationToken), []byte(dto.RegistrationToken)); err != nil {
+		fmt.Println("ConfirmEmail error", err)
 		return false, err
 	}
 

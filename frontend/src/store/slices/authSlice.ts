@@ -30,8 +30,8 @@ export const authSlice = createSlice({
     registerUserFailed: (state,) => ({...initialState }),
     confirmEmailAttempt: (state, _: PayloadAction<IConfirmEmailCredentials>) => ({ ...state, loading: true, user: null }),
     confirmEmailSuccess: (state, action: PayloadAction<ILoggedInUser>) => ({ ...state, loading: true, user: action.payload }),
-    confirmEmailFailed: (state) => (initialState),
-    logoutAttempt: (state,) => ({ ...state, loading: true}),
+    confirmEmailFailed: (state) => ({...state, registerEmailSent:true,loading:false }),
+    logoutAttempt: (state,) => ({ ...state}),
     logout: (state,) => ({ ...state, loading: false, user: null }),
     addError: (state, action: PayloadAction<IAuthError>) => {
       if(state.errors.find((e)=>e.message ===action.payload.message && e.type === action.payload.type)) {
@@ -47,6 +47,9 @@ export const authSlice = createSlice({
     setResetPasswordTokenAttempt: (state, action: PayloadAction<string>) => ({...state, isLoading: true}),
     setResetPasswordTokenFailed: (state) => ({...state, isLoading: false}),
     setResetPasswordTokenSuccess: (state) => ({...state, isLoading: false, registerEmailSent:true}),
+    resendConfirmationCodeAttempt: (state, action: PayloadAction<string>) => ({...state, isLoading: true}),
+    resendConfirmationCodeSuccess: (state) => ({...state, isLoading: false, registerEmailSent:true}),
+    resendConfirmationCodeFailed: (state) => ({...state, isLoading: false}),
   },
 });
 
@@ -67,5 +70,6 @@ export const {
   resetErrors,
   setResetPasswordTokenAttempt,
   setResetPasswordTokenFailed,
-  setResetPasswordTokenSuccess
+  setResetPasswordTokenSuccess,
+  resendConfirmationCodeAttempt
 } = authSlice.actions;
