@@ -8,6 +8,8 @@ import { Card } from 'primereact/card';
 import { IBot, ICreateBotDTo } from '../models/Bots/bots';
 import './BotContainer.scss';
 import { CreateBotForm } from '../components/CreateBotForm/CreateBotForm';
+import CreateBotComponent from '../components/CreatebotComponent/CreateBotComponent';
+
 export const BotContainer: React.FC = () => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [filter, setFilter] = useState<'all' | 'online'>('all');
@@ -119,7 +121,8 @@ export const BotContainer: React.FC = () => {
 
 
     <Dialog visible={showCreateDialog} onHide={() => setShowCreateDialog(false)} style={{width:'100%', height:'100%'}}>
-      <CreateBotForm close={() => setShowCreateDialog(false)} createBot={handleCreateBot}/>
+      <CreateBotComponent/>
+
     </Dialog>
 
        

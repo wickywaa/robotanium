@@ -1,0 +1,80 @@
+.create-bot-form {
+
+  width: 40%;
+  border: 1px olid yellow;
+  margin: auto;
+  box-sizing: border-box;
+
+  .create-bot-form-input-group {
+
+    width:100%;
+
+    .bot-details-form-group{
+      width:100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  
+      .bot-details-name {
+        width:50%;
+      }
+    }
+    .bot-passwords-form-group{
+      width:100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .create-bot-password {
+        
+        width: 50%;
+      }
+    }
+  }
+
+  
+
+  .custom-choose-btn {
+    background-color: var(--darkgreen);
+    color: black;
+  }
+
+  .custom-choose-btn:hover {
+    background-color: var(--darkgreen);
+    color: var(--surface-d);
+  }
+
+  .custom-cancel-btn {
+    background-color: red;
+    color: var(--surface-d);
+  }
+
+}
+
+@media only screen and (max-width: 900px) {
+  .create-bot-form {
+    width: 100%;
+
+    .create-bot-form-input-group {
+
+      width:100%;
+  
+      .bot-details-form-group{
+        width:100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    
+        .bot-details-name {
+          width:100%;
+        }
+      }
+      .bot-passwords-form-group{
+        width:100%;
+
+        .create-bot-password {
+          width: 100%;
+        }
+      }
+    }
+  }
+}

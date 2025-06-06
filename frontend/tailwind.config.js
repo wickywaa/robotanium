@@ -9,7 +9,7 @@ module.exports = {
     extend: {
       colors: {
         "primary": "var(--surface-a)",
-        "secondary": '#4ddfc0',
+        "secondary": 'var(--darkgreen)',
         "background-blue-dark": "#16191e"
       },
       backgroundImage: {

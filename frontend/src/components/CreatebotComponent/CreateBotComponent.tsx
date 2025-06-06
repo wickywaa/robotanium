@@ -1,0 +1,151 @@
+
+import React, { useRef, useState } from 'react';
+import { Toast } from 'primereact/toast';
+import { FileUpload, FileUploadHeaderTemplateOptions, FileUploadSelectEvent, FileUploadUploadEvent, ItemTemplateOptions, } from 'primereact/fileupload';
+import { ProgressBar } from 'primereact/progressbar';
+import { Button } from 'primereact/button';
+import { Tooltip } from 'primereact/tooltip';
+import { InputText } from 'primereact/inputtext';
+import { Tag } from 'primereact/tag';
+import './CreateBotComponent.scss';
+import { Password } from 'primereact/password';
+
+export default function TemplateDemo() {
+  const toast = useRef<Toast>(null);
+  const [totalSize, setTotalSize] = useState(0);
+  const fileUploadRef = useRef<FileUpload>(null);
+  const [cockpits, setCockpits] = useState<{ name: string }[]>([]);
+
+  const onTemplateSelect = (e: FileUploadSelectEvent) => {
+    let _totalSize = totalSize;
+    let files = e.files;
+
+    for (let i = 0; i < files.length; i++) {
+      _totalSize += files[i].size || 0;
+    }
+
+    setTotalSize(_totalSize);
+  };
+
+  const onTemplateUpload = (e: FileUploadUploadEvent) => {
+    let _totalSize = 0;
+
+    e.files.forEach((file) => {
+      _totalSize += file.size || 0;
+    });
+
+    setTotalSize(_totalSize);
+    toast.current?.show({ severity: 'info', summary: 'Success', detail: 'File Uploaded' });
+  };
+
+  const onTemplateRemove = (file: File, callback: Function) => {
+    setTotalSize(totalSize - file.size);
+    callback();
+  };
+
+  const onTemplateClear = () => {
+    setTotalSize(0);
+  };
+
+  const headerTemplate = (options: FileUploadHeaderTemplateOptions) => {
+    const { className, chooseButton } = options;
+    const value = totalSize / 10000;
+    const formatedValue = fileUploadRef && fileUploadRef.current ? fileUploadRef.current.formatSize(totalSize) : '0 B';
+
+    return (
+      <div className={className} style={{ backgroundColor: 'transparent', display: 'flex', alignItems: 'center' }}>
+        {chooseButton}
+        <div className="flex align-items-center gap-3 ml-auto">
+          <span>{formatedValue} / 1 MB</span>
+          <ProgressBar value={value} showValue={false} style={{ width: '10rem', height: '12px' }}></ProgressBar>
+        </div>
+      </div>
+    );
+  };
+
+
+  const itemTemplate = (inFile: object, props: ItemTemplateOptions) => {
+    const file = inFile as File;
+    return (
+      <div className="flex-col align-items-center flex-wrap">
+        <div className='flex'>
+        <Tag value={props.formatSize} severity="warning" className="px-3 py-2" />
+        <Button type="button" icon="pi pi-times" className="p-button-outlined p-button-rounded p-button-danger ml-auto" onClick={() => onTemplateRemove(file, props.onRemove)} />
+        </div>
+        
+          <img alt={file.name} role="presentation" src={file?.objectURL} width={"100%"} />
+        
+      </div>
+    );
+  };
+
+  const handleCockpitChange = (key: number, name: string) => {
+
+    const newCockpits = cockpits.map((cockpit, index) => {
+      if (index === key) return {
+        name,
+      }
+
+      return cockpit
+    })
+
+    setCockpits(newCockpits)
+  }
+
+  const emptyTemplate = () => {
+    const InputElement = fileUploadRef.current?.getInput()
+
+
+    if (!InputElement) {
+      return null;
+    }
+    return (
+      <div className="flex flex-col items-center justify-center border-2 border-dashed border-secondary rounded-md p-5 ">
+        <i className="pi pi-image mt-3 p-5 bg-primary color-secondary  rounded-full" style={{ fontSize: '5em' }}></i>
+        <Button className="border-2 border-solid border-secondary rounded-sm p-5" onClick={() => InputElement.click()} style={{ fontSize: '1.2em', color: 'var(--text-color-secondary)' }} >
+          Drag and Drop Image or Click to Upload
+        </Button>
+      </div>
+    );
+  };
+
+  const chooseOptions = { icon: 'pi pi-fw pi-images', iconOnly: true, className: 'custom-choose-btn p-button-rounded p-button-outlined' };
+  const cancelOptions = { icon: 'pi pi-fw pi-times', iconOnly: true, className: 'custom-cancel-btn p-button-danger p-button-rounded p-button-outlined' };
+
+  return (
+    <div className='create-bot-form'>
+      <Toast ref={toast}></Toast>
+
+      <Tooltip target=".custom-choose-btn" content="Choose" position="bottom" />
+      <Tooltip target=".custom-upload-btn" content="Upload" position="bottom" />
+      <Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" />
+
+      <div className='create-bot-form-input-group'>
+        <div className='bot-details-form-group'>
+          <InputText className='bot-details-name' placeholder='Bot Name' />
+        </div>
+        <div className='bot-passwords-form-group'>
+          <InputText className='create-bot-password' placeholder='Bot Password' />
+          <InputText className='create-bot-password' placeholder='Repeat Password' />
+        </div>
+
+        <Button style={{ maxHeight: '30px' }} disabled={cockpits.length < 2} onClick={() => setCockpits(cockpits.slice(0, -1))} icon='pi pi-minus' />
+        <Button style={{ maxHeight: '30px' }} onClick={() => setCockpits([...cockpits, { name: '' }])} icon='pi pi-plus' />
+        <div style={{ display: 'flex', height: '70%', boxSizing: 'border-box', width:'100%' }} >
+          <div style={{ display: 'flex', flexDirection: 'column', width:'100%' }}>
+            {cockpits.map((_, key) => {
+              return (<div key={key} style={{ display: 'flex', flexDirection: 'column', width:'100%' }}><InputText style={{width:'100%'}} onChange={(event) => handleCockpitChange(key, event.target.value)} placeholder={`cockpit ${key + 1}`} /></div>)
+            })}
+          </div>
+        </div>
+
+      </div>
+
+
+      <FileUpload multiple={false} ref={fileUploadRef} name="demo[]" url="/api/upload" accept="image/*" maxFileSize={10000000}
+        onSelect={onTemplateSelect} onError={onTemplateClear} onClear={onTemplateClear}
+        headerTemplate={headerTemplate} itemTemplate={itemTemplate} emptyTemplate={emptyTemplate}
+        chooseOptions={chooseOptions} cancelOptions={cancelOptions} />
+    </div>
+  )
+}

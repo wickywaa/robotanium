@@ -9,18 +9,34 @@
   @tailwind utilities;
 }
 :root {
-  --darkgreen: #4ddfc0;
-  --primary-color: #4ddfc0;
+  --darkgreen: rgb(31, 93, 79);
+  --darkgreenOpacity: rgb(31, 93, 79, 0.5);
+  --darkblue: #00cfff;
+  --darkred: #ff0000;
+  --primary-color: rgb(31, 93, 79);
   --primary-color-hover: #4ddfc0;
-  --background-color: #f0f0f0;
-  
-  
+  --background-color: #1a1f1a;
 }
 
 body {
   margin: 0px;
   padding: 0px;
   box-sizing: border-box;
+}
+
+input {
+  color: #4ddfc0;
+  border: 1px solid var(--darkgreen);
+  minheight: 300px !important;
+  height: 3rem;
+  margin: 0.25rem;
+
+  &:hover {
+    background: var(--darkgreenOpacity);
+    opacity: 0.9;
+    color: #4ddfc0;
+    box-shadow: 2px 2px 5px var(--darkgreen);
+  }
 }
 
 .maincontainer {
