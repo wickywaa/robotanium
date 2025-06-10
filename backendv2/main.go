@@ -2,6 +2,7 @@ package main
 
 import (
 	"backendv2/pkg/database"
+	"backendv2/pkg/firebase"
 	"backendv2/routes"
 	"fmt"
 	"log"
@@ -24,6 +25,7 @@ func main() {
 	}
 	log.Println("Database connected successfully")
 	app := fiber.New()
+	firebase.InitFirebase()
 
 	// Add Fiber's built-in logger
 	app.Use(logger.New())

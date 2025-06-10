@@ -1,5 +1,6 @@
 import React from "react";
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { useNavigate } from "react-router-dom";
 
 import { Button } from 'primereact/button';
 import { Menubar } from "primereact/menubar";
@@ -19,6 +20,7 @@ export const NavigationBar: React.FC = () => {
 
   const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const start = () => <img className="h-20" src={robotaniumLogo} />;
   const end = () => {
@@ -32,14 +34,13 @@ export const NavigationBar: React.FC = () => {
     },
     {
       label: "My Bots",
-      command: () => {
-        window.location.href = "/bots";
-      },
+      command: () => navigate("/bots"),
       icon: "pi pi-star",
       id: "features",
     },
     {
       label: "Rooms",
+      command: () => navigate("/rooms"),
       icon: "pi pi-search",
       id: "projects",
     },

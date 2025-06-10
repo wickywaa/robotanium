@@ -27,7 +27,6 @@ body {
 input {
   color: #4ddfc0;
   border: 1px solid var(--darkgreen);
-  minheight: 300px !important;
   height: 3rem;
   margin: 0.25rem;
 
@@ -37,6 +36,23 @@ input {
     color: #4ddfc0;
     box-shadow: 2px 2px 5px var(--darkgreen);
   }
+}
+
+button {
+padding:1rem;
+  height: 3rem;
+  margin: 0.25rem;
+  border: 1px solid var(--darkgreen);
+   &:hover {
+    background: var(--darkgreenOpacity);
+    opacity: 0.9;
+    color: #4ddfc0;
+    box-shadow: 2px 2px 5px var(--darkgreen);
+  }
+}
+
+.p-dialog-header-icon{
+  padding:0 !important
 }
 
 .maincontainer {

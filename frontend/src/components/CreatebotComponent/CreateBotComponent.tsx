@@ -1,5 +1,6 @@
 
 import React, { useRef, useState } from 'react';
+import  { ICreateBotDTo } from '../../models/Bots/bots'
 import { Toast } from 'primereact/toast';
 import { FileUpload, FileUploadHeaderTemplateOptions, FileUploadSelectEvent, FileUploadUploadEvent, ItemTemplateOptions, } from 'primereact/fileupload';
 import { ProgressBar } from 'primereact/progressbar';
@@ -10,11 +11,33 @@ import { Tag } from 'primereact/tag';
 import './CreateBotComponent.scss';
 import { Password } from 'primereact/password';
 
-export default function TemplateDemo() {
+interface fileObjectWithUrl extends File {
+  objectURL: string
+}
+
+interface CreateBotInterface {
+  onCreateBot: (bot:ICreateBotDTo)=> void
+}
+
+export const CreateBotComponent: React.FC<CreateBotInterface> = ({onCreateBot}) =>  {
   const toast = useRef<Toast>(null);
   const [totalSize, setTotalSize] = useState(0);
+  const [botName, setBotName] = useState('');
+  const [password, setPassword] = useState('');
   const fileUploadRef = useRef<FileUpload>(null);
-  const [cockpits, setCockpits] = useState<{ name: string }[]>([]);
+  const [cockpits, setCockpits] = useState<{ name: string }[]>([{name:''}]);
+
+  const handleCreateBot = () => {
+
+    const files = fileUploadRef && fileUploadRef.current ? fileUploadRef.current?.getFiles() : [];
+   
+      onCreateBot({
+        name: botName,
+        image: files[0],
+        password,
+        cockpits:[]
+      })
+  }
 
   const onTemplateSelect = (e: FileUploadSelectEvent) => {
     let _totalSize = totalSize;
@@ -63,18 +86,17 @@ export default function TemplateDemo() {
     );
   };
 
-
   const itemTemplate = (inFile: object, props: ItemTemplateOptions) => {
-    const file = inFile as File;
+    const file = inFile as fileObjectWithUrl;
     return (
       <div className="flex-col align-items-center flex-wrap">
         <div className='flex'>
         <Tag value={props.formatSize} severity="warning" className="px-3 py-2" />
         <Button type="button" icon="pi pi-times" className="p-button-outlined p-button-rounded p-button-danger ml-auto" onClick={() => onTemplateRemove(file, props.onRemove)} />
         </div>
-        
-          <img alt={file.name} role="presentation" src={file?.objectURL} width={"100%"} />
-        
+          { 
+            <img alt={file.name} role="presentation" src={file?.objectURL} width={"100%"} />
+          }
       </div>
     );
   };
@@ -114,31 +136,26 @@ export default function TemplateDemo() {
 
   return (
     <div className='create-bot-form'>
-      <Toast ref={toast}></Toast>
 
-      <Tooltip target=".custom-choose-btn" content="Choose" position="bottom" />
-      <Tooltip target=".custom-upload-btn" content="Upload" position="bottom" />
-      <Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" />
+      <Tooltip className='custom-choose-btn' target=".custom-choose-btn" content="find on machine" position="bottom"  />
 
       <div className='create-bot-form-input-group'>
         <div className='bot-details-form-group'>
-          <InputText className='bot-details-name' placeholder='Bot Name' />
+          <InputText onChange={(e)=>setBotName(e.currentTarget.value)} className='bot-details-name' placeholder='Bot Name' />
         </div>
         <div className='bot-passwords-form-group'>
-          <InputText className='create-bot-password' placeholder='Bot Password' />
-          <InputText className='create-bot-password' placeholder='Repeat Password' />
+          <InputText onChange={(e)=>setPassword(e.currentTarget.value)} className='create-bot-password' placeholder='Bot Password' />
         </div>
 
-        <Button style={{ maxHeight: '30px' }} disabled={cockpits.length < 2} onClick={() => setCockpits(cockpits.slice(0, -1))} icon='pi pi-minus' />
-        <Button style={{ maxHeight: '30px' }} onClick={() => setCockpits([...cockpits, { name: '' }])} icon='pi pi-plus' />
+        <Button style={{ maxHeight: '30px', marginLeft:'28%' }} disabled={cockpits.length < 2} onClick={() => setCockpits(cockpits.slice(0, -1))} icon='pi pi-minus' />
+        <Button style={{ maxHeight: '30px',marginLeft:'28%' }} onClick={() => setCockpits([...cockpits, { name: '' }])} icon='pi pi-plus' />
         <div style={{ display: 'flex', height: '70%', boxSizing: 'border-box', width:'100%' }} >
           <div style={{ display: 'flex', flexDirection: 'column', width:'100%' }}>
             {cockpits.map((_, key) => {
-              return (<div key={key} style={{ display: 'flex', flexDirection: 'column', width:'100%' }}><InputText style={{width:'100%'}} onChange={(event) => handleCockpitChange(key, event.target.value)} placeholder={`cockpit ${key + 1}`} /></div>)
+              return (<div key={key} style={{ display: 'flex', flexDirection: 'column', width:'100%', alignItems:'center' }}><InputText style={{width:'50%',}} onChange={(event) => handleCockpitChange(key, event.target.value)} placeholder={`cockpit ${key + 1}`} /></div>)
             })}
           </div>
         </div>
-
       </div>
 
 
@@ -146,6 +163,11 @@ export default function TemplateDemo() {
         onSelect={onTemplateSelect} onError={onTemplateClear} onClear={onTemplateClear}
         headerTemplate={headerTemplate} itemTemplate={itemTemplate} emptyTemplate={emptyTemplate}
         chooseOptions={chooseOptions} cancelOptions={cancelOptions} />
+
+      <div style={{display:'flex', width:'100%', justifyContent:'center'}}>
+      <Button onClick={handleCreateBot} style={{padding:'1rem'}} label='Create Bot' />
+      </div>
+        
     </div>
   )
 }

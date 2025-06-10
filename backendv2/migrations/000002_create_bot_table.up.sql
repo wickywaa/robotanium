@@ -2,6 +2,7 @@ CREATE TABLE bots (
     id SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL UNIQUE,
     token TEXT NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
     image_url TEXT,
     admin_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     is_active BOOLEAN DEFAULT true,
@@ -20,3 +21,5 @@ CREATE TRIGGER update_bots_updated_at
     BEFORE UPDATE ON bots
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
+
+    

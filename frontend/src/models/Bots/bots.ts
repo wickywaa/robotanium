@@ -20,5 +20,4 @@ export interface ICreateBotDTo {
   image?: File;
   password: string;
   cockpits: string[];
-  botImageUrl: string;
 }
