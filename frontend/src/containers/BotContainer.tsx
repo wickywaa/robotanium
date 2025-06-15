@@ -9,8 +9,12 @@ import { IBot, ICreateBotDTo } from '../models/Bots/bots';
 import './BotContainer.scss';
 import { CreateBotForm } from '../components/CreateBotForm/CreateBotForm';
 import {CreateBotComponent} from '../components/CreatebotComponent/CreateBotComponent';
+import { useAppDispatch } from '../store/hooks';
+import { createBotAttempt } from '../store/slices/botSlice';
 
 export const BotContainer: React.FC = () => {
+
+  const dispatch = useAppDispatch();
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [filter, setFilter] = useState<'all' | 'online'>('all');
 
@@ -27,6 +31,8 @@ export const BotContainer: React.FC = () => {
 
   const handleCreateBot = (bot: ICreateBotDTo) => {
     console.log('Creating bot:', bot);
+    dispatch(createBotAttempt(bot))
+    
     setShowCreateDialog(false);
   };
 

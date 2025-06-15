@@ -3,6 +3,7 @@ import { authSlice } from "./slices";
 import createSagaMiddleware from "redux-saga";
 import { authSagas } from "./sagas";
 import { toastSlice } from "./slices/toastslice";
+import { BotSlice } from './slices/botSlice';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -10,6 +11,7 @@ export const store = configureStore({
   reducer: {
     auth: authSlice.reducer,
     toastSlice: toastSlice.reducer,
+    botSlice: BotSlice.reducer
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware),
 });
