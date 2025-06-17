@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/url"
 	"time"
 
@@ -85,8 +86,10 @@ func CreateBot(c *fiber.Ctx) error {
 
 	objectName := fmt.Sprintf("uploads/%d-%s", time.Now().Unix(), fileHeader.Filename)
 	urlEncodedName := url.PathEscape(objectName)
-	publicURL := fmt.Sprintf("https://firebasestorage.googleapis.com/%s/%s?alt=media", "robotanium-admin.appspot.com", urlEncodedName)
+	publicURL := fmt.Sprintf("https://firebasestorage.googleapis.com/v0/b/%s/%s?alt=media", "robotanium-admin.appspot.com/o", urlEncodedName)
 
+	log.Println("puublicurl")
+	log.Println(publicURL)
 	bot.ImageURL = publicURL
 
 	writer := bucket.Object(objectName).NewWriter(ctx)

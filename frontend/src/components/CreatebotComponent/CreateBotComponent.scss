@@ -1,14 +1,23 @@
 .create-bot-form {
-
   width: 40%;
-  border: 1px olid yellow;
+  border: 1px solid var(--darkgreen);
   margin: auto;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  
+   .file-upload-component {
+     background-color: var(--darkgreenOpacity);
+     width: 50%;
+     margin: auto;
+  }
 
   .create-bot-form-input-group {
 
     width:100%;
-
+    margin-bottom: 50px;
+    margin-top: 20px;
+   
     .bot-details-form-group{
       width:100%;
       display: flex;
@@ -40,9 +49,6 @@
     background-color: var(--darkgreen);
     color: var(--surface-d);
   }
-  
-
- 
 
 }
 

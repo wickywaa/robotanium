@@ -19,5 +19,5 @@ export interface ICreateBotDTo {
   name: string;
   image?: File;
   password: string;
-  cockpits: string[];
+  cockpits: string[]
 }

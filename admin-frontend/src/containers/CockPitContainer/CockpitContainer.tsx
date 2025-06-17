@@ -84,7 +84,6 @@ export const CockpitContainer: React.FC = () => {
             <CockpitScreen
               key={`position-${index}`}
               screen={screen}
-
             />
           ))}
         </div>

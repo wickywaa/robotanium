@@ -25,7 +25,7 @@ export const CreateBotComponent: React.FC<CreateBotInterface> = ({onCreateBot}) 
   const [botName, setBotName] = useState('');
   const [password, setPassword] = useState('');
   const fileUploadRef = useRef<FileUpload>(null);
-  const [cockpits, setCockpits] = useState<{ name: string }[]>([{name:''}]);
+  const [cockpits, setCockpits] = useState<string[]>(['']);
 
   const handleCreateBot = () => {
 
@@ -35,7 +35,7 @@ export const CreateBotComponent: React.FC<CreateBotInterface> = ({onCreateBot}) 
         name: botName,
         image: files[0],
         password,
-        cockpits:[]
+        cockpits
       })
   }
 
@@ -104,9 +104,7 @@ export const CreateBotComponent: React.FC<CreateBotInterface> = ({onCreateBot}) 
   const handleCockpitChange = (key: number, name: string) => {
 
     const newCockpits = cockpits.map((cockpit, index) => {
-      if (index === key) return {
-        name,
-      }
+      if (index === key) return name
 
       return cockpit
     })
@@ -136,9 +134,7 @@ export const CreateBotComponent: React.FC<CreateBotInterface> = ({onCreateBot}) 
 
   return (
     <div className='create-bot-form'>
-
       <Tooltip className='custom-choose-btn' target=".custom-choose-btn" content="find on machine" position="bottom"  />
-
       <div className='create-bot-form-input-group'>
         <div className='bot-details-form-group'>
           <InputText onChange={(e)=>setBotName(e.currentTarget.value)} className='bot-details-name' placeholder='Bot Name' />
@@ -148,7 +144,7 @@ export const CreateBotComponent: React.FC<CreateBotInterface> = ({onCreateBot}) 
         </div>
 
         <Button style={{ maxHeight: '30px', marginLeft:'28%' }} disabled={cockpits.length < 2} onClick={() => setCockpits(cockpits.slice(0, -1))} icon='pi pi-minus' />
-        <Button style={{ maxHeight: '30px',marginLeft:'28%' }} onClick={() => setCockpits([...cockpits, { name: '' }])} icon='pi pi-plus' />
+        <Button style={{ maxHeight: '30px',marginLeft:'28%' }} onClick={() => setCockpits([...cockpits,''])} icon='pi pi-plus' />
         <div style={{ display: 'flex', height: '70%', boxSizing: 'border-box', width:'100%' }} >
           <div style={{ display: 'flex', flexDirection: 'column', width:'100%' }}>
             {cockpits.map((_, key) => {
@@ -156,14 +152,13 @@ export const CreateBotComponent: React.FC<CreateBotInterface> = ({onCreateBot}) 
             })}
           </div>
         </div>
+      </div>  
+      <div className='file-upload-component'>
+        <FileUpload  multiple={false} ref={fileUploadRef} name="demo[]" url="/api/upload" accept="image/*" maxFileSize={10000000}
+          onSelect={onTemplateSelect} onError={onTemplateClear} onClear={onTemplateClear}
+          headerTemplate={headerTemplate} itemTemplate={itemTemplate} emptyTemplate={emptyTemplate}
+          chooseOptions={chooseOptions} cancelOptions={cancelOptions} />
       </div>
-
-
-      <FileUpload multiple={false} ref={fileUploadRef} name="demo[]" url="/api/upload" accept="image/*" maxFileSize={10000000}
-        onSelect={onTemplateSelect} onError={onTemplateClear} onClear={onTemplateClear}
-        headerTemplate={headerTemplate} itemTemplate={itemTemplate} emptyTemplate={emptyTemplate}
-        chooseOptions={chooseOptions} cancelOptions={cancelOptions} />
-
       <div style={{display:'flex', width:'100%', justifyContent:'center'}}>
       <Button onClick={handleCreateBot} style={{padding:'1rem'}} label='Create Bot' />
       </div>

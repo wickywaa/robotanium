@@ -30,9 +30,9 @@ export const BotContainer: React.FC = () => {
   ];
 
   const handleCreateBot = (bot: ICreateBotDTo) => {
-    console.log('Creating bot:', bot);
-    dispatch(createBotAttempt(bot))
-    
+
+
+    dispatch(createBotAttempt(bot));
     setShowCreateDialog(false);
   };
 
@@ -71,8 +71,7 @@ export const BotContainer: React.FC = () => {
         />
       </div>
     );
-    
-
+  
     return (
       <Card
         key={bot.id}

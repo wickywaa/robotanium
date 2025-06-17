@@ -2,22 +2,14 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IBot, ICreateBotDTo } from "../../models/Bots/bots";
 
 interface IBotSliceInterface {
-  createBot: ICreateBotDTo;
   loading: boolean;
   bots: IBot [];
-
 }
 
 export const botSliceInitialState: IBotSliceInterface = {
-  createBot: {
-    name:"",
-    password:"",
-    cockpits: []
-  },
   loading: false,
   bots:[]
 }
-
 
 export const BotSlice = createSlice({
   name:'botSlice',
@@ -28,9 +20,7 @@ export const BotSlice = createSlice({
       loading: true,
     }) 
   }
-
 })
-
 
 export const {
   createBotAttempt
