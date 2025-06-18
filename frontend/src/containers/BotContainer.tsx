@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
-import { FileUpload } from 'primereact/fileupload';
 import { Dropdown } from 'primereact/dropdown';
 import { Card } from 'primereact/card';
 import { IBot, ICreateBotDTo } from '../models/Bots/bots';
 import './BotContainer.scss';
-import { CreateBotForm } from '../components/CreateBotForm/CreateBotForm';
+
 import {CreateBotComponent} from '../components/CreatebotComponent/CreateBotComponent';
 import { useAppDispatch } from '../store/hooks';
 import { createBotAttempt } from '../store/slices/botSlice';

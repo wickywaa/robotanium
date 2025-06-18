@@ -1,5 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { NavigationBar } from '../components/global';
+import { Outlet } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../src/store/hooks';
+import { fetchBotsttempt } from '../store/slices';
+
 
 export const HomeContainer: React.FC = () => {
-  return <div>hello here is the home container</div>;
+
+  const dispatch = useAppDispatch();
+
+  useEffect(()=>{
+      dispatch(fetchBotsttempt())
+  },[])
+
+  return(
+    <div>
+      <NavigationBar/>
+      <Outlet/>
+    </div>
+    
+  ) 
 };

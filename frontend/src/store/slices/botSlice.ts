@@ -18,10 +18,27 @@ export const BotSlice = createSlice({
     createBotAttempt: (state, action:PayloadAction<ICreateBotDTo> ) => ({
       ...state,
       loading: true,
-    }) 
+    }),
+    fetchBotsttempt: (state,action:PayloadAction) =>({
+      ...state,
+      loading:true
+    }),
+    fetchBotsSuccess: (state, action:PayloadAction<IBot[]>) => ({
+      ...state, 
+      loading:false,
+      bots: []
+    }),
+    fetchBotsFailure: (state, action:PayloadAction) =>({
+      ...state,
+      loading:false,
+      bots:[]
+    })
   }
 })
 
 export const {
-  createBotAttempt
+  createBotAttempt,
+  fetchBotsFailure,
+  fetchBotsSuccess,
+  fetchBotsttempt
 } = BotSlice.actions

@@ -1,10 +1,10 @@
-import { ICreateBotDTo } from "../models/Bots/bots";
-import {baseAxios} from "./baseService"
+import { IBot, ICreateBotDTo } from "../models/Bots/bots";
+import { baseAxios } from "./baseService";
+
 
 export class BotService {
 
   createBot = async (bot: ICreateBotDTo): Promise<void> => {
-    console.log('called the bot service')
     let  formData = new FormData()
 
     const payload = {
@@ -24,6 +24,19 @@ export class BotService {
     } catch (e) {
       throw new Error("Invalid");
     }
+  }
+
+
+  fetchBots = async(): Promise<IBot[]> =>{
+
+    try {
+      console.log('trying to return bots')
+        return baseAxios.get('bots')
+    } 
+    catch (e:any) {
+      throw new Error("invalid request", e)
+    }
+    
   }
 
 }
