@@ -10,7 +10,8 @@ module.exports = {
       colors: {
         "primary": "var(--surface-a)",
         "secondary": 'var(--darkgreen)',
-        "background-blue-dark": "#16191e"
+        "background-blue-dark": "#16191e",
+        "background-default":"#1a1f1a;"
       },
       backgroundImage: {
         'robotaniumLogo': "url(../src/assets/images/icononly_transparent_nobuffer.png)",

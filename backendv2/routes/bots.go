@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"backendv2/controllers"
+	controllers "backendv2/controllers/botControllers"
 	"backendv2/middleware"
 
 	"github.com/gofiber/fiber/v2"

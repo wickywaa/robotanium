@@ -10,8 +10,8 @@ export const RegisterContainer:React.FC = () => {
   const user = useAppSelector(selectUser);
 
    return (
-    <div className="maincontainer margin-5  h-2/5 flex justify-center items-center flex-1 bg-primary border border-secondary">
-      <div className="w-screen w-2/4 h-full bg-center bg-no-repeat flex justify-center items-center">
+    <div className="fullcontainer margin-5  h-2/5 flex justify-center items-center flex-1 bg-primary border border-secondary">
+      <div className="w-screen  h-full bg-center bg-no-repeat flex justify-center items-center">
         <RegisterForm isLoading={isLoading} emailSent={registeredEmailSent} user={user}/>
       </div>
     </div>

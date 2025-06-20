@@ -21,6 +21,18 @@ type Botmethods interface {
 	SetPassword(password string) error
 }
 
+type BotRequest struct {
+	BotName  string    `json:"botName"`
+	Password string    `json:"password"`
+	Cockpit  []Cockpit `json:"cockpits"`
+}
+
+type Publicbot struct {
+	ID       int
+	Name     string
+	Cockpits []Cockpit
+}
+
 func (b *Bot) SetPassword(password string) error {
 	if len(password) < 8 {
 		return errors.New("password must be at least characters")

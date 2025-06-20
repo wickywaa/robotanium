@@ -10,7 +10,7 @@ export class BotService {
     const payload = {
       botName: bot.name,
       password: bot.password,
-      cockpits: bot.cockpits
+      cockpits: bot.cockpits.map((name)=>({name}))
     }
 
     if (bot.image )formData.append("image", bot.image);
