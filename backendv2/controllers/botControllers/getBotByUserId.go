@@ -24,19 +24,34 @@ func GetBotsByUserId(c *fiber.Ctx) error {
 
 	db := database.GetDB()
 
-	var bots []models.Publicbot
+	var bots []models.Bot
+	var publicbots []models.Publicbot
 	query := db.Model(&models.Bot{})
 
 	if !authenticatedUser.IsRobotaniumAdmin {
-		query = query.Where("admin_id = ?", authenticatedUser.ID)
+		query = query.Where("admin_id = ?", authenticatedUser.ID).Preload("Cockpits").Find(&bots)
 	}
 
-	query = query.Find(&bots)
+	if authenticatedUser.IsRobotaniumAdmin {
+		db.Preload("Cockpits").Find(&bots)
+	}
 
 	if query.Error != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to get bots"})
 	}
 
-	return c.Status(fiber.StatusOK).JSON(bots)
+	for _, bot := range bots {
+		pb := models.Publicbot{
+			ID:       bot.ID,
+			Name:     bot.Name,
+			Cockpits: bot.Cockpits,
+			ImageURL: bot.ImageURL,
+			Image:    "",
+		}
+
+		publicbots = append(publicbots, pb)
+	}
+
+	return c.Status(fiber.StatusOK).JSON(publicbots)
 
 }

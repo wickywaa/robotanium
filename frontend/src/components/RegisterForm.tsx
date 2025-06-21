@@ -134,7 +134,7 @@ export const RegisterForm: React.FC<{ emailSent: boolean, isLoading: boolean, us
             onBlur={() => checkforErrors('password')}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <i style={{ color: '#4ddfc0' }} onClick={() => setShowPassword(!showPassword)} className={`absolute  right-2 top-2 ${!showPassword ? 'pi pi-eye' : 'pi pi-eye-slash'}`}></i>
+          <i style={{ color: '#4ddfc0' }} onClick={() => setShowPassword(!showPassword)} className={`absolute hoverIcon  right-2 top-5 ${!showPassword ? 'pi pi-eye' : 'pi pi-eye-slash'}`}></i>
         </div>
 
         <div className="w-full relative h-8 mb-5" >
@@ -147,7 +147,7 @@ export const RegisterForm: React.FC<{ emailSent: boolean, isLoading: boolean, us
             onBlur={() => checkforErrors('password2')}
             onChange={(e) => setPassword2(e.target.value)}
           />
-          <i style={{ color: '#4ddfc0' }} onClick={() => setShowPassword2(!showPassword2)} className={`absolute right-2 top-2 ${!showPassword2 ? 'pi pi-eye' : 'pi pi-eye-slash'}`}></i>
+          <i style={{ color: '#4ddfc0' }} onClick={() => setShowPassword2(!showPassword2)} className={`absolute hoverIcon right-2 top-5 ${!showPassword2 ? 'pi pi-eye' : 'pi pi-eye-slash'}`}></i>
         </div>
       </Card>
 

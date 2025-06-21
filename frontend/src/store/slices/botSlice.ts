@@ -26,7 +26,7 @@ export const BotSlice = createSlice({
     fetchBotsSuccess: (state, action:PayloadAction<IBot[]>) => ({
       ...state, 
       loading:false,
-      bots: []
+      bots: action.payload
     }),
     fetchBotsFailure: (state, action:PayloadAction) =>({
       ...state,

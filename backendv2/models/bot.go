@@ -24,13 +24,15 @@ type Botmethods interface {
 type BotRequest struct {
 	BotName  string    `json:"botName"`
 	Password string    `json:"password"`
-	Cockpit  []Cockpit `json:"cockpits"`
+	Cockpit  []Cockpit `json:"cockpits" gorm:"foreignKey:BotID"`
 }
 
 type Publicbot struct {
-	ID       int
-	Name     string
-	Cockpits []Cockpit
+	ID       int       `gorm:"primaryKey" json:"id"`
+	Name     string    `json:"name"`
+	Cockpits []Cockpit `gorm:"foreignKey:PublicbotID" json:"cockpits"`
+	ImageURL string    `json:"imageUrl"`
+	Image    string    `json:"image"`
 }
 
 func (b *Bot) SetPassword(password string) error {

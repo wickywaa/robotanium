@@ -7,25 +7,18 @@ import { IBot, ICreateBotDTo } from '../models/Bots/bots';
 import './BotContainer.scss';
 
 import {CreateBotComponent} from '../components/CreatebotComponent/CreateBotComponent';
-import { useAppDispatch } from '../store/hooks';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { selectBots } from '../store/selectors';
 import { createBotAttempt } from '../store/slices/botSlice';
 
 export const BotContainer: React.FC = () => {
 
   const dispatch = useAppDispatch();
+  const bots = useAppSelector(selectBots)
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [filter, setFilter] = useState<'all' | 'online'>('all');
 
   // Mock data - replace with real data later
-  const bots: IBot[] = [
-    {
-      id: '1',
-      name: 'Bot 1',
-      img: 'bot1.jpg',
-      imageUrl: 'url1',
-      cockpits: [{ id: '1', name: 'Camera 1' }]
-    }
-  ];
 
   const handleCreateBot = (bot: ICreateBotDTo) => {
 
