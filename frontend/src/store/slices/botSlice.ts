@@ -19,6 +19,14 @@ export const BotSlice = createSlice({
       ...state,
       loading: true,
     }),
+    createBotSuccess: (state) =>({
+      ...state,
+      loading: false
+    }),
+    createBotFailure: (state)=> ({
+      ...state,
+      loading: false
+    }),
     fetchBotsttempt: (state,action:PayloadAction) =>({
       ...state,
       loading:true
@@ -32,7 +40,20 @@ export const BotSlice = createSlice({
       ...state,
       loading:false,
       bots:[]
+    }),
+    deleteBotByIdAttempt: (state, action:PayloadAction<string>) =>({
+      ...state,
+      loading: true,
+    }),
+    deleteBotSuccess: ( state) =>({
+      ...state, 
+      loading: false
+    }),
+    deleteBotFalure: (state) =>({
+      ...state,
+      loading:false
     })
+
   }
 })
 
@@ -40,5 +61,10 @@ export const {
   createBotAttempt,
   fetchBotsFailure,
   fetchBotsSuccess,
-  fetchBotsttempt
+  fetchBotsttempt,
+  createBotFailure,
+  createBotSuccess,
+  deleteBotByIdAttempt,
+  deleteBotFalure,
+  deleteBotSuccess
 } = BotSlice.actions

@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -13,6 +14,8 @@ type Bot struct {
 	Token        string    `db:"token" json:"token"`
 	ImageURL     string    `db:"image_url" json:"imageUrl"`
 	AdminID      int       `db:"admin_id" json:"adminId"`
+	isActive     bool  `db:"is_active" json:"isActive"`
+	CreatedAt    time.Time `db:"created_at json:"createdAt"`
 	Cockpits     []Cockpit `json:"cockpits,omitempty"`
 	PasswordHash string    `gorm:"not null"`
 }
@@ -33,6 +36,7 @@ type Publicbot struct {
 	Cockpits []Cockpit `gorm:"foreignKey:PublicbotID" json:"cockpits"`
 	ImageURL string    `json:"imageUrl"`
 	Image    string    `json:"image"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 func (b *Bot) SetPassword(password string) error {

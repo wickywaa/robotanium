@@ -6,10 +6,12 @@ import { Card } from 'primereact/card';
 import { IBot, ICreateBotDTo } from '../models/Bots/bots';
 import './BotContainer.scss';
 
-import {CreateBotComponent} from '../components/CreatebotComponent/CreateBotComponent';
+import { CreateBotComponent } from '../components/CreatebotComponent/CreateBotComponent';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { selectBots } from '../store/selectors';
 import { createBotAttempt } from '../store/slices/botSlice';
+
+
 
 export const BotContainer: React.FC = () => {
 
@@ -21,8 +23,6 @@ export const BotContainer: React.FC = () => {
   // Mock data - replace with real data later
 
   const handleCreateBot = (bot: ICreateBotDTo) => {
-
-
     dispatch(createBotAttempt(bot));
     setShowCreateDialog(false);
   };
@@ -86,7 +86,7 @@ export const BotContainer: React.FC = () => {
     <div className="bot-container">
       <div className="bot-header">
         <h1>Bot Management</h1>
-        <div className="bot-controls">
+        <div style={{height:"6rem", width:"50%", display:"flex", justifyContent:"end"}} className="bot-controls">
           <Dropdown
             value={filter}
             options={[
@@ -96,6 +96,7 @@ export const BotContainer: React.FC = () => {
             onChange={(e) => setFilter(e.value)}
             className="mr-3"
           />
+          
           <Button 
             label="Create New Bot" 
             icon="pi pi-plus" 
@@ -108,16 +109,9 @@ export const BotContainer: React.FC = () => {
         {bots.map(bot => renderBotCard(bot))}
       </div>
 
-
-
     <Dialog visible={showCreateDialog} onHide={() => setShowCreateDialog(false)} style={{width:'100%', height:'100%'}}>
       <CreateBotComponent onCreateBot={handleCreateBot}/>
-
     </Dialog>
-
-       
-        
-        
     </div>
   );
 };

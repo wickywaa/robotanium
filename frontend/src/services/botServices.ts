@@ -39,4 +39,9 @@ export class BotService {
     
   }
 
+  deleteBots = async(): Promise<void> =>baseAxios.delete('bots')
+    
+    
+
+
 }
