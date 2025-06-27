@@ -1,8 +1,11 @@
 .bot-container {
   width: 100%;
-  min-height: 100vh;
   padding: 2rem;
   background-color: var(--back-groundColor);
+  overflow: hidden;
+    height: calc(100vh - 6rem);
+    background: black;
+    overflow: auto;
 
   .bot-header {
     display: flex;

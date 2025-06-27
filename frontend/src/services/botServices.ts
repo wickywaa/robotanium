@@ -17,7 +17,7 @@ export class BotService {
     formData.append("payload",JSON.stringify(payload))
 
     try {
-      return baseAxios.post<{ data:{ bot: ICreateBotDTo }, file:File}>('bots',formData,{ headers: {
+      return baseAxios.post('bots',formData,{ headers: {
         'Content-Type': 'multipart/form-data'
       }}
     )
@@ -39,7 +39,7 @@ export class BotService {
     
   }
 
-  deleteBots = async(): Promise<void> =>baseAxios.delete('bots')
+  deleteBots = async(id:string): Promise<void> =>baseAxios.delete(`bots/${id}`)
     
     
 

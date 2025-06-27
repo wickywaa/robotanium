@@ -4,7 +4,7 @@ import { put, takeEvery } from "redux-saga/effects";
 import { IBot, ICreateBotDTo } from "../../../models/Bots/bots";
 import { BotService } from "../../../services/botServices";
 import { addMessage } from "../../slices";
-import { createBotFailure, fetchBotsFailure, fetchBotsSuccess, fetchBotsttempt } from "../../slices/botSlice";
+import { createBotFailure, deleteBotFailure, deleteBotSuccess, fetchBotsFailure, fetchBotsSuccess, fetchBotsttempt } from "../../slices/botSlice";
 
 const newBotService = new BotService();
 
@@ -53,20 +53,30 @@ export function* fetchBots() {
   }
 }
 
-export function* deleteBots() {
+export function* deleteBots(action: PayloadAction<string>) {
   try {
-    const botDeleteResponse:AxiosResponse = yield newBotService.deleteBots();
+    const botDeleteResponse:AxiosResponse = yield newBotService.deleteBots(action.payload);
 
-    console.log("bot delete response", botDeleteResponse )
+    if (botDeleteResponse.status !== 200) return 
 
+    yield put(deleteBotSuccess());
+    yield put(fetchBotsttempt())
+    yield put(addMessage({
+      message:'Bot Deleted Successfully',
+      severity:'success'
+    }))
   }
   catch (e) {
-
+       yield put(deleteBotFailure())
+       yield put(addMessage({
+        message: 'Bot could not be deleted ',
+        severity: 'error'
+       }))
   }
 }
 
 export function* botSagas() {
   yield takeEvery("botSlice/createBotAttempt", createBot);
   yield takeEvery("botSlice/fetchBotsttempt", fetchBots);
-  yield takeEvery("botSlice/deletebot", deleteBots)
+  yield takeEvery("botSlice/deleteBotByIdAttempt", deleteBots)
 }

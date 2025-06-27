@@ -49,7 +49,7 @@ export const BotSlice = createSlice({
       ...state, 
       loading: false
     }),
-    deleteBotFalure: (state) =>({
+    deleteBotFailure: (state) =>({
       ...state,
       loading:false
     })
@@ -65,6 +65,6 @@ export const {
   createBotFailure,
   createBotSuccess,
   deleteBotByIdAttempt,
-  deleteBotFalure,
+  deleteBotFailure,
   deleteBotSuccess
 } = BotSlice.actions
