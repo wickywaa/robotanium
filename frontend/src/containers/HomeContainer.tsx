@@ -14,7 +14,7 @@ export const HomeContainer: React.FC = () => {
   },[])
 
   return(
-    <div>
+    <div style={{background:'black'}}>
       <NavigationBar/>
       <Outlet/>
     </div>

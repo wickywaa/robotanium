@@ -11,6 +11,8 @@ import { CreateBotComponent } from '../components/CreatebotComponent/CreateBotCo
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { selectBots, selectBotsLoading } from '../store/selectors';
 import { createBotAttempt, deleteBotByIdAttempt } from '../store/slices/botSlice';
+import { BotCard } from '../components/BotCard/BotCard';
+import { ConfirmDialog } from '../components/ConfirmDialog/ConfirmDialog';
 
 export const BotContainer: React.FC = () => {
 
@@ -19,6 +21,10 @@ export const BotContainer: React.FC = () => {
   const botsLoading = useAppSelector(selectBotsLoading)
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [filter, setFilter] = useState<'all' | 'online'>('all');
+  const [showConfirm, setShowConfirm] = useState<{open:boolean, botId:string}>({
+    open: false,
+    botId: ''
+  });
 
 
   const handleCreateBot = (bot: ICreateBotDTo) => {
@@ -30,57 +36,19 @@ export const BotContainer: React.FC = () => {
     console.log('Connecting to bot:', bot);
   };
 
-  const handleDeleteBot = (botId: string) => {
-    dispatch(deleteBotByIdAttempt(botId))
-  };
+  const handleDeleteBot = (botId:string) => {
+    dispatch(deleteBotByIdAttempt(botId));
+    setShowConfirm({
+      open:false,
+      botId:'',
+    })
+  } 
 
-  const renderBotCard = (bot: IBot) => {
-    const header = (
-      <div className="bot-card-header">
-        <img src={bot.imageUrl} alt={bot.name} />
-      </div>
-    );
 
-    const footer = (
-      <div className="bot-card-footer">
-        <Button
-          icon="pi pi-play"
-          className="p-button-success mr-2"
-          onClick={() => handleConnectBot(bot)}
-          tooltip="Connect"
-        />
-        <Button
-          icon="pi pi-trash"
-          className="p-button-danger"
-          onClick={() => handleDeleteBot(bot.id)}
-          tooltip="Delete"
-        />
-      </div>
-    );
-
-    return (
-      <Card
-        key={bot.id}
-        title={bot.name}
-        header={header}
-        footer={footer}
-        className="bot-card"
-      >
-        <div className="cockpits-list">
-          {bot.cockpits.map(cockpit => (
-            <span key={cockpit.id} className="cockpit-tag">
-              {cockpit.name}
-            </span>
-          ))}
-        </div>
-      </Card>
-    );
-  };
 
   return (
     <div className="bot-container">
       <div className="bot-header">
-        <h1>Bot Management</h1>
         <div style={{ height: "6rem", width: "50%", display: "flex", justifyContent: "end" }} className="bot-controls">
           <Dropdown
             value={filter}
@@ -101,14 +69,20 @@ export const BotContainer: React.FC = () => {
       </div>
 
       <div className="bot-grid">
-        {bots.map(bot => renderBotCard(bot))}
-      </div>
+        {bots.map((bot)=>{
+          console.log('bot',bot)
+          return <BotCard bot={bot} onConnect={handleConnectBot} onDelete={()=>setShowConfirm({botId:bot.id.toString(),open:true})} />
+        })}
+        </div>
 
       <Dialog visible={showCreateDialog} onHide={() => setShowCreateDialog(false)} style={{ width: '100%', height: '100%' }}>
         <CreateBotComponent onCreateBot={handleCreateBot} />
       </Dialog>
       {
         botsLoading ? <LoadingSpinner overLay={true} /> : null
+      }
+      {
+        showConfirm.open === true && showConfirm?.botId?.length ? <ConfirmDialog onHide={()=> setShowConfirm({open:false,botId:''})} Message='Are you sure you want to delete this bot' onConfirm={()=>handleDeleteBot(showConfirm.botId)} />:null
       }
 
     </div>

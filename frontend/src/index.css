@@ -11,6 +11,7 @@
 :root {
   --darkgreen: rgb(31, 93, 79);
   --darkgreenOpacity: rgb(31, 93, 79, 0.5);
+  --darkgreenLowOpacity: rgb(31, 93, 79, 0.03);
   --darkblue: #00cfff;
   --darkred: #ff0000;
   --primary-color: rgb(31, 93, 79);
@@ -35,6 +36,7 @@ input {
     opacity: 0.9;
     color: #4ddfc0;
     box-shadow: 2px 2px 5px var(--darkgreen);
+    
   }
 }
 
