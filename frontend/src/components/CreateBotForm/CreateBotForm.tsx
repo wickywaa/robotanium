@@ -6,14 +6,14 @@ import validate from 'validator';
 import React, { useState } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { PasswordInput } from '../PasswordInput/PasswordInput';
-import { Dialog } from 'primereact/dialog';
-import { FileUpload } from 'primereact/fileupload';
+
 interface ICreateBotModule {
   close:() => void;
-  createBot: (bot: ICreateBotDTo) => void;
+  onSubmit: (bot: ICreateBotDTo) => void;
+  mode: 'edit' | 'create'
 }
 
-export const CreateBotForm: React.FC<ICreateBotModule> = ({close, createBot})=> {
+export const CreateEditBotForm: React.FC<ICreateBotModule> = ({close, onSubmit, mode})=> {
 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageUrl,setImageUrl] = useState<string | null>(null);
@@ -57,7 +57,7 @@ export const CreateBotForm: React.FC<ICreateBotModule> = ({close, createBot})=> 
 
     
 
-    return createBot({
+    return onSubmit({
       name: botName,
       password: botPassword,
       botImageUrl,

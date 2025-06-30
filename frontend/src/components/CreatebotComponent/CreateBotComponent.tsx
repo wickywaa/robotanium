@@ -1,6 +1,6 @@
 
-import React, { useRef, useState } from 'react';
-import  { ICreateBotDTo } from '../../models/Bots/bots'
+import React, { useEffect, useRef, useState } from 'react';
+import  { IBot, ICreateBotDTo } from '../../models/Bots/bots'
 import { Toast } from 'primereact/toast';
 import { FileUpload, FileUploadHeaderTemplateOptions, FileUploadSelectEvent, FileUploadUploadEvent, ItemTemplateOptions, } from 'primereact/fileupload';
 import { ProgressBar } from 'primereact/progressbar';
@@ -16,10 +16,12 @@ interface fileObjectWithUrl extends File {
 }
 
 interface CreateBotInterface {
-  onCreateBot: (bot:ICreateBotDTo)=> void
+  onSubmit: (bot:ICreateBotDTo)=> void
+  mode: 'edit' | 'create'
+  bot?: IBot;
 }
 
-export const CreateBotComponent: React.FC<CreateBotInterface> = ({onCreateBot}) =>  {
+export const CreateEditBotComponent: React.FC<CreateBotInterface> = ({onSubmit, mode, bot}) =>  {
   const toast = useRef<Toast>(null);
   const [totalSize, setTotalSize] = useState(0);
   const [botName, setBotName] = useState('');
@@ -31,13 +33,29 @@ export const CreateBotComponent: React.FC<CreateBotInterface> = ({onCreateBot}) 
 
     const files = fileUploadRef && fileUploadRef.current ? fileUploadRef.current?.getFiles() : [];
    
-      onCreateBot({
+      onSubmit({
         name: botName,
         image: files[0],
         password,
         cockpits
       })
   }
+
+  useEffect(()=>{
+    if(mode !== 'edit') return;
+
+    console.log('bot', bot)
+    if( bot?.name) setBotName(bot.name)
+
+    const cockpits:string[] =  []
+  
+    if(bot?.cockpits) bot.cockpits.forEach((cp)=>cockpits.push(cp.name))
+      console.log('cockpits', cockpits)
+    setCockpits(cockpits)
+
+
+
+  },[])
 
   const onTemplateSelect = (e: FileUploadSelectEvent) => {
     let _totalSize = totalSize;
@@ -137,7 +155,7 @@ export const CreateBotComponent: React.FC<CreateBotInterface> = ({onCreateBot}) 
       <Tooltip className='custom-choose-btn' target=".custom-choose-btn" content="find on machine" position="bottom"  />
       <div className='create-bot-form-input-group'>
         <div className='bot-details-form-group'>
-          <InputText onChange={(e)=>setBotName(e.currentTarget.value)} className='bot-details-name' placeholder='Bot Name' />
+          <InputText value={botName} onChange={(e)=>setBotName(e.currentTarget.value)} className='bot-details-name' placeholder='Bot Name' />
         </div>
         <div className='bot-passwords-form-group'>
           <InputText onChange={(e)=>setPassword(e.currentTarget.value)} className='create-bot-password' placeholder='Bot Password' />
@@ -147,8 +165,8 @@ export const CreateBotComponent: React.FC<CreateBotInterface> = ({onCreateBot}) 
         <Button style={{ maxHeight: '30px',marginLeft:'28%' }} onClick={() => setCockpits([...cockpits,''])} icon='pi pi-plus' />
         <div style={{ display: 'flex', height: '70%', boxSizing: 'border-box', width:'100%' }} >
           <div style={{ display: 'flex', flexDirection: 'column', width:'100%' }}>
-            {cockpits.map((_, key) => {
-              return (<div key={key} style={{ display: 'flex', flexDirection: 'column', width:'100%', alignItems:'center' }}><InputText style={{width:'50%',}} onChange={(event) => handleCockpitChange(key, event.target.value)} placeholder={`cockpit ${key + 1}`} /></div>)
+            {cockpits.map((cockpit, key) => {
+              return (<div key={key} style={{ display: 'flex', flexDirection: 'column', width:'100%', alignItems:'center' }}><InputText value={cockpit} style={{width:'50%',}} onChange={(event) => handleCockpitChange(key, event.target.value)} placeholder={`cockpit ${key + 1}`} /></div>)
             })}
           </div>
         </div>

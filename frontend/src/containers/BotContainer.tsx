@@ -6,13 +6,14 @@ import React, { useState } from 'react';
 import { IBot, ICreateBotDTo } from '../models/Bots/bots';
 import './BotContainer.scss';
 
-import { LoadingSpinner } from '../components';
-import { CreateBotComponent } from '../components/CreatebotComponent/CreateBotComponent';
+import {  LoadingSpinner } from '../components';
+import { CreateEditBotComponent } from '../components/CreatebotComponent/CreateBotComponent';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { selectBots, selectBotsLoading } from '../store/selectors';
 import { createBotAttempt, deleteBotByIdAttempt } from '../store/slices/botSlice';
 import { BotCard } from '../components/BotCard/BotCard';
 import { ConfirmDialog } from '../components/ConfirmDialog/ConfirmDialog';
+import {} from '../'
 
 export const BotContainer: React.FC = () => {
 
@@ -20,11 +21,16 @@ export const BotContainer: React.FC = () => {
   const bots = useAppSelector(selectBots)
   const botsLoading = useAppSelector(selectBotsLoading)
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState<{open:boolean, bot:IBot | null }>({
+    open:false,
+    bot: null
+  });
   const [filter, setFilter] = useState<'all' | 'online'>('all');
   const [showConfirm, setShowConfirm] = useState<{open:boolean, botId:string}>({
     open: false,
     botId: ''
   });
+
 
 
   const handleCreateBot = (bot: ICreateBotDTo) => {
@@ -33,6 +39,7 @@ export const BotContainer: React.FC = () => {
   };
 
   const handleConnectBot = (bot: IBot) => {
+    
     console.log('Connecting to bot:', bot);
   };
 
@@ -43,6 +50,18 @@ export const BotContainer: React.FC = () => {
       botId:'',
     })
   } 
+
+  const handleOnEdit = (bot:IBot) => {
+    console.log("afsdd", bot)
+    setShowEditDialog({
+      open: true,
+      bot
+    })
+  }
+
+  const handleSaveEdit = (bot:ICreateBotDTo) => {
+    console.log("hello")
+  }
 
 
 
@@ -70,14 +89,20 @@ export const BotContainer: React.FC = () => {
 
       <div className="bot-grid">
         {bots.map((bot)=>{
-          console.log('bot',bot)
-          return <BotCard bot={bot} onConnect={handleConnectBot} onDelete={()=>setShowConfirm({botId:bot.id.toString(),open:true})} />
+          return <BotCard onEdit={handleOnEdit} bot={bot} onConnect={handleConnectBot} onDelete={()=>setShowConfirm({botId:bot.id.toString(),open:true})} />
         })}
         </div>
 
       <Dialog visible={showCreateDialog} onHide={() => setShowCreateDialog(false)} style={{ width: '100%', height: '100%' }}>
-        <CreateBotComponent onCreateBot={handleCreateBot} />
+        <CreateEditBotComponent  mode={'create'} onSubmit={handleCreateBot} />
       </Dialog>
+      <Dialog onHide={()=>setShowEditDialog({open:false, bot:null})} visible={showEditDialog.open === true  && showEditDialog.bot !== null ? true :false} style={{ width: '100%', height: '100%' }} >
+        {
+          showEditDialog.bot && <CreateEditBotComponent mode='edit' bot={showEditDialog.bot}   onSubmit={(bot)=>handleSaveEdit(bot)} />
+        }
+        
+      </Dialog>
+      
       {
         botsLoading ? <LoadingSpinner overLay={true} /> : null
       }
