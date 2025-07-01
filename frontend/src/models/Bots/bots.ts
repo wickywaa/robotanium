@@ -1,5 +1,5 @@
 interface camera{
-  id:string;
+  id:number;
   name:string;
 }
 
@@ -19,5 +19,5 @@ export interface ICreateBotDTo {
   name: string;
   image?: File;
   password: string;
-  cockpits: string[]
+  cockpits: {name:string, id: number}[]
 }

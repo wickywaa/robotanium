@@ -60,7 +60,9 @@ export const BotContainer: React.FC = () => {
   }
 
   const handleSaveEdit = (bot:ICreateBotDTo) => {
-    console.log("hello")
+    console.log("hello", bot)
+
+    
   }
 
 
