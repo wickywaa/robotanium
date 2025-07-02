@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/url"
 	"time"
 
@@ -19,19 +18,13 @@ func CreateBot(c *fiber.Ctx) error {
 
 	var errors []string
 	var req models.BotRequest
-	fileHeader, err := c.FormFile("image")
-
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "no file found"})
-	}
+	fileHeader, noFile := c.FormFile("image")
 
 	payload := c.FormValue("payload")
 	db := database.GetDB()
 	fmt.Println("Raw JSON payload string:", payload)
 
 	bot := new(models.Bot)
-
-	fmt.Println("here is the bot saved toa a variabel", bot)
 
 	if err := c.BodyParser(bot); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request"})
@@ -71,34 +64,38 @@ func CreateBot(c *fiber.Ctx) error {
 	bot.Name = req.BotName
 
 	bot.SetPassword(req.Password)
-	file, err := fileHeader.Open()
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Cannot open file")
-	}
+	var objectName string
 
-	defer file.Close()
-	ctx := context.Background()
-	bucket, err := firebase.StorageClient.DefaultBucket()
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Cannot access bucket")
-	}
+	if noFile == nil {
 
-	objectName := fmt.Sprintf("uploads/%d-%s", time.Now().Unix(), fileHeader.Filename)
-	urlEncodedName := url.PathEscape(objectName)
-	publicURL := fmt.Sprintf("https://firebasestorage.googleapis.com/v0/b/%s/%s?alt=media", "robotanium-admin.appspot.com/o", urlEncodedName)
+		file, err := fileHeader.Open()
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).SendString("Cannot open file")
+		}
 
-	log.Println("puublicurl")
-	log.Println(publicURL)
-	bot.ImageURL = publicURL
+		defer file.Close()
+		ctx := context.Background()
+		bucket, err := firebase.StorageClient.DefaultBucket()
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).SendString("Cannot access bucket")
+		}
 
-	writer := bucket.Object(objectName).NewWriter(ctx)
-	writer.ContentType = fileHeader.Header.Get("Content-Type")
+		objectName = fmt.Sprintf("uploads/%d-%s", time.Now().Unix(), fileHeader.Filename)
+		urlEncodedName := url.PathEscape(objectName)
+		publicURL := fmt.Sprintf("https://firebasestorage.googleapis.com/v0/b/%s/%s?alt=media", "robotanium-admin.appspot.com/o", urlEncodedName)
 
-	if _, err := io.Copy(writer, file); err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Failed to upload file")
-	}
-	if err := writer.Close(); err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Failed to finalize upload")
+		bot.ImageURL = publicURL
+
+		writer := bucket.Object(objectName).NewWriter(ctx)
+		writer.ContentType = fileHeader.Header.Get("Content-Type")
+
+		if _, err := io.Copy(writer, file); err != nil {
+			return c.Status(fiber.StatusInternalServerError).SendString("Failed to upload file")
+		}
+		if err := writer.Close(); err != nil {
+			return c.Status(fiber.StatusInternalServerError).SendString("Failed to finalize upload")
+		}
+
 	}
 
 	if err := db.Create(bot).Error; err != nil {

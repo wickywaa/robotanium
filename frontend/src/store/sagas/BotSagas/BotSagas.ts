@@ -11,7 +11,7 @@ const newBotService = new BotService();
 export function* createBot(action: PayloadAction<ICreateBotDTo>) {
 
   try {
-    const botResponse:AxiosResponse = yield  newBotService.createBot(action.payload);
+    const botResponse:AxiosResponse = yield newBotService.createBot(action.payload);
     if (botResponse.status !== 201) {
       yield put(createBotFailure())
       yield (addMessage({
@@ -75,8 +75,16 @@ export function* deleteBots(action: PayloadAction<string>) {
   }
 }
 
+
+export function* updateBot(action: PayloadAction<ICreateBotDTo>) {
+  console.log('hello updating bot', action.payload)
+
+ 
+}
+
 export function* botSagas() {
   yield takeEvery("botSlice/createBotAttempt", createBot);
   yield takeEvery("botSlice/fetchBotsttempt", fetchBots);
   yield takeEvery("botSlice/deleteBotByIdAttempt", deleteBots)
+  yield takeEvery("botSlice/updateBotAttempt", updateBot)
 }

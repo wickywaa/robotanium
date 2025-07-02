@@ -10,7 +10,7 @@ export class BotService {
     const payload = {
       botName: bot.name,
       password: bot.password,
-      cockpits: bot.cockpits.map((name)=>({name}))
+      cockpits: bot.cockpits
     }
 
     if (bot.image )formData.append("image", bot.image);
@@ -40,6 +40,8 @@ export class BotService {
   }
 
   deleteBots = async(id:string): Promise<void> =>baseAxios.delete(`bots/${id}`)
+
+  updatebots = async (id:string): Promise<void> => baseAxios.put(`bots/${id}`)
     
     
 

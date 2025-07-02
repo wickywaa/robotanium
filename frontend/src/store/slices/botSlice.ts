@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IBot, ICreateBotDTo } from "../../models/Bots/bots";
+import { updateBot } from "../sagas";
 
 interface IBotSliceInterface {
   loading: boolean;
@@ -52,8 +53,19 @@ export const BotSlice = createSlice({
     deleteBotFailure: (state) =>({
       ...state,
       loading:false
+    }),
+    updateBotAttempt:(state, action: PayloadAction<ICreateBotDTo>) =>({
+      ...state,
+      loading: true
+    }),
+    updateBotFailed: (state) =>({
+      ...state,
+      loading: false
+    }),
+    updateBotSuccess: (state) => ({
+      ...state, 
+      loading: true
     })
-
   }
 })
 
@@ -66,5 +78,8 @@ export const {
   createBotSuccess,
   deleteBotByIdAttempt,
   deleteBotFailure,
-  deleteBotSuccess
+  deleteBotSuccess, 
+  updateBotAttempt,
+  updateBotFailed,
+  updateBotSuccess
 } = BotSlice.actions
