@@ -1,13 +1,13 @@
 
-import React, { useEffect, useRef, useState } from 'react';
-import { IBot, ICreateBotDTo } from '../../models/Bots/bots'
-import { Toast } from 'primereact/toast';
-import { FileUpload, FileUploadHeaderTemplateOptions, FileUploadSelectEvent, FileUploadUploadEvent, ItemTemplateOptions, } from 'primereact/fileupload';
-import { ProgressBar } from 'primereact/progressbar';
 import { Button } from 'primereact/button';
-import { Tooltip } from 'primereact/tooltip';
+import { FileUpload, FileUploadHeaderTemplateOptions, FileUploadSelectEvent, FileUploadUploadEvent, ItemTemplateOptions, } from 'primereact/fileupload';
 import { InputText } from 'primereact/inputtext';
+import { ProgressBar } from 'primereact/progressbar';
 import { Tag } from 'primereact/tag';
+import { Toast } from 'primereact/toast';
+import { Tooltip } from 'primereact/tooltip';
+import React, { useEffect, useRef, useState } from 'react';
+import { IBot, ICreateBotDTo } from '../../models/Bots/bots';
 import './CreateBotComponent.scss';
 
 interface fileObjectWithUrl extends File {
@@ -15,7 +15,7 @@ interface fileObjectWithUrl extends File {
 }
 
 interface CreateBotInterface {
-  onSubmit: (bot: ICreateBotDTo) => void
+  onSubmit: (bot: ICreateBotDTo, id: string) => void
   mode: 'edit' | 'create'
   bot?: IBot;
 }
@@ -37,7 +37,7 @@ export const CreateEditBotComponent: React.FC<CreateBotInterface> = ({ onSubmit,
   const [botName, setBotName] = useState('');
   const [password, setPassword] = useState('');
   const fileUploadRef = useRef<FileUpload>(null);
-  const [cockpits, setCockpits] = useState<{name:string, id:number}[]>([{name:'', id:0}]);
+  const [cockpits, setCockpits] = useState<{ name: string, id: number }[]>([{ name: '', id: 0 }]);
   const [showCurrentImage, setShowCurrentImage] = useState<boolean>(true)
 
   const handleCreateBot = () => {
@@ -49,16 +49,16 @@ export const CreateEditBotComponent: React.FC<CreateBotInterface> = ({ onSubmit,
       image: files[0],
       password,
       cockpits
-    })
+    }, bot?.id ?? '')
   }
 
   useEffect(() => {
     if (mode !== 'edit') return;
     if (bot?.name) setBotName(bot.name)
 
-    const cockpits: {name:string, id:number}[] = []
+    const cockpits: { name: string, id: number }[] = []
 
-    if (bot?.cockpits) bot.cockpits.forEach((cp) => cockpits.push({name:cp.name, id:cp.id}))
+    if (bot?.cockpits) bot.cockpits.forEach((cp) => cockpits.push({ name: cp.name, id: cp.id }))
     console.log('cockpits', cockpits)
     setCockpits(cockpits)
   }, [])
@@ -134,9 +134,9 @@ export const CreateEditBotComponent: React.FC<CreateBotInterface> = ({ onSubmit,
   const handleCockpitChange = (key: number, name: string) => {
 
     console.log('key', key)
-    console.log('name',name)
+    console.log('name', name)
 
-    const newCockpits :{name:string,id: number}[] = cockpits.map((cockpit, index) => {
+    const newCockpits: { name: string, id: number }[] = cockpits.map((cockpit, index) => {
       if (cockpit.id === key) return {
         id: key,
         name
@@ -182,11 +182,11 @@ export const CreateEditBotComponent: React.FC<CreateBotInterface> = ({ onSubmit,
         </div>
 
         <Button style={{ maxHeight: '30px', marginLeft: '28%' }} disabled={cockpits.length < 2} onClick={() => setCockpits(cockpits.slice(0, -1))} icon='pi pi-minus' />
-        <Button style={{ maxHeight: '30px', marginLeft: '28%' }} onClick={() => setCockpits([...cockpits, {id: Math.max(...cockpits.map((cp)=>cp.id))+1, name:''}])} icon='pi pi-plus' />
+        <Button style={{ maxHeight: '30px', marginLeft: '28%' }} onClick={() => setCockpits([...cockpits, { id: Math.max(...cockpits.map((cp) => cp.id)) + 1, name: '' }])} icon='pi pi-plus' />
         <div style={{ display: 'flex', height: '70%', boxSizing: 'border-box', width: '100%' }} >
           <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
             {cockpits.map((cockpit, key) => {
-              return (<div key={cockpit.id} style={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center' }}><InputText key={cockpit.id}  value={cockpit.name} style={{ width: '50%', }} onChange={(event) => handleCockpitChange(cockpit.id, event.target.value)} placeholder={`cockpit ${key + 1}`} /></div>)
+              return (<div key={cockpit.id} style={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center' }}><InputText key={cockpit.id} value={cockpit.name} style={{ width: '50%', }} onChange={(event) => handleCockpitChange(cockpit.id, event.target.value)} placeholder={`cockpit ${key + 1}`} /></div>)
             })}
           </div>
         </div>

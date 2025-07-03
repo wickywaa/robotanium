@@ -51,18 +51,18 @@ export const BotsTable: React.FC<BotsTableProps> = ({
 
   const renderActionButtons = (bot: IBot): React.ReactElement => {
     const isOnline = onlineBots.some(online => online._id === bot._id);
-    
+
     return (
       <div className="action-buttons">
         {isOnline && (
-          <Button 
+          <Button
             label="Connect"
             icon="pi pi-play"
             onClick={() => onConnectBot(bot)}
             severity="secondary"
           />
         )}
-        <Button 
+        <Button
           label='Delete'
           icon="pi pi-trash"
           onClick={() => onDeleteBot(bot._id)}
@@ -74,10 +74,10 @@ export const BotsTable: React.FC<BotsTableProps> = ({
 
   return (
     <div className="custom-datatable">
-      <DataTable 
+      <DataTable
         rowExpansionTemplate={(value) => <BotsExpansionTemplate data={value} />}
-        onRowToggle={(e) => setExpandedRows(e.data)} 
-        expandedRows={expandedRows} 
+        onRowToggle={(e) => setExpandedRows(e.data)}
+        expandedRows={expandedRows}
         value={completeBots}
         stripedRows
         showGridlines

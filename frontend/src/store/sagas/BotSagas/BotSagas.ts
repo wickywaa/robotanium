@@ -76,7 +76,20 @@ export function* deleteBots(action: PayloadAction<string>) {
 }
 
 
-export function* updateBot(action: PayloadAction<ICreateBotDTo>) {
+export  function* updateBot(action: PayloadAction<{id: string, bot:ICreateBotDTo}>) {
+
+  console.log('botid', action.payload.id)
+  console.log('bot', action.payload.bot)
+
+  try {
+    const updateBotResponse:void = yield newBotService.updatebots(action.payload.id, action.payload.bot); 
+
+    console.log('response', updateBotResponse)
+
+  } catch (e){
+    console.log('error', e)
+
+  }
   console.log('hello updating bot', action.payload)
 
  

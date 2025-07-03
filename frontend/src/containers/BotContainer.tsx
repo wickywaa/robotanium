@@ -1,19 +1,18 @@
 import { Button } from "primereact/button";
-import { Card } from "primereact/card";
 import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
 import React, { useState } from "react";
 import { IBot, ICreateBotDTo } from "../models/Bots/bots";
 import "./BotContainer.scss";
 
+import { } from "../";
 import { LoadingSpinner } from "../components";
+import { BotCard } from "../components/BotCard/BotCard";
+import { ConfirmDialog } from "../components/ConfirmDialog/ConfirmDialog";
 import { CreateEditBotComponent } from "../components/CreatebotComponent/CreateBotComponent";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { selectBots, selectBotsLoading } from "../store/selectors";
 import { createBotAttempt, deleteBotByIdAttempt, updateBotAttempt } from "../store/slices/botSlice";
-import { BotCard } from "../components/BotCard/BotCard";
-import { ConfirmDialog } from "../components/ConfirmDialog/ConfirmDialog";
-import {} from "../";
 
 export const BotContainer: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -55,10 +54,10 @@ export const BotContainer: React.FC = () => {
     });
   };
 
-  const handleSaveEdit = (bot: ICreateBotDTo) => {
+  const handleSaveEdit = (id: string, bot: ICreateBotDTo) => {
 
     console.log("trying to update")
-    dispatch(updateBotAttempt(bot))
+    dispatch(updateBotAttempt({ id, bot }))
   };
 
   return (
@@ -101,7 +100,7 @@ export const BotContainer: React.FC = () => {
         style={{ width: "100%", height: "100%" }}
       >
         {showEditDialog.bot && (
-          <CreateEditBotComponent mode="edit" bot={showEditDialog.bot} onSubmit={(bot) => handleSaveEdit(bot)} />
+          <CreateEditBotComponent mode="edit" bot={showEditDialog.bot} onSubmit={(bot, id) => handleSaveEdit(id, bot)} />
         )}
       </Dialog>
 
