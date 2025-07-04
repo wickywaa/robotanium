@@ -106,30 +106,30 @@ export const LoginForm = () => {
         className="loginform  m-auto m-2 p-2 min-h-72 relative flex-column justify-center items-center border border-secondary md:w-4/5 lg:w-2/4 p-8 xl:w-1/5"
       >
 
-          <InputText
-            style={{ color: "#4ddfc0"  }}
-            placeholder="email"
-            className={`w-full   border border-secondary ${getBorderClass("email")} mb-5`}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            onBlur={() => checkforErrors("email")}
-            onKeyUp={onFormEnter}
-          />
-       
-      
-      <div className="w-full mb-5  relative">
         <InputText
-        type={showPassword ? 'text' : 'password'}
           style={{ color: "#4ddfc0" }}
-          placeholder="password"
-          className={`w-full  border border-secondary ${getBorderClass("password")} mb-5`}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          onBlur={() => checkforErrors("password")}
+          placeholder="email"
+          className={`w-full   border border-secondary ${getBorderClass("email")} mb-5`}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          onBlur={() => checkforErrors("email")}
           onKeyUp={onFormEnter}
-          
         />
-        <i style={{ color: '#4ddfc0' }} onClick={() => setShowPassword(!showPassword)} className={`absolute hoverIcon  right-2 top-5 ${!showPassword ? 'pi pi-eye' : 'pi pi-eye-slash'}`}></i>
+
+
+        <div className="w-full mb-5  relative">
+          <InputText
+            type={showPassword ? 'text' : 'password'}
+            style={{ color: "#4ddfc0" }}
+            placeholder="password"
+            className={`w-full  border border-secondary ${getBorderClass("password")} mb-5`}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            onBlur={() => checkforErrors("password")}
+            onKeyUp={onFormEnter}
+
+          />
+          <i style={{ color: '#4ddfc0' }} onClick={() => setShowPassword(!showPassword)} className={`absolute hoverIcon  right-2 top-5 ${!showPassword ? 'pi pi-eye' : 'pi pi-eye-slash'}`}></i>
         </div>
       </Card>
     ) : !user.isEmailVerified ? (

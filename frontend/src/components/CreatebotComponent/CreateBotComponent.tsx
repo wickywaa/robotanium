@@ -39,6 +39,7 @@ export const CreateEditBotComponent: React.FC<CreateBotInterface> = ({ onSubmit,
   const fileUploadRef = useRef<FileUpload>(null);
   const [cockpits, setCockpits] = useState<{ name: string, id: number }[]>([{ name: '', id: 0 }]);
   const [showCurrentImage, setShowCurrentImage] = useState<boolean>(true)
+  const [showPassword, setShowPassword] = useState<boolean>(false)
 
   const handleCreateBot = () => {
 
@@ -174,11 +175,15 @@ export const CreateEditBotComponent: React.FC<CreateBotInterface> = ({ onSubmit,
     <div className='create-bot-form'>
       <Tooltip className='custom-choose-btn' target=".custom-choose-btn" content="find on machine" position="bottom" />
       <div className='create-bot-form-input-group'>
-        <div className='bot-details-form-group'>
+        <div className='bot-details-form-group relative'>
           <InputText value={botName} onChange={(e) => setBotName(e.currentTarget.value)} className='bot-details-name' placeholder='Bot Name' />
         </div>
+
         <div className='bot-passwords-form-group'>
-          <InputText onChange={(e) => setPassword(e.currentTarget.value)} className='create-bot-password' placeholder='Bot Password' />
+          <div style={{ display: 'flex', width: '50%', justifyContent: 'center', position: 'relative' }}>
+            <InputText style={{ width: '100%', margin: 0 }} type={showPassword ? 'text' : 'password'} onChange={(e) => setPassword(e.currentTarget.value)} placeholder='Bot Password' />
+            <i style={{ color: '#4ddfc0' }} onClick={() => setShowPassword(!showPassword)} className={`absolute hoverIcon  right-2 top-4 ${!showPassword ? 'pi pi-eye' : 'pi pi-eye-slash'}`}></i>
+          </div>
         </div>
 
         <Button style={{ maxHeight: '30px', marginLeft: '28%' }} disabled={cockpits.length < 2} onClick={() => setCockpits(cockpits.slice(0, -1))} icon='pi pi-minus' />

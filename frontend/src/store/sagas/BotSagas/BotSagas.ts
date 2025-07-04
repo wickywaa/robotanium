@@ -1,10 +1,10 @@
 import { PayloadAction } from "@reduxjs/toolkit";
 import { AxiosResponse } from "axios";
-import { put, takeEvery } from "redux-saga/effects";
+import { delay, put, takeEvery } from "redux-saga/effects";
 import { IBot, ICreateBotDTo } from "../../../models/Bots/bots";
 import { BotService } from "../../../services/botServices";
 import { addMessage } from "../../slices";
-import { createBotFailure, deleteBotFailure, deleteBotSuccess, fetchBotsFailure, fetchBotsSuccess, fetchBotsttempt } from "../../slices/botSlice";
+import { createBotFailure, deleteBotFailure, deleteBotSuccess, fetchBotsFailure, fetchBotsSuccess, fetchBotsttempt, updateBotFailed } from "../../slices/botSlice";
 
 const newBotService = new BotService();
 
@@ -44,6 +44,7 @@ export function* fetchBots() {
     if (botsResponse?.data.length === 0) {
       yield put(fetchBotsFailure());
       yield put(addMessage({ severity: "warn", message: "no bots to display" }));
+      return
     }
 
     yield put(fetchBotsSuccess(botsResponse?.data));
@@ -78,19 +79,31 @@ export function* deleteBots(action: PayloadAction<string>) {
 
 export  function* updateBot(action: PayloadAction<{id: string, bot:ICreateBotDTo}>) {
 
-  console.log('botid', action.payload.id)
-  console.log('bot', action.payload.bot)
 
   try {
-    const updateBotResponse:void = yield newBotService.updatebots(action.payload.id, action.payload.bot); 
+    const updateBotResponse:AxiosResponse = yield newBotService.updatebots(action.payload.id, action.payload.bot); 
 
-    console.log('response', updateBotResponse)
+    if (updateBotResponse.status !== 200 ) {
+        yield fetchBotsFailure()
+        return
+    }
+
+    yield delay(3000)
+
+    yield put(fetchBotsttempt())
+    yield put(addMessage({
+      message:'Bot updated',
+      severity:'success'
+    }))
 
   } catch (e){
-    console.log('error', e)
+    yield put(updateBotFailed())
+    yield put(addMessage({
+      message:'updated bot failed',
+      severity: 'error'
+    }))
 
   }
-  console.log('hello updating bot', action.payload)
 
  
 }

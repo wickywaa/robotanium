@@ -55,9 +55,11 @@ export const BotContainer: React.FC = () => {
   };
 
   const handleSaveEdit = (id: string, bot: ICreateBotDTo) => {
-
-    console.log("trying to update")
     dispatch(updateBotAttempt({ id, bot }))
+    setShowEditDialog({
+      open: false,
+      bot: null
+    })
   };
 
   return (

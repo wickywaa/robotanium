@@ -63,7 +63,7 @@ export const BotSlice = createSlice({
     }),
     updateBotSuccess: (state) => ({
       ...state, 
-      loading: true
+      loading: false
     })
   }
 })
