@@ -4,6 +4,7 @@ import (
 	"backendv2/pkg/database"
 	"backendv2/pkg/firebase"
 	"backendv2/routes"
+	ws "backendv2/ws"
 	"fmt"
 	"log"
 	"os"
@@ -29,6 +30,7 @@ func main() {
 
 	// Add Fiber's built-in logger
 	app.Use(logger.New())
+	app.Static("/", "./")
 
 	// Add our custom debug logger
 	app.Use(func(c *fiber.Ctx) error {
@@ -47,7 +49,13 @@ func main() {
 			"message": "API is working",
 		})
 	})
-	routes.SetupRoutes(app)
+	
+	
+	hub := ws.NewHub()
+	go hub.Run()
+
+	routes.SetupRoutes(app, hub)
+
 
 	// Optional middleware to upgrade only certain paths
 	app.Use("/ws", func(c *fiber.Ctx) error {

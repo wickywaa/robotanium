@@ -4,7 +4,26 @@ import (
 	"log"
 
 	"github.com/gofiber/websocket/v2"
+	"github.com/gofiber/fiber/v2" 
 )
+
+func ServeWS(hub *Hub) fiber.Handler {
+	return websocket.New(func(conn *websocket.Conn) {
+		userID := conn.Query("userID") // or get from Locals if passed before
+
+		client := &Client{
+			ID:   userID,
+			Hub:  hub,
+			Conn: conn,
+			Send: make(chan []byte, 256),
+		}
+
+		hub.Register <- client
+
+		go client.WritePump()
+		go client.ReadPump()
+	})
+}
 
 func HandleWebSocket(c *websocket.Conn) {
 	defer c.Close()
