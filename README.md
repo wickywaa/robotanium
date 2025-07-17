@@ -44,17 +44,17 @@ To see the project in action, clone the repo and run:
 
 ```bash
 docker-compose build
-´´´ bash
+```bash
 ```bash
 docker-compose up
-´´´ bash
+```bash
 
 
 test user
 ```bash
  gav@robotanium.com,
-´´´ bash
+```bash
 
 ```bash
  adminRobotanium1!
-´´´ bash
+```bash
