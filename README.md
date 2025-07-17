@@ -47,14 +47,13 @@ docker-compose build
 ```
 ```bash
 docker-compose up
-```bash
-
+```
 
 test user
 ```bash
  gav@robotanium.com,
-```bash
+```
 
 ```bash
  adminRobotanium1!
-```bash
+```
