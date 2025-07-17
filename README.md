@@ -44,7 +44,15 @@ To see the project in action, clone the repo and run:
 
 ```bash
 docker-compose build
+´´´ bash
+```bash
 docker-compose up
+´´´ bash
 
 
-test user name gav@robotanium.com, adminRobotanium1!
+test user
+```bash
+ gav@robotanium.com,
+
+```bash
+ adminRobotanium1!
