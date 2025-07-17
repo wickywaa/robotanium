@@ -51,7 +51,7 @@ docker-compose up
 
 test user
 ```bash
- gav@robotanium.com,
+ gav@robotanium.com
 ```
 
 ```bash
