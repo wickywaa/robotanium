@@ -35,7 +35,11 @@ func (h *Hub) Run() {
 			}
 
 		case bot := <-h.RegisterBot:
+
+			println("bot is registering, bo")
 			h.Bots[bot.ID] = bot
+			confirmation := []byte(`{"type":"system","message":"connection confirmed"}`)
+			bot.Send <- confirmation
 
 		case bot := <-h.UnRegisterBot:
 			if _, ok := h.Bots[bot.ID]; ok {
