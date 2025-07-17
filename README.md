@@ -53,6 +53,8 @@ docker-compose up
 test user
 ```bash
  gav@robotanium.com,
+´´´ bash
 
 ```bash
  adminRobotanium1!
+´´´ bash
