@@ -44,7 +44,7 @@ To see the project in action, clone the repo and run:
 
 ```bash
 docker-compose build
-```bash
+```
 ```bash
 docker-compose up
 ```bash
